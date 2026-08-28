@@ -23,6 +23,7 @@
 | `data/log.json` | สมุดบันทึกผลงาน — มุมมองที่ให้ไว้ + ผลจริง |
 | `data/state.json` | ความจำของระบบเฝ้าราคา — ราคาที่แจ้งไปครั้งล่าสุด |
 | `payload.example.json` | ตัวอย่าง payload พร้อมคำอธิบายทุกฟิลด์ |
+| `tasks/` | prompt ของงานอัตโนมัติ 3 ตัว + ตัวรัน + script ลงทะเบียน Task Scheduler |
 | `docs/index.html` | ผลลัพธ์ที่ GitHub Pages เสิร์ฟ (generate เท่านั้น ห้ามแก้มือ) |
 
 ---
@@ -96,3 +97,10 @@ node gw.mjs log                          # สมุดบันทึกผล�
 - **แชท / push** — มึง/กู ได้ตามปกติ
 
 ผู้รับอีเมลทุกฉบับ: `iminiwindy@gmail.com`, `pongkasame.oil@gmail.com`
+
+---
+
+## งานอัตโนมัติ
+
+สรุปเช้า 08:00 น. (จ.–ส.) · สแกนเตือน 10:00 / 15:00 / 20:00 น. (จ.–ศ.) · ทบทวนตัวเองวันที่ 1 เวลา 09:00 น.
+รันบนเครื่องพลอยผ่าน Windows Task Scheduler — วิธีติดตั้งดู [PROMPTS.md](PROMPTS.md)
