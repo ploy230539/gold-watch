@@ -1,0 +1,37 @@
+{
+  "artifact_url": "https://claude.ai/code/artifact/751af5ad-2435-4077-8879-2bd35a1ccaa8",
+  "rows": [
+    {
+      "date_display": "26 ส.ค. 69",
+      "date_iso": "2026-08-26",
+      "spot": 4665.75,
+      "thb_sell": 71850,
+      "call": "wait",
+      "resistance_usd": 4725,
+      "resistance_thb": 73200,
+      "support_usd_low": 4340,
+      "support_usd_high": 4380,
+      "support_thb": 67800,
+      "invalid_note": "ทะลุ $4,725 แรงๆ = ขึ้นต่อ / หลุด $4,600 แรงๆ = รอแนวรับใหญ่ $4,380",
+      "actual_result": null,
+      "actual_due_iso": "2026-08-31",
+      "actual_due_display": "31 ส.ค. 69"
+    },
+    {
+      "date_display": "28 ส.ค. 69",
+      "date_iso": "2026-08-28",
+      "spot": 4600.45,
+      "thb_sell": 71350,
+      "call": "wait",
+      "resistance_usd": 4650,
+      "resistance_thb": 72350,
+      "support_usd_low": 4576,
+      "support_usd_high": 4600,
+      "support_thb": 71150,
+      "invalid_note": "ทะลุ $4,650 แรงๆ หลัง Warsh พูด = ขึ้นต่อ / หลุด $4,576 ต่อเนื่อง = อ่อนแรงจริง",
+      "actual_result": null,
+      "actual_due_iso": "2026-09-02",
+      "actual_due_display": "2 ก.ย. 69"
+    }
+  ]
+}
