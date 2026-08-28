@@ -1,0 +1,52 @@
+name: build dashboard
+
+# scheduled task บน claude.ai เขียนแค่ไฟล์ JSON ลง data/ (ผ่าน GitHub connector)
+# แล้ว workflow นี้เป็นคนเติม template + validate + commit docs/index.html ให้
+# แปลว่า task ไม่ต้องประกอบ HTML เองอีกต่อไป ซึ่งเป็นจุดที่พังบ่อยที่สุด
+on:
+  push:
+    paths:
+      - "data/**"
+      - "template.html"
+      - "gw.mjs"
+      - ".github/workflows/build.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-dashboard
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # payload ที่มี "log" = รอบสรุปเช้า -> เติมผลจริงย้อนหลัง + เพิ่มแถวใหม่ในสมุดบันทึกด้วย
+      # (รันซ้ำได้ ไม่เพิ่มแถวซ้ำ เพราะยึด date_iso เป็นตัวชี้)
+      - name: เติม template แล้ว validate placeholder
+        run: |
+          if node -e "process.exit(require('./data/payload-latest.json').log ? 0 : 1)"; then
+            node gw.mjs morning --in data/payload-latest.json
+          else
+            node gw.mjs build --in data/payload-latest.json
+          fi
+
+      - name: commit + push
+        run: |
+          git add docs/ data/log.json
+          if git diff --cached --quiet; then
+            echo "ไม่มีอะไรเปลี่ยน ไม่ต้อง push"
+            exit 0
+          fi
+          git config user.name "gold-watch bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build: อัปเดต dashboard + สมุดบันทึกผลงาน"
+          git push
