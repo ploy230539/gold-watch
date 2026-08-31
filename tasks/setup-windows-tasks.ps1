@@ -1,4 +1,4 @@
-# ลงทะเบียน Gold Watch เข้า Windows Task Scheduler
+﻿# ลงทะเบียน Gold Watch เข้า Windows Task Scheduler
 # รันครั้งเดียวใน PowerShell (ไม่ต้อง Run as Administrator)
 #
 #   powershell -ExecutionPolicy Bypass -File tasks\setup-windows-tasks.ps1
