@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // Gold Watch — build / state / publish
-// ไม่มี dependency ภายนอก รันด้วย node >= 18
+// No external dependencies. Requires node >= 18.
 //
-//   node gw.mjs build   --in payload.json          เติม template -> docs/index.html (ไม่แตะ log)
-//   node gw.mjs morning --in payload.json          เติม actual ที่ถึงกำหนด + เพิ่มแถวใหม่ + build
-//   node gw.mjs publish [-m "msg"]                 commit + push ขึ้น GitHub Pages
-//   node gw.mjs check   --thb N --xau N [--news]   เทียบกับราคาที่แจ้งครั้งล่าสุด -> ควรแจ้งไหม
+//   node gw.mjs build   --in payload.json          fill template -> docs/index.html (log untouched)
+//   node gw.mjs morning --in payload.json          fill due results + append today's row + build
+//   node gw.mjs publish [-m "msg"]                 commit + push to GitHub Pages
+//   node gw.mjs check   --thb N --xau N [--news]   compare against last alerted price -> alert?
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
-//   node gw.mjs log                                พิมพ์สมุดบันทึกผลงานเป็น JSON
+//   node gw.mjs log                                print the track-record log as JSON
 
 import fs from "node:fs";
 import path from "node:path";
@@ -22,22 +22,22 @@ const P = {
   out: path.join(ROOT, "docs", "index.html"),
 };
 
-// ── ค่าคงที่ของระบบ (ห้ามแก้โดยไม่ตั้งใจ — ดู README) ───────────────────────
+// ── System constants (do not change casually — see README) ────────────────
 const GRAMS_PER_OZ = 31.1035;
 const GRAMS_PER_BAHT = 15.244;
 const THAI_PURITY = 0.965;
 
-/** ราคาทองไทยที่ควรเป็น (บาท/บาททอง) */
+/** Fair Thai gold price (THB per baht-weight) */
 export function fairThb(spot, usdthb) {
   return (spot / GRAMS_PER_OZ) * GRAMS_PER_BAHT * THAI_PURITY * usdthb;
 }
 
-// เกณฑ์แจ้งเตือนของระบบเฝ้าราคา
-const ALERT_THB = 150;   // ทองไทยขยับ >= 150 บาท จากราคาที่แจ้งครั้งล่าสุด (สะสมได้)
+// Price-watch alert thresholds
+const ALERT_THB = 150;   // Thai gold moved >= 150 THB from the last alerted price (cumulative)
 const ALERT_XAU_PCT = 1.5;
-const PUSH_THB = 300;    // ต่ำกว่านี้ส่งแค่อีเมล ไม่เด้งมือถือ
+const PUSH_THB = 300;    // below this, email only - no phone push
 const PUSH_XAU_PCT = 1.5;
-const MIN_ROWS_FOR_STATS = 30; // ต่ำกว่านี้ห้ามอ้าง % ความแม่น
+const MIN_ROWS_FOR_STATS = 30; // below this, never quote an accuracy percentage
 
 // ── utils ──────────────────────────────────────────────────────────────────
 const readJson = (f) => JSON.parse(fs.readFileSync(f, "utf8"));
@@ -74,8 +74,8 @@ function die(msg) {
 }
 
 // ── ladder ─────────────────────────────────────────────────────────────────
-// bottom% = (ราคา − ขอบล่างช่วง) ÷ (ขอบบน − ขอบล่าง) × 100
-// เผื่อขอบบน/ล่าง 8% ของช่วง เพื่อไม่ให้จุดไปติดขอบราง
+// bottom% = (price − range low) ÷ (range high − range low) × 100
+// Pad both ends by 8% of the span so markers never sit flush against the rail.
 function ladder({ resistance_usd, support_usd_low, support_usd_high, now_usd }) {
   const vals = [resistance_usd, support_usd_low, support_usd_high, now_usd];
   let lo = Math.min(...vals);
@@ -95,7 +95,7 @@ function ladder({ resistance_usd, support_usd_low, support_usd_high, now_usd }) 
   };
 }
 
-// ── ชิ้นส่วน HTML ที่ generate จากข้อมูล ────────────────────────────────────
+// ── HTML fragments generated from the payload ─────────────────────────────
 const driversHtml = (list) =>
   list.map((d) => {
     const sign = d.sign === "plus" ? "plus" : d.sign === "minus" ? "minus" : "";
@@ -162,19 +162,19 @@ function rsiRead(rsi) {
 }
 
 // ── render ─────────────────────────────────────────────────────────────────
-// ต้องมีค่าจริง ห้าม null
+// Must carry a real value - null is rejected
 const REQUIRED = [
   "stamp", "lede_h1", "lede_p", "spot", "thb_bar", "thb_orn", "fx",
   "levels", "read_text", "invalid_text", "drivers", "calendar", "sources",
 ];
-// ต้องมี key แต่ใส่ null ได้ (แปลว่า "รอบนี้ดึงไม่ได้" ไม่ใช่ "ลืมใส่")
+// Key must be present but may be null (means "unavailable this run", not "forgotten")
 const NULLABLE = ["rsi"];
 
 function render(payload, rows) {
   const missing = REQUIRED.filter((k) => payload[k] === undefined || payload[k] === null);
-  if (missing.length) die("payload ขาดฟิลด์: " + missing.join(", "));
+  if (missing.length) die("payload is missing required fields: " + missing.join(", "));
   const absent = NULLABLE.filter((k) => !(k in payload));
-  if (absent.length) die("payload ต้องมี key เหล่านี้ (ใส่ null ได้ถ้าดึงไม่ได้): " + absent.join(", "));
+  if (absent.length) die("payload must contain these keys (null allowed if unavailable): " + absent.join(", "));
 
   const { spot, thb_bar, thb_orn, fx, levels } = payload;
   for (const [obj, keys, name] of [
@@ -184,7 +184,7 @@ function render(payload, rows) {
     [levels, ["resistance_usd", "resistance_thb", "support_usd_low", "support_usd_high", "support_thb"], "levels"],
   ]) {
     const miss = keys.filter((k) => obj[k] === undefined || obj[k] === null);
-    if (miss.length) die(`payload.${name} ขาด: ${miss.join(", ")}`);
+    if (miss.length) die(`payload.${name} is missing: ${miss.join(", ")}`);
   }
 
   const hasRsi = payload.rsi != null && Number.isFinite(Number(payload.rsi));
@@ -210,7 +210,7 @@ function render(payload, rows) {
     THB_BAR_DELTA_CLASS: deltaClass(thb_bar.delta),
     THB_BAR_SUB: esc(thb_bar.sub),
 
-    // ทองรูปพรรณเป็นข้อมูลเสริม ถ้ารอบนั้นดึงไม่ได้ให้ขึ้น — แทนการเดา
+    // Ornament gold is supplementary: render — rather than guess when unavailable
     TILE3_CLASS: thb_orn.sell == null ? "" : tileClass(thb_orn.delta),
     THB_ORN_VAL: thb_orn.sell == null ? "—" : baht(thb_orn.sell),
     THB_ORN_DELTA: thb_orn.delta == null ? "ไม่มีข้อมูลรอบนี้" : signed(thb_orn.delta),
@@ -250,18 +250,18 @@ function render(payload, rows) {
 
   let html = fs.readFileSync(P.template, "utf8");
   html = html.replace(/\{\{([A-Z0-9_]+)\}\}/g, (m, key) => {
-    if (!(key in map)) die(`template มี placeholder ที่ script ไม่รู้จัก: ${m}`);
+    if (!(key in map)) die(`template has a placeholder this script does not know: ${m}`);
     return map[key];
   });
 
   const left = html.match(/\{\{[A-Za-z0-9_]+\}\}/g);
-  if (left) die("ยังมี placeholder เหลือหลังเติม: " + [...new Set(left)].join(", "));
+  if (left) die("placeholders still unfilled after render: " + [...new Set(left)].join(", "));
 
   return html;
 }
 
-// ── สมุดบันทึกผลงาน: เติม actual_result ที่ถึงกำหนดอัตโนมัติ ───────────────
-// วัดแบบ close-to-close: เทียบราคาวันนี้กับราคาที่จดไว้ในแถวนั้น
+// ── Track record: auto-fill actual_result for rows that came due ──────────
+// Close-to-close measurement: today's price vs the price recorded on that row.
 function fillActuals(rows, today) {
   const { date_iso, spot, thb_sell } = today;
   const filled = [];
@@ -274,7 +274,7 @@ function fillActuals(rows, today) {
     const pThb = (dThb / r.thb_sell) * 100;
     const pSpot = ((spot - r.spot) / r.spot) * 100;
 
-    // ±0.5% = ถือว่าเสมอ (ต่ำกว่าส่วนต่างซื้อ-ขายของร้าน เทรดแล้วไม่เหลือ)
+    // Within ±0.5% is a draw - below the shop bid/ask spread, so not tradable
     const up = pThb >= 0.5, down = pThb <= -0.5;
     let verdict;
     if (r.call === "buy") verdict = up ? "ถูก" : down ? "ผิด" : "เสมอ";
@@ -297,7 +297,7 @@ function fillActuals(rows, today) {
   return filled;
 }
 
-// ── state (ความจำของระบบเฝ้าราคา) ──────────────────────────────────────────
+// ── State: the price-watch memory ─────────────────────────────────────────
 function loadState() {
   if (!fs.existsSync(P.state)) return { last_alert: null, history: [] };
   return readJson(P.state);
@@ -306,14 +306,14 @@ const subjectCode = (thb, xau) => `[TH ${Math.round(thb)} | XAU ${Math.round(xau
 
 function cmdCheck(a) {
   const thb = Number(a.thb), xau = Number(a.xau);
-  if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("check ต้องมี --thb และ --xau");
+  if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("check requires --thb and --xau");
   const news = !!a.news;
   const st = loadState();
   const ref = st.last_alert;
 
   if (!ref) {
     return console.log(JSON.stringify({
-      alert: true, push: news, reason: "ยังไม่เคยแจ้ง — ตั้งค่าอ้างอิงครั้งแรก",
+      alert: true, push: news, reason: "No alert sent yet - establishing the first reference point",
       ref: null, thb_move: null, xau_pct: null,
       subject_code: subjectCode(thb, xau),
     }, null, 2));
@@ -327,10 +327,10 @@ function cmdCheck(a) {
   const push = Math.abs(thbMove) >= PUSH_THB || Math.abs(xauPct) >= PUSH_XAU_PCT || news;
 
   const reasons = [];
-  if (hitThb) reasons.push(`ทองไทยขยับ ${signed(thbMove)} บาท จากที่แจ้งครั้งล่าสุด (เกณฑ์ ${ALERT_THB})`);
-  if (hitXau) reasons.push(`Spot ขยับ ${pct(xauPct)} จากที่แจ้งครั้งล่าสุด (เกณฑ์ ${ALERT_XAU_PCT}%)`);
-  if (news) reasons.push("มีข่าวใหญ่ระดับเขย่าตลาด");
-  if (!alert) reasons.push(`ไม่ถึงเกณฑ์ — ทองไทย ${signed(thbMove)} บาท / Spot ${pct(xauPct)} → เงียบ ไม่ส่งอะไร`);
+  if (hitThb) reasons.push(`Thai gold moved ${signed(thbMove)} THB from the last alert (threshold ${ALERT_THB})`);
+  if (hitXau) reasons.push(`Spot moved ${pct(xauPct)} from the last alert (threshold ${ALERT_XAU_PCT}%)`);
+  if (news) reasons.push("Market-moving news flagged by the operator");
+  if (!alert) reasons.push(`Below threshold - Thai gold ${signed(thbMove)} THB / Spot ${pct(xauPct)} -> stay silent, send nothing`);
 
   console.log(JSON.stringify({
     alert, push,
@@ -350,9 +350,9 @@ function cmdState(a) {
     const st = loadState();
     return console.log(JSON.stringify(st.last_alert, null, 2));
   }
-  if (sub !== "set") die("ใช้ได้: state get | state set --thb N --xau N");
+  if (sub !== "set") die("usage: state get | state set --thb N --xau N");
   const thb = Number(a.thb), xau = Number(a.xau);
-  if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("state set ต้องมี --thb และ --xau");
+  if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("state set requires --thb and --xau");
   const st = loadState();
   const entry = {
     ts_iso: new Date().toISOString(),
@@ -368,7 +368,7 @@ function cmdState(a) {
 
 // ── build / morning / publish ──────────────────────────────────────────────
 function cmdBuild(a, { updateLog = false } = {}) {
-  if (!a.in) die("ต้องระบุ --in <payload.json>");
+  if (!a.in) die("--in <payload.json> is required");
   const payload = readJson(path.resolve(a.in));
   const logFile = readJson(P.log);
   let rows = logFile.rows;
@@ -376,18 +376,18 @@ function cmdBuild(a, { updateLog = false } = {}) {
 
   if (updateLog) {
     const L = payload.log;
-    if (!L) die("morning ต้องมี payload.log");
+    if (!L) die("morning requires payload.log");
     for (const k of ["date_display", "date_iso", "actual_due_iso", "actual_due_display"]) {
-      if (!L[k]) die(`payload.log ขาด: ${k}`);
+      if (!L[k]) die(`payload.log is missing: ${k}`);
     }
-    if (!payload.call) die("morning ต้องมี payload.call (buy|hold|wait)");
-    if (!["buy", "hold", "wait"].includes(payload.call)) die("payload.call ต้องเป็น buy|hold|wait");
+    if (!payload.call) die("morning requires payload.call (buy|hold|wait)");
+    if (!["buy", "hold", "wait"].includes(payload.call)) die("payload.call must be buy|hold|wait");
 
     const filled = fillActuals(rows, {
       date_iso: L.date_iso, date_display: L.date_display,
       spot: payload.spot.value, thb_sell: payload.thb_bar.sell,
     });
-    if (filled.length) notes.push(`เติมผลจริงย้อนหลัง ${filled.length} แถว: ${filled.join(", ")}`);
+    if (filled.length) notes.push(`filled actual results for ${filled.length} row(s): ${filled.join(", ")}`);
 
     const row = {
       date_display: L.date_display,
@@ -406,12 +406,12 @@ function cmdBuild(a, { updateLog = false } = {}) {
       actual_due_display: L.actual_due_display,
     };
     const i = rows.findIndex((r) => r.date_iso === L.date_iso);
-    if (i >= 0) { rows[i] = { ...rows[i], ...row, actual_result: rows[i].actual_result }; notes.push(`อัปเดตแถววันที่ ${L.date_display} (มีอยู่แล้ว)`); }
-    else { rows.push(row); notes.push(`เพิ่มแถวใหม่ ${L.date_display}`); }
+    if (i >= 0) { rows[i] = { ...rows[i], ...row, actual_result: rows[i].actual_result }; notes.push(`updated existing row for ${L.date_display}`); }
+    else { rows.push(row); notes.push(`appended new row for ${L.date_display}`); }
     rows.sort((x, y) => x.date_iso.localeCompare(y.date_iso));
   }
 
-  const html = render(payload, rows);   // validate ก่อน แล้วค่อยเขียนอะไรลงดิสก์
+  const html = render(payload, rows);   // validate first, only then touch the disk
   fs.mkdirSync(path.dirname(P.out), { recursive: true });
   fs.writeFileSync(P.out, html);
   if (updateLog) writeJson(P.log, { ...logFile, rows });
@@ -430,7 +430,7 @@ function cmdPublish(a) {
   const msg = a.m || a.message || `update dashboard ${new Date().toISOString()}`;
   git("add", "-A");
   const staged = execFileSync("git", ["diff", "--cached", "--name-only"], { cwd: ROOT, encoding: "utf8" }).trim();
-  if (!staged) return console.log(JSON.stringify({ ok: true, pushed: false, reason: "ไม่มีอะไรเปลี่ยน" }, null, 2));
+  if (!staged) return console.log(JSON.stringify({ ok: true, pushed: false, reason: "nothing changed" }, null, 2));
   git("commit", "-m", String(msg));
   git("push");
   const url = (() => {

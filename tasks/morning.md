@@ -1,37 +1,47 @@
-ทำสรุปทองเช้าให้พลอย ตามสกิล gold-watch
+Produce Ploy's morning gold brief, following the gold-watch skill.
 
-โฟลเดอร์งาน: D:\Claude_AI\Ploy\Gold
+Working folder: D:\Claude_AI\Ploy\Gold
 
-**1. ค้นราคาจริง** — Gold Spot, ทองแท่งไทยรับซื้อ/ขายออก, ทองรูปพรรณขายออก, USD/THB
-จาก Trading Economics, ข่าวไทยที่อ้างสมาคมค้าทองคำ, FXStreet
-ห้ามเดาตัวเลขเด็ดขาด ทุกตัวเลขต้องมีเวลาที่เก็บกำกับ
-ถ้าสองแหล่งให้ Spot ต่างกันเกิน $20 ให้รายงานเป็นช่วงและบอกว่าเก็บคนละเวลา
-ฟิลด์ไหนดึงไม่ได้จริงๆ ให้ใส่ null (rsi, thb_orn) หน้าเว็บจะขึ้น — ให้เอง ห้ามเดามาใส่แทน
+**1. Fetch real prices** — Gold Spot, Thai bar gold (buy and sell), ornament gold sell,
+and USD/THB, from Trading Economics, Thai news citing the Gold Traders Association, and
+FXStreet.
+Never invent a number. Every figure must carry the time it was captured.
+If two sources disagree on Spot by more than $20, report a range and say they were
+captured at different times.
+Any field you genuinely cannot fetch goes in as `null` (`rsi`, `thb_orn`) and the page
+renders `—`. Do not substitute a guess.
 
-**2. เขียนสรุปในแชท** ตามโครง 7 ข้อในสกิล โทนแชทใช้ มึง/กู ได้ตามปกติ
+**2. Write the summary in chat** using the 7-part structure from the skill. Chat tone is
+casual Thai; มึง/กู is fine there.
 
-**3. เขียน payload แล้ว publish**
-เขียนไฟล์ D:\Claude_AI\Ploy\Gold\data\payload-latest.json ตามโครงใน payload.example.json
-ต้องมีครบ: stamp, lede_h1, lede_p, spot, thb_bar, thb_orn, fx, levels, rsi,
-read_text, invalid_text, drivers, calendar, sources, call, log
-- call เป็นหนึ่งใน buy / hold / wait
-- log ใส่ date_display, date_iso, actual_due_iso, actual_due_display (due = 3 วันทำการถัดไป)
+**3. Write the payload, then publish**
+Write `D:\Claude_AI\Ploy\Gold\data\payload-latest.json` following the shape in
+`payload.example.json`. It must contain: `stamp, lede_h1, lede_p, spot, thb_bar, thb_orn,
+fx, levels, rsi, read_text, invalid_text, drivers, calendar, sources, call, log`.
+- `call` is one of `buy` / `hold` / `wait`
+- `log` carries `date_display, date_iso, actual_due_iso, actual_due_display`,
+  where the due date is 3 business days out
 
-แล้วรัน 2 คำสั่งนี้ในโฟลเดอร์งาน:
+Then run these two commands in the working folder:
+
     node gw.mjs morning --in data/payload-latest.json
-    node gw.mjs publish -m "สรุปเช้า <วันที่>"
+    node gw.mjs publish -m "morning brief <date>"
 
-**ห้ามแก้ docs/index.html ด้วยมือเด็ดขาด** script เป็นคนเติม template คำนวณแนวรับแนวต้าน
-และ validate ให้ ถ้า morning ขึ้น error ให้อ่าน error แล้วแก้ที่ payload — ห้ามข้ามขั้นตอน validate
+**Never hand-edit `docs/index.html`.** The script fills the template, computes the
+support/resistance ladder, and validates the result. If `morning` errors, read the error
+and fix the payload — never skip the validation step.
 
-**4. สมุดบันทึกผลงาน** — ไม่ต้องค้นราคาย้อนหลังมาเติมผลจริงเอง
-คำสั่ง morning เติมให้อัตโนมัติจากราคารอบนี้ (close-to-close ขยับไม่ถึง ±0.5% นับเสมอ)
-ถ้าจะอ้างผลย้อนหลัง ให้อ่านจาก data/log.json
-**ยังไม่ถึง 30 แถวที่มีผลจริง ห้ามอ้าง % ความแม่นเด็ดขาด** และเขียนครั้งที่พลาดให้ชัดเท่าครั้งที่ถูก
+**4. Track record** — no need to look up historical prices to fill in past outcomes.
+`morning` does it automatically from this run's prices (close-to-close; a move under
+±0.5% counts as a draw). To cite past results in chat or email, read `data/log.json`.
+**Below 30 rows with an actual result, never quote an accuracy percentage**, and write up
+the misses as prominently as the hits.
 
-**5. ส่งอีเมลสรุปเช้า** ถึง iminiwindy@gmail.com และ pongkasame.oil@gmail.com
-โทนไทยสุภาพเป็นกลางแบบนักวิเคราะห์ที่เป็นกันเอง **ห้ามใช้ มึง/กู เด็ดขาด** เพราะมีคนอื่นอ่าน
-ปุ่ม/ลิงก์ "ดู dashboard เต็ม" ชี้ไปที่ https://ploy230539.github.io/gold-watch/
-บอกด้วยว่าลิงก์นี้เปิดได้เลยไม่ต้องล็อกอิน · ปิดท้ายด้วย disclaimer ว่าไม่ใช่คำแนะนำการลงทุน
+**5. Send the morning email** to iminiwindy@gmail.com and pongkasame.oil@gmail.com.
+Write it in polite, neutral Thai — the voice of a friendly analyst. **Never use มึง/กู**;
+other people read this mail.
+The "view full dashboard" button/link points to https://ploy230539.github.io/gold-watch/
+Mention that the link opens without any login. Close with the disclaimer that this is not
+investment advice.
 
-**6. เช็คเกณฑ์ push** ตามสกิล เข้าเกณฑ์ค่อยยิง ไม่เข้าเกณฑ์ไม่ต้องยิง
+**6. Check the push criteria** from the skill. Send a push only if they are met.

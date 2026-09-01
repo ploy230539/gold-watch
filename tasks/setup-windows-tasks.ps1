@@ -1,34 +1,35 @@
-﻿# ลงทะเบียน Gold Watch เข้า Windows Task Scheduler
-# รันครั้งเดียวใน PowerShell (ไม่ต้อง Run as Administrator)
+# Register the Gold Watch jobs in Windows Task Scheduler.
+# Run once from PowerShell (no admin rights needed for per-user tasks):
 #
 #   powershell -ExecutionPolicy Bypass -File tasks\setup-windows-tasks.ps1
 #
-# ต้องทำก่อน 2 อย่าง (ดู PROMPTS.md):
+# Two things must be done first (see PROMPTS.md):
 #   1) npm install -g @anthropic-ai/claude-code
-#   2) เปิด claude แบบ interactive หนึ่งครั้ง แล้ว login + ต่อ connector Gmail / Drive / push ให้ครบ
-#      ไม่งั้นงานจะรันได้แต่ส่งอีเมลไม่ได้
+#   2) open `claude` interactively once, log in, and connect the Gmail and
+#      push-notification connectors -- otherwise the jobs run but cannot send email.
 
 $ErrorActionPreference = "Stop"
 
 if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
-  Write-Error "ยังไม่ได้ติดตั้ง Claude Code CLI — รัน: npm install -g @anthropic-ai/claude-code"
+  Write-Error "Claude Code CLI not found. Run: npm install -g @anthropic-ai/claude-code"
 }
 
 $run = Join-Path $PSScriptRoot "run.cmd"
-if (-not (Test-Path $run)) { Write-Error "ไม่พบ $run" }
+if (-not (Test-Path $run)) { Write-Error "Not found: $run" }
 
-# schtasks รองรับ MONTHLY /D 1 ตรงๆ (New-ScheduledTaskTrigger ทำ "วันที่ 1 ของเดือน" ไม่ได้)
+# schtasks supports MONTHLY /D 1 directly; New-ScheduledTaskTrigger cannot express
+# "the 1st of every month", which is why this uses schtasks instead.
 $jobs = @(
-  @{ Name = "GoldWatch-Morning";    Prompt = "morning.md"; Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI,SAT","/ST","08:00")
-     Desc = "สรุปทองเช้า 08:00 น. จ.-ส." }
-  @{ Name = "GoldWatch-Scan-1000";  Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","10:00")
-     Desc = "สแกนเตือนราคาทอง 10:00 น. จ.-ศ." }
-  @{ Name = "GoldWatch-Scan-1500";  Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","15:00")
-     Desc = "สแกนเตือนราคาทอง 15:00 น. จ.-ศ." }
-  @{ Name = "GoldWatch-Scan-2000";  Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","20:00")
-     Desc = "สแกนเตือนราคาทอง 20:00 น. จ.-ศ." }
-  @{ Name = "GoldWatch-Review";     Prompt = "review.md";  Sc = @("/SC","MONTHLY","/D","1","/ST","09:00")
-     Desc = "ทบทวนตัวเองต้นเดือน วันที่ 1 เวลา 09:00 น." }
+  @{ Name = "GoldWatch-Morning";   Prompt = "morning.md"; Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI,SAT","/ST","08:00")
+     Desc = "Morning gold brief, 08:00 Mon-Sat" }
+  @{ Name = "GoldWatch-Scan-1000"; Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","10:00")
+     Desc = "Gold price scan, 10:00 Mon-Fri" }
+  @{ Name = "GoldWatch-Scan-1500"; Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","15:00")
+     Desc = "Gold price scan, 15:00 Mon-Fri" }
+  @{ Name = "GoldWatch-Scan-2000"; Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","20:00")
+     Desc = "Gold price scan, 20:00 Mon-Fri" }
+  @{ Name = "GoldWatch-Review";    Prompt = "review.md";  Sc = @("/SC","MONTHLY","/D","1","/ST","09:00")
+     Desc = "Monthly self review, 09:00 on the 1st" }
 )
 
 foreach ($j in $jobs) {
@@ -36,14 +37,14 @@ foreach ($j in $jobs) {
   $tr = '"' + $run + '" ' + $j.Prompt
   $argv = @("/Create","/TN",$j.Name,"/TR",$tr) + $j.Sc + @("/F","/RL","LIMITED")
   & schtasks @argv | Out-Null
-  if ($LASTEXITCODE -ne 0) { Write-Error "ลงทะเบียน $($j.Name) ไม่สำเร็จ" }
-  Write-Host "ลงทะเบียนแล้ว: $($j.Name) — $($j.Desc)"
+  if ($LASTEXITCODE -ne 0) { Write-Error "Failed to register $($j.Name)" }
+  Write-Host "Registered: $($j.Name) -- $($j.Desc)"
 }
 
 Write-Host ""
-Write-Host "งานจะรันเฉพาะตอนเครื่องเปิดอยู่ ถ้าเครื่องปิดรอบนั้นจะข้ามไปเลย"
-Write-Host "log อยู่ที่ logs\ ในโฟลเดอร์งาน"
+Write-Host "Jobs only fire while the machine is on. A missed slot is skipped, not caught up."
+Write-Host "Per-run logs are written to logs\ in the project folder."
 Write-Host ""
-Write-Host "ดูงานทั้งหมด:  schtasks /Query /TN GoldWatch-Morning"
-Write-Host "ลองรันเลย:     schtasks /Run /TN GoldWatch-Morning"
-Write-Host "ลบทิ้ง:        schtasks /Delete /TN GoldWatch-Morning /F"
+Write-Host "List a job:  schtasks /Query /TN GoldWatch-Morning"
+Write-Host "Run now:     schtasks /Run /TN GoldWatch-Morning"
+Write-Host "Remove:      schtasks /Delete /TN GoldWatch-Morning /F"

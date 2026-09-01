@@ -1,15 +1,28 @@
 {
-  "_comment": "ตัวอย่าง payload เต็มรูปแบบ — scheduled task เขียนไฟล์หน้าตาแบบนี้แล้วเรียก `node gw.mjs morning --in <ไฟล์>` ตัวเลขทุกตัวต้องมาจาก WebSearch/WebFetch จริงเท่านั้น ห้ามเดา ถ้าดึงไม่ได้ให้ใส่ null (ทองรูปพรรณ/RSI รองรับ null และจะขึ้นเป็น — บนหน้า)",
-
+  "_comment": "Full example payload. A scheduled job writes a file shaped like this, then runs `node gw.mjs morning --in <file>`. Every number must come from a real WebSearch/WebFetch - never guess. If a value cannot be fetched, use null (thb_orn and rsi accept null and render as - on the page).",
   "stamp": "อัปเดต 28 ส.ค. 69 · 08:05 น.",
   "lede_h1": "หัวข้อหลัก 1 ประโยค — อารมณ์ตลาดวันนี้",
   "lede_p": "ขยาย 2–3 ประโยค เขียนแบบให้คนนอกอ่านรู้เรื่อง ไม่ใช้ มึง/กู",
-
-  "spot":    { "value": 4600.45, "delta_pct": -0.42, "sub": "Trading Economics · เก็บ 07:50 น. (เวลาไทย)" },
-  "thb_bar": { "sell": 71350, "buy": 71250, "delta": -500, "sub": "สมาคมค้าทองคำ ประกาศรอบ 1 · 09:02 น." },
-  "thb_orn": { "sell": 72550, "delta": -500 },
-  "fx":      { "value": 32.855, "delta_pct": 0.34, "sub": "อ้างอิง ECB · 27 ส.ค. 69" },
-
+  "spot": {
+    "value": 4600.45,
+    "delta_pct": -0.42,
+    "sub": "Trading Economics · เก็บ 07:50 น. (เวลาไทย)"
+  },
+  "thb_bar": {
+    "sell": 71350,
+    "buy": 71250,
+    "delta": -500,
+    "sub": "สมาคมค้าทองคำ ประกาศรอบ 1 · 09:02 น."
+  },
+  "thb_orn": {
+    "sell": 72550,
+    "delta": -500
+  },
+  "fx": {
+    "value": 32.855,
+    "delta_pct": 0.34,
+    "sub": "อ้างอิง ECB · 27 ส.ค. 69"
+  },
   "levels": {
     "resistance_usd": 4650,
     "resistance_thb": 72350,
@@ -17,29 +30,46 @@
     "support_usd_high": 4600,
     "support_thb": 71150
   },
-
   "rsi": 47,
   "rsi_read": "ไม่ใส่ก็ได้ — ถ้าเว้นไว้ script จะอ่านค่าให้เองจากตัวเลข RSI",
-
   "read_text": "อ่านเกม 2–4 ประโยค: ตอนนี้ควรซื้อ ถือ หรือรอ พร้อมเหตุผล",
   "invalid_text": "เงื่อนไขที่ทำให้มุมมองนี้ผิด เช่น ทะลุ $4,650 แรงๆ = ขึ้นต่อ / หลุด $4,576 = อ่านผิด",
-
   "drivers": [
-    { "sign": "plus",  "text": "ปัจจัยที่ดันราคาขึ้น อ้างอิงข่าวจริง" },
-    { "sign": "minus", "text": "ปัจจัยที่กดราคาลง อ้างอิงข่าวจริง" },
-    { "sign": "flat",  "text": "ข้อสังเกตที่ยังไม่ชี้ทาง" }
+    {
+      "sign": "plus",
+      "text": "ปัจจัยที่ดันราคาขึ้น อ้างอิงข่าวจริง"
+    },
+    {
+      "sign": "minus",
+      "text": "ปัจจัยที่กดราคาลง อ้างอิงข่าวจริง"
+    },
+    {
+      "sign": "flat",
+      "text": "ข้อสังเกตที่ยังไม่ชี้ทาง"
+    }
   ],
-
   "calendar": [
-    { "when": "พฤ 19:30", "what": "US Core PCE", "note": "สูงกว่าคาด = ทองมักลง", "big": true },
-    { "when": "ศ 21:00", "what": "ตัวเลขจ้างงาน" }
+    {
+      "when": "พฤ 19:30",
+      "what": "US Core PCE",
+      "note": "สูงกว่าคาด = ทองมักลง",
+      "big": true
+    },
+    {
+      "when": "ศ 21:00",
+      "what": "ตัวเลขจ้างงาน"
+    }
   ],
-
   "sources": [
-    { "label": "Trading Economics — Gold", "url": "https://tradingeconomics.com/commodity/gold" },
-    { "label": "สมาคมค้าทองคำ", "url": "https://www.goldtraders.or.th/dailyprices" }
+    {
+      "label": "Trading Economics — Gold",
+      "url": "https://tradingeconomics.com/commodity/gold"
+    },
+    {
+      "label": "สมาคมค้าทองคำ",
+      "url": "https://www.goldtraders.or.th/dailyprices"
+    }
   ],
-
   "call": "wait",
   "log": {
     "date_display": "28 ส.ค. 69",

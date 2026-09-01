@@ -1,20 +1,23 @@
-ทบทวนความแม่นของมุมมองทองย้อนหลัง ตามสกิล gold-watch ข้อ 9
+Review the accuracy of past gold calls, following section 9 of the gold-watch skill.
 
-โฟลเดอร์งาน: D:\Claude_AI\Ploy\Gold
+Working folder: D:\Claude_AI\Ploy\Gold
 
-**1. อ่านสมุดบันทึกผลงาน**
+**1. Read the track record**
+
     node gw.mjs log
-(ย้ายมาจาก Drive แล้ว ไฟล์บน Drive ถูกลบทิ้งแล้ว อย่าไปหาที่นั่น)
-actual_result ขึ้นต้นด้วย ✓ คือตรง · ✗ คือพลาด · = คือเสมอ
-แถวที่ actual_result เป็น null คือยังไม่ถึงกำหนดวัดผล **ห้ามนับ**
 
-**2. วิเคราะห์ว่าคิดผิดตรงไหนซ้ำๆ** — สนใจ pattern ของความผิดพลาดเป็นหลัก
-เช่น เชียร์ "รอ" ตอนตลาดขาขึ้นบ่อยไป หรือตั้งแนวรับแคบเกินจริง
-- **นับเฉพาะแถวที่ actual_result ไม่ใช่ null**
-- **ต่ำกว่า 30 แถวห้ามอ้าง % ความแม่นเด็ดขาด** ให้บอกแค่ว่ายังเก็บข้อมูลอยู่
-- ถ้าช่วงที่เก็บเป็นตลาดเทรนด์เดียว ให้บอกตรงๆ ว่าสถิตินี้ยังใช้ตัดสินอะไรไม่ได้
-- เขียนครั้งที่พลาดให้เด่นกว่าครั้งที่ถูก
+(It moved off Google Drive — those files were deleted, so do not look there.)
+An `actual_result` starting with `✓` was right, `✗` was wrong, `=` was a draw.
+Rows where `actual_result` is `null` have not come due yet — **do not count them**.
 
-**3. เสนอแก้สกิล gold-watch** — เสนอเฉยๆ **ห้ามแก้เอง**
+**2. Look for repeated mistakes.** Focus on the pattern of the errors, e.g. calling
+"wait" too often in a rising market, or drawing support levels too tight.
+- **Count only rows where `actual_result` is not null**
+- **Below 30 rows, never quote an accuracy percentage** — just say data is still being collected
+- If the period covered only one market direction, say plainly that the statistics cannot
+  settle anything yet
+- Write up the misses more prominently than the hits
 
-ผลลัพธ์เขียนในแชท ไม่ต้อง publish ขึ้นเว็บ ไม่ต้องส่งอีเมล
+**3. Propose changes to the gold-watch skill** — propose only. **Do not edit it.**
+
+Write the result in chat. Nothing to publish, no email to send.

@@ -1,8 +1,9 @@
 name: build dashboard
 
-# scheduled task บน claude.ai เขียนแค่ไฟล์ JSON ลง data/ (ผ่าน GitHub connector)
-# แล้ว workflow นี้เป็นคนเติม template + validate + commit docs/index.html ให้
-# แปลว่า task ไม่ต้องประกอบ HTML เองอีกต่อไป ซึ่งเป็นจุดที่พังบ่อยที่สุด
+# Fallback path: a scheduled job on claude.ai writes only JSON into data/ (via a GitHub
+# connector), and this workflow fills the template, validates it, and commits
+# docs/index.html. That means the job never has to assemble HTML itself, which was the
+# part that broke most often.
 on:
   push:
     paths:
@@ -29,9 +30,9 @@ jobs:
         with:
           node-version: "20"
 
-      # payload ที่มี "log" = รอบสรุปเช้า -> เติมผลจริงย้อนหลัง + เพิ่มแถวใหม่ในสมุดบันทึกด้วย
-      # (รันซ้ำได้ ไม่เพิ่มแถวซ้ำ เพราะยึด date_iso เป็นตัวชี้)
-      - name: เติม template แล้ว validate placeholder
+      # A payload carrying "log" is a morning brief, so also fill due results and append
+      # today's row. Safe to re-run: rows are keyed by date_iso, so nothing duplicates.
+      - name: Fill template and validate placeholders
         run: |
           if node -e "process.exit(require('./data/payload-latest.json').log ? 0 : 1)"; then
             node gw.mjs morning --in data/payload-latest.json
@@ -39,14 +40,14 @@ jobs:
             node gw.mjs build --in data/payload-latest.json
           fi
 
-      - name: commit + push
+      - name: Commit and push
         run: |
           git add docs/ data/log.json
           if git diff --cached --quiet; then
-            echo "ไม่มีอะไรเปลี่ยน ไม่ต้อง push"
+            echo "Nothing changed, nothing to push"
             exit 0
           fi
           git config user.name "gold-watch bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "build: อัปเดต dashboard + สมุดบันทึกผลงาน"
+          git commit -m "build: update dashboard and track record"
           git push

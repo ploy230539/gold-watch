@@ -1,4 +1,4 @@
-﻿# หน้าต่างควบคุม Gold Watch — เปิดด้วยการดับเบิลคลิก "Gold Watch.cmd" ที่โฟลเดอร์หลัก
+# Gold Watch control panel -- launch by double-clicking "Gold Watch.cmd" in the project root
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
@@ -8,7 +8,7 @@ $Url  = "https://ploy230539.github.io/gold-watch/"
 
 $FontUI   = New-Object System.Drawing.Font("Segoe UI", 9.5)
 $FontHead = New-Object System.Drawing.Font("Segoe UI", 9.5, [System.Drawing.FontStyle]::Bold)
-$FontMono = New-Object System.Drawing.Font("Consolas", 9)
+$FontMono = New-Object System.Drawing.Font("Consolas", 9.5)
 
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Gold Watch"
@@ -17,14 +17,14 @@ $form.StartPosition = "CenterScreen"
 $form.Font = $FontUI
 $form.BackColor = [System.Drawing.Color]::FromArgb(241, 239, 231)
 
-# ── แถบสถานะบนสุด ─────────────────────────────────────────────────────────
+# -- status bar ------------------------------------------------------------
 $status = New-Object System.Windows.Forms.Label
 $status.Location = New-Object System.Drawing.Point(16, 12)
 $status.Size = New-Object System.Drawing.Size(710, 40)
-$status.Text = "กำลังตรวจสถานะ..."
+$status.Text = "Checking status..."
 $form.Controls.Add($status)
 
-# ── กล่องผลลัพธ์ ──────────────────────────────────────────────────────────
+# -- output box ------------------------------------------------------------
 $out = New-Object System.Windows.Forms.TextBox
 $out.Multiline = $true
 $out.ScrollBars = "Vertical"
@@ -38,43 +38,63 @@ $form.Controls.Add($out)
 
 function Log([string]$text) {
   $out.AppendText($text + "`r`n")
+  $out.SelectionStart = $out.TextLength
+  $out.ScrollToCaret()
 }
 
-# ── ตัวรันคำสั่งแบบไม่ค้างหน้าต่าง ────────────────────────────────────────
+function HasClaude { [bool](Get-Command claude -ErrorAction SilentlyContinue) }
+
+# -- command runner (keeps the window responsive) --------------------------
+# stdout and stderr are merged by cmd itself (> file 2>&1), then the file is
+# read with a shared handle so it can never fail while the child is writing.
 $script:proc = $null
-$script:oFile = $null
-$script:eFile = $null
-$script:oPos = 0
-$script:ePos = 0
+$script:logFile = $null
+$script:pos = 0
 $script:buttons = @()
 
 $timer = New-Object System.Windows.Forms.Timer
-$timer.Interval = 400
+$timer.Interval = 350
 
 function Drain {
-  foreach ($pair in @(@($script:oFile, "o"), @($script:eFile, "e"))) {
-    $f = $pair[0]; $which = $pair[1]
-    if (-not (Test-Path $f)) { continue }
+  if (-not $script:logFile -or -not (Test-Path $script:logFile)) { return }
+  try {
+    $fs = New-Object System.IO.FileStream($script:logFile, [System.IO.FileMode]::Open,
+      [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
     try {
-      $all = [System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)
-    } catch { continue }
-    $pos = if ($which -eq "o") { $script:oPos } else { $script:ePos }
-    if ($all.Length -gt $pos) {
-      $out.AppendText($all.Substring($pos).Replace("`n", "`r`n").Replace("`r`r`n", "`r`n"))
-      if ($which -eq "o") { $script:oPos = $all.Length } else { $script:ePos = $all.Length }
-    }
-  }
+      if ($fs.Length -le $script:pos) { return }
+      [void]$fs.Seek($script:pos, [System.IO.SeekOrigin]::Begin)
+      $buf = New-Object byte[] ($fs.Length - $script:pos)
+      $read = $fs.Read($buf, 0, $buf.Length)
+      $script:pos += $read
+      $text = [System.Text.Encoding]::UTF8.GetString($buf, 0, $read)
+      if ($text) {
+        $out.AppendText($text.Replace("`r`n", "`n").Replace("`n", "`r`n"))
+        $out.SelectionStart = $out.TextLength
+        $out.ScrollToCaret()
+      }
+    } finally { $fs.Close() }
+  } catch { }
 }
 
 $timer.Add_Tick({
   Drain
   if ($script:proc -and $script:proc.HasExited) {
     $timer.Stop()
-    Start-Sleep -Milliseconds 150
+    Start-Sleep -Milliseconds 200
     Drain
-    $code = $script:proc.ExitCode
-    if ($code -eq 0) { Log "`r`n--- เสร็จเรียบร้อย ---`r`n" }
-    else { Log "`r`n--- จบด้วย error (exit $code) ---`r`n" }
+    $code = -1
+    try { $script:proc.WaitForExit(); $code = $script:proc.ExitCode } catch { }
+    if ($code -eq $null) { $code = -1 }
+    if ($code -eq 0) {
+      Log "`r`n--- Done ---`r`n"
+    } else {
+      Log "`r`n--- Failed (exit $code) ---"
+      if (-not (HasClaude)) {
+        Log "Most likely cause: Claude Code CLI is not installed."
+        Log "Press '1. Install Claude Code CLI' in the setup group below, then retry."
+      }
+      Log ""
+    }
     $script:proc = $null
     foreach ($b in $script:buttons) { $b.Enabled = $true }
     RefreshStatus
@@ -82,28 +102,43 @@ $timer.Add_Tick({
 })
 
 function Run([string]$title, [string]$command) {
-  if ($script:proc) { Log "มีคำสั่งกำลังรันอยู่ รอให้เสร็จก่อน"; return }
+  if ($script:proc) { Log "A command is still running. Wait for it to finish."; return }
   $out.Clear()
   Log "> $title"
   Log ("-" * 60)
-  $script:oFile = [System.IO.Path]::GetTempFileName()
-  $script:eFile = [System.IO.Path]::GetTempFileName()
-  $script:oPos = 0; $script:ePos = 0
+  $script:logFile = [System.IO.Path]::GetTempFileName()
+  $script:pos = 0
   foreach ($b in $script:buttons) { $b.Enabled = $false }
   try {
-    $script:proc = Start-Process -FilePath "cmd.exe" `
-      -ArgumentList "/c", $command `
-      -WorkingDirectory $Root -NoNewWindow -PassThru `
-      -RedirectStandardOutput $script:oFile -RedirectStandardError $script:eFile
+    $full = "chcp 65001 >nul & ($command) > `"$($script:logFile)`" 2>&1"
+    $script:proc = Start-Process -FilePath "cmd.exe" -ArgumentList "/c", $full `
+      -WorkingDirectory $Root -NoNewWindow -PassThru
+    # PowerShell 5.1 quirk: ExitCode stays empty unless the handle is cached here
+    $null = $script:proc.Handle
     $timer.Start()
   } catch {
-    Log "รันไม่ได้: $_"
+    Log "Could not start: $_"
     foreach ($b in $script:buttons) { $b.Enabled = $true }
     $script:proc = $null
   }
 }
 
-# ── ตัวช่วยสร้างปุ่ม ──────────────────────────────────────────────────────
+# Commands that need the Claude CLI -- check first so the user gets a clear
+# message instead of a raw "'claude' is not recognized" error.
+function RunNeedsClaude([string]$title, [string]$command) {
+  if (-not (HasClaude)) {
+    [System.Windows.Forms.MessageBox]::Show(
+      "Claude Code CLI is not installed, so this job cannot run.`n`n" +
+      "Press '1. Install Claude Code CLI' in the setup group below,`n" +
+      "then '2. Log in + connect' to sign in and add connectors,`n" +
+      "then '3. Send test email' to confirm it actually works.",
+      "Setup incomplete", "OK", "Warning") | Out-Null
+    return
+  }
+  Run $title $command
+}
+
+# -- helpers ---------------------------------------------------------------
 function AddGroup([string]$text, [int]$x, [int]$y, [int]$w, [int]$h) {
   $g = New-Object System.Windows.Forms.GroupBox
   $g.Text = $text; $g.Font = $FontHead
@@ -126,117 +161,131 @@ function AddButton($parent, [string]$text, [int]$x, [int]$y, [int]$w, [scriptblo
   return $b
 }
 
-# ── กลุ่ม 1: ใช้งานประจำ ──────────────────────────────────────────────────
-$g1 = AddGroup "ใช้งานประจำ" 16 60 710 130
+# -- group 1: everyday -----------------------------------------------------
+$g1 = AddGroup "Everyday" 16 60 710 130
 
-AddButton $g1 "สร้างหน้าเว็บใหม่" 16 28 165 {
-  Run "สร้างหน้าเว็บจาก data\payload-latest.json" "node gw.mjs build --in data/payload-latest.json"
+AddButton $g1 "Rebuild page" 16 28 165 {
+  Run "Build page from data\payload-latest.json" "node gw.mjs build --in data/payload-latest.json"
 } | Out-Null
 
-AddButton $g1 "publish ขึ้นเว็บ" 190 28 165 {
-  Run "publish ขึ้น GitHub Pages" "node gw.mjs publish"
+AddButton $g1 "Publish to web" 190 28 165 {
+  Run "Publish to GitHub Pages" "node gw.mjs publish"
 } | Out-Null
 
-AddButton $g1 "ดูสมุดบันทึกผลงาน" 364 28 165 {
-  Run "สมุดบันทึกผลงาน" "node gw.mjs log"
+AddButton $g1 "View track record" 364 28 165 {
+  Run "Track record log" "node gw.mjs log"
 } | Out-Null
 
-AddButton $g1 "เปิดหน้า dashboard" 538 28 155 {
+AddButton $g1 "Open dashboard" 538 28 155 {
   Start-Process $Url
 } | Out-Null
 
-# เช็คเกณฑ์แจ้งเตือน
 $lblThb = New-Object System.Windows.Forms.Label
-$lblThb.Text = "ทองแท่งขายออก"; $lblThb.Font = $FontUI
+$lblThb.Text = "THB bar sell"; $lblThb.Font = $FontUI
 $lblThb.Location = New-Object System.Drawing.Point(18, 78)
-$lblThb.Size = New-Object System.Drawing.Size(105, 22)
+$lblThb.Size = New-Object System.Drawing.Size(88, 22)
 $g1.Controls.Add($lblThb)
 
 $txtThb = New-Object System.Windows.Forms.TextBox
-$txtThb.Location = New-Object System.Drawing.Point(124, 75); $txtThb.Size = New-Object System.Drawing.Size(80, 24)
+$txtThb.Font = $FontUI
+$txtThb.Location = New-Object System.Drawing.Point(108, 75); $txtThb.Size = New-Object System.Drawing.Size(80, 24)
 $g1.Controls.Add($txtThb)
 
 $lblXau = New-Object System.Windows.Forms.Label
-$lblXau.Text = "Spot"; $lblXau.Font = $FontUI
-$lblXau.Location = New-Object System.Drawing.Point(216, 78)
-$lblXau.Size = New-Object System.Drawing.Size(38, 22)
+$lblXau.Text = "XAU spot"; $lblXau.Font = $FontUI
+$lblXau.Location = New-Object System.Drawing.Point(200, 78)
+$lblXau.Size = New-Object System.Drawing.Size(64, 22)
 $g1.Controls.Add($lblXau)
 
 $txtXau = New-Object System.Windows.Forms.TextBox
-$txtXau.Location = New-Object System.Drawing.Point(254, 75); $txtXau.Size = New-Object System.Drawing.Size(80, 24)
+$txtXau.Font = $FontUI
+$txtXau.Location = New-Object System.Drawing.Point(266, 75); $txtXau.Size = New-Object System.Drawing.Size(80, 24)
 $g1.Controls.Add($txtXau)
 
 $chkNews = New-Object System.Windows.Forms.CheckBox
-$chkNews.Text = "มีข่าวใหญ่"; $chkNews.Font = $FontUI
-$chkNews.Location = New-Object System.Drawing.Point(344, 76); $chkNews.Size = New-Object System.Drawing.Size(95, 24)
+$chkNews.Text = "Big news"; $chkNews.Font = $FontUI
+$chkNews.Location = New-Object System.Drawing.Point(356, 76); $chkNews.Size = New-Object System.Drawing.Size(84, 24)
 $g1.Controls.Add($chkNews)
 
-AddButton $g1 "เช็คว่าถึงเกณฑ์แจ้งไหม" 444 72 175 {
+AddButton $g1 "Check alert thresholds" 444 72 175 {
   $t = $txtThb.Text.Trim(); $x = $txtXau.Text.Trim()
   if (-not $t -or -not $x) {
-    [System.Windows.Forms.MessageBox]::Show("กรอกราคาทองแท่งขายออกกับ Spot ก่อน", "Gold Watch") | Out-Null
+    [System.Windows.Forms.MessageBox]::Show("Enter both the THB bar sell price and the XAU spot price first.", "Gold Watch") | Out-Null
     return
   }
   $news = if ($chkNews.Checked) { " --news" } else { "" }
-  Run "เช็คเกณฑ์แจ้งเตือน" "node gw.mjs check --thb $t --xau $x$news"
+  Run "Check alert thresholds" "node gw.mjs check --thb $t --xau $x$news"
 } | Out-Null
 
-# ── กลุ่ม 2: งานอัตโนมัติ ─────────────────────────────────────────────────
-$g2 = AddGroup "งานอัตโนมัติ" 16 200 710 95
+# -- group 2: scheduled jobs -----------------------------------------------
+$g2 = AddGroup "Scheduled jobs" 16 200 710 95
 
-AddButton $g2 "รันสรุปเช้าเดี๋ยวนี้" 16 28 165 {
-  Run "สรุปทองเช้า" "tasks\run.cmd morning.md & type logs\morning.log"
+AddButton $g2 "Run morning brief now" 16 28 165 {
+  RunNeedsClaude "Morning brief (takes several minutes)" "tasks\run.cmd morning.md & type logs\morning.log"
 } | Out-Null
 
-AddButton $g2 "รันสแกนราคาเดี๋ยวนี้" 190 28 165 {
-  Run "สแกนเตือนราคา" "tasks\run.cmd watch.md & type logs\watch.log"
+AddButton $g2 "Run price scan now" 190 28 165 {
+  RunNeedsClaude "Price scan" "tasks\run.cmd watch.md & type logs\watch.log"
 } | Out-Null
 
-AddButton $g2 "ตั้งงานอัตโนมัติ" 364 28 165 {
+AddButton $g2 "Install schedule" 364 28 165 {
+  if (-not (HasClaude)) {
+    [System.Windows.Forms.MessageBox]::Show(
+      "Claude Code CLI is not installed -- the scheduled jobs would fail.`n`n" +
+      "Complete steps 1 -> 2 -> 3 in the setup group below first.",
+      "Setup incomplete", "OK", "Warning") | Out-Null
+    return
+  }
   $r = [System.Windows.Forms.MessageBox]::Show(
-    "จะตั้งงานอัตโนมัติ 5 ตัวเข้า Windows Task Scheduler`n`n" +
-    "สรุปเช้า 08:00 (จ.-ส.)`nสแกนราคา 10:00 / 15:00 / 20:00 (จ.-ศ.)`nทบทวนตัวเอง วันที่ 1 เวลา 09:00`n`n" +
-    "ต้องลง Claude Code CLI และ login ให้เรียบร้อยก่อน (ดูกลุ่มล่างสุด)",
-    "ยืนยัน", "OKCancel", "Question")
+    "Register 5 scheduled jobs in Windows Task Scheduler?`n`n" +
+    "Morning brief  08:00  Mon-Sat`n" +
+    "Price scan     10:00 / 15:00 / 20:00  Mon-Fri`n" +
+    "Self review    09:00  1st of each month",
+    "Confirm", "OKCancel", "Question")
   if ($r -eq "OK") {
-    Run "ตั้งงานอัตโนมัติ" "powershell -NoProfile -ExecutionPolicy Bypass -File tasks\setup-windows-tasks.ps1"
+    Run "Install schedule" "powershell -NoProfile -ExecutionPolicy Bypass -File tasks\setup-windows-tasks.ps1"
   }
 } | Out-Null
 
-AddButton $g2 "ลบงานอัตโนมัติ" 538 28 155 {
-  $r = [System.Windows.Forms.MessageBox]::Show("ลบงานอัตโนมัติทั้ง 5 ตัวออกจาก Task Scheduler?", "ยืนยัน", "OKCancel", "Warning")
+AddButton $g2 "Remove schedule" 538 28 155 {
+  $r = [System.Windows.Forms.MessageBox]::Show("Remove all 5 Gold Watch jobs from Task Scheduler?", "Confirm", "OKCancel", "Warning")
   if ($r -eq "OK") {
-    $names = "GoldWatch-Morning GoldWatch-Scan-1000 GoldWatch-Scan-1500 GoldWatch-Scan-2000 GoldWatch-Review"
-    $cmd = ($names.Split(" ") | ForEach-Object { "schtasks /Delete /TN $_ /F" }) -join " & "
-    Run "ลบงานอัตโนมัติ" $cmd
+    $names = @("GoldWatch-Morning","GoldWatch-Scan-1000","GoldWatch-Scan-1500","GoldWatch-Scan-2000","GoldWatch-Review")
+    $cmd = ($names | ForEach-Object { "schtasks /Delete /TN $_ /F" }) -join " & "
+    Run "Remove schedule" $cmd
   }
 } | Out-Null
 
-# ── กลุ่ม 3: ตั้งค่าครั้งแรก ──────────────────────────────────────────────
-$g3 = AddGroup "ตั้งค่าครั้งแรก — ทำครั้งเดียว เรียงตามลำดับ" 16 305 710 85
+# -- group 3: one-time setup -----------------------------------------------
+$g3 = AddGroup "First-time setup -- run once, in order" 16 305 710 85
 
-AddButton $g3 "1. ลง Claude Code CLI" 16 28 200 {
-  Run "ติดตั้ง Claude Code CLI" "npm install -g @anthropic-ai/claude-code"
+AddButton $g3 "1. Install Claude Code CLI" 16 28 200 {
+  Log "Installing. This can take 1-3 minutes -- wait for 'Done'."
+  Run "Install Claude Code CLI" "npm install -g @anthropic-ai/claude-code"
 } | Out-Null
 
-AddButton $g3 "2. login + ต่อ connector" 225 28 200 {
+AddButton $g3 "2. Log in + connect" 225 28 200 {
+  if (-not (HasClaude)) {
+    [System.Windows.Forms.MessageBox]::Show("Press button 1 and let the install finish first.", "Not ready", "OK", "Warning") | Out-Null
+    return
+  }
   [System.Windows.Forms.MessageBox]::Show(
-    "จะเปิดหน้าต่าง claude ขึ้นมา`n`n" +
-    "ในหน้าต่างนั้นให้ login ให้เรียบร้อย แล้วพิมพ์ /mcp เพื่อต่อ connector`n" +
-    "Gmail (ส่งอีเมล) และ push notification`n`n" +
-    "เสร็จแล้วปิดหน้าต่างนั้น แล้วกดปุ่มที่ 3 เพื่อทดสอบ",
-    "ขั้นตอนที่ 2", "OK", "Information") | Out-Null
+    "A claude window will open.`n`n" +
+    "Log in there, then type /mcp to connect the connectors the jobs need:`n" +
+    "Gmail (sending email) and push notifications.`n`n" +
+    "Close that window when done, then press button 3 to test.",
+    "Step 2", "OK", "Information") | Out-Null
   Start-Process "cmd.exe" -ArgumentList "/k", "cd /d `"$Root`" && claude"
 } | Out-Null
 
-AddButton $g3 "3. ทดสอบส่งอีเมล" 434 28 200 {
-  Run "ทดสอบส่งอีเมล" "claude -p `"ส่งอีเมลทดสอบหัวข้อ 'Gold Watch ทดสอบระบบ' ถึง iminiwindy@gmail.com`""
+AddButton $g3 "3. Send test email" 434 28 200 {
+  RunNeedsClaude "Send test email" "claude -p `"Send a test email with subject 'Gold Watch system test' to iminiwindy@gmail.com`""
 } | Out-Null
 
-# ── สถานะ ─────────────────────────────────────────────────────────────────
+# -- status ----------------------------------------------------------------
 function RefreshStatus {
   $hasNode = [bool](Get-Command node -ErrorAction SilentlyContinue)
-  $hasCli  = [bool](Get-Command claude -ErrorAction SilentlyContinue)
+  $hasCli  = HasClaude
   $names = @("GoldWatch-Morning","GoldWatch-Scan-1000","GoldWatch-Scan-1500","GoldWatch-Scan-2000","GoldWatch-Review")
   $n = 0
   foreach ($t in $names) {
@@ -244,10 +293,10 @@ function RefreshStatus {
     if ($LASTEXITCODE -eq 0) { $n++ }
   }
   $parts = @()
-  $parts += if ($hasNode) { "Node OK" } else { "ไม่พบ Node" }
-  $parts += if ($hasCli)  { "Claude CLI OK" } else { "ยังไม่ได้ลง Claude CLI (กดปุ่ม 1)" }
-  $parts += "งานอัตโนมัติที่ตั้งไว้ $n / 5"
-  $status.Text = "โฟลเดอร์: $Root`r`n" + ($parts -join "   ·   ")
+  $parts += if ($hasNode) { "Node OK" } else { "Node not found" }
+  $parts += if ($hasCli)  { "Claude CLI OK" } else { "Claude CLI missing (press button 1)" }
+  $parts += "Scheduled jobs installed: $n / 5"
+  $status.Text = "Folder: $Root`r`n" + ($parts -join "   -   ")
   $status.ForeColor = if ($hasNode -and $hasCli -and $n -eq 5) {
     [System.Drawing.Color]::FromArgb(26, 112, 72)
   } else {
@@ -256,9 +305,14 @@ function RefreshStatus {
 }
 
 RefreshStatus
-Log "พร้อมใช้งาน — กดปุ่มด้านบนได้เลย"
+Log "Ready."
 Log ""
-Log "ถ้ายังไม่เคยตั้งงานอัตโนมัติ ให้ทำกลุ่มล่างสุดตามลำดับ 1 -> 2 -> 3 ก่อน"
-Log "แล้วค่อยกด `"ตั้งงานอัตโนมัติ`""
+if (-not (HasClaude)) {
+  Log "Claude Code CLI is not installed yet."
+  Log "The 'Scheduled jobs' buttons stay unavailable until setup steps 1 -> 2 -> 3 are done."
+  Log "The 'Everyday' buttons work right now -- no setup needed."
+} else {
+  Log "Claude Code CLI detected. If the schedule is not installed yet, press 'Install schedule'."
+}
 
 [void]$form.ShowDialog()

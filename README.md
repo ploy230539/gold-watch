@@ -1,96 +1,103 @@
 # Gold Watch
 
-หน้า dashboard ราคาทองของพลอย + script ที่ scheduled task ทั้ง 3 ตัวเรียกใช้
+Ploy's gold-price dashboard, plus the script the three scheduled jobs call.
 
-**หน้าเว็บ (public เปิดได้โดยไม่ต้องล็อกอิน):** https://ploy230539.github.io/gold-watch/
-
----
-
-## ทำไมถึงย้ายมาที่นี่
-
-เดิม dashboard publish เป็น Claude Artifact ซึ่งเป็น private — คนที่ไม่มีบัญชี Claude เปิดไม่ได้
-ตอนนี้ย้ายมาเป็น GitHub Pages: URL นิ่งถาวร ใครก็เปิดได้ และมี git history ให้ย้อนดูได้ว่า
-วันไหนหน้าเว็บเขียนว่าอะไร (เดิมของเก่าถูกเขียนทับหายไปเลย)
+**Public page (no login required):** https://ploy230539.github.io/gold-watch/
 
 ---
 
-## โครงไฟล์
+## Why it moved here
 
-| ไฟล์ | คืออะไร |
+The dashboard used to be published as a Claude Artifact, which is private — anyone
+without a Claude account could not open it. It now lives on GitHub Pages: a stable
+permanent URL, open to everyone, with git history so you can look back at what the
+page said on any given day. The old setup simply overwrote itself each run.
+
+---
+
+## Layout
+
+| Path | What it is |
 |---|---|
-| `template.html` | เทมเพลตหน้า dashboard มี placeholder `{{...}}` 44 ตัว (ก็อปมาจาก Drive ไม่แก้โครง) |
-| `gw.mjs` | script เดียวจบ ไม่มี dependency |
-| `data/log.json` | สมุดบันทึกผลงาน — มุมมองที่ให้ไว้ + ผลจริง |
-| `data/state.json` | ความจำของระบบเฝ้าราคา — ราคาที่แจ้งไปครั้งล่าสุด |
-| `payload.example.json` | ตัวอย่าง payload พร้อมคำอธิบายทุกฟิลด์ |
-| `tasks/` | prompt ของงานอัตโนมัติ 3 ตัว + ตัวรัน + script ลงทะเบียน Task Scheduler |
-| `Gold Watch.cmd` | หน้าต่างโปรแกรมสำหรับกดใช้งาน (ดับเบิลคลิกได้เลย) |
-| `docs/index.html` | ผลลัพธ์ที่ GitHub Pages เสิร์ฟ (generate เท่านั้น ห้ามแก้มือ) |
+| `template.html` | Dashboard template with 44 `{{...}}` placeholders (copied from Drive, structure untouched) |
+| `gw.mjs` | The whole tool, one file, no dependencies |
+| `data/log.json` | Track record — the call given each day, plus the actual outcome |
+| `data/state.json` | Price-watch memory — the last price an alert was sent for |
+| `payload.example.json` | Fully commented example payload |
+| `tasks/` | The three job prompts, the runner, and the Task Scheduler installer |
+| `Gold Watch.cmd` | Control panel window (double-click to open) |
+| `docs/index.html` | What GitHub Pages serves — generated only, never edit by hand |
 
 ---
 
-## หน้าต่างโปรแกรม
+## Control panel
 
-ดับเบิลคลิก `Gold Watch.cmd` — มีปุ่มให้กดครบทุกอย่าง ไม่ต้องพิมพ์คำสั่ง
+Double-click `Gold Watch.cmd`. Every action has a button — no typing required.
 
 ---
 
-## คำสั่ง
+## Commands
 
 ```bash
-node gw.mjs morning --in payload.json    # เติมผลจริงที่ถึงกำหนด + เพิ่มแถวใหม่ + สร้างหน้า
-node gw.mjs build   --in payload.json    # สร้างหน้าอย่างเดียว ไม่แตะสมุดบันทึก
-node gw.mjs publish -m "ข้อความ commit"  # push ขึ้น Pages
-node gw.mjs check --thb 71500 --xau 4620 # ถึงเกณฑ์แจ้งหรือยัง
-node gw.mjs state set --thb 71500 --xau 4620   # บันทึกราคาที่เพิ่งแจ้งไป
-node gw.mjs state get                    # ดูราคาอ้างอิงล่าสุด
-node gw.mjs log                          # สมุดบันทึกผลงานเป็น JSON
+node gw.mjs morning --in payload.json    # fill due results + append today's row + build page
+node gw.mjs build   --in payload.json    # build the page only, leave the log alone
+node gw.mjs publish -m "commit message"  # push to GitHub Pages
+node gw.mjs check --thb 71500 --xau 4620 # has it moved enough to alert?
+node gw.mjs state set --thb 71500 --xau 4620   # record the price just alerted on
+node gw.mjs state get                    # show the current reference price
+node gw.mjs log                          # print the track record as JSON
 ```
 
 ### `morning` / `build`
 
-รับ payload JSON ที่มีแต่ **ข้อเท็จจริง** (ราคา ข่าว แนวรับแนวต้าน) แล้ว script จัดการที่เหลือให้เอง:
+Takes a payload of **facts only** (prices, news, support/resistance). The script does
+the rest:
 
-- คำนวณตำแหน่ง % ของ ladder — `bottom% = (ราคา − ขอบล่างช่วง) ÷ (ขอบบน − ขอบล่าง) × 100`
-  โดยเผื่อขอบบน-ล่างอีก 8% ของช่วง เพื่อไม่ให้จุดไปติดขอบราง
-- เลือกสี/คลาสของ tile และลูกศรขึ้นลงจากเครื่องหมายของตัวเลข
-- ประกอบ HTML ของตัวขับเคลื่อนราคา ปฏิทิน แหล่งข้อมูล และตารางสมุดบันทึก
-- เขียนหมายเหตุใต้ตารางตาม **กฎ 30 แถว** ให้อัตโนมัติ
-- **validate ว่า placeholder ครบทุกตัวก่อนเขียนไฟล์** — ถ้าเหลือแม้ตัวเดียว จะ error และไม่เขียนอะไรทั้งสิ้น
+- Computes ladder positions — `bottom% = (price − range low) ÷ (range high − range low) × 100`,
+  padding both ends by 8% of the span so markers never sit flush against the rail
+- Picks tile colours and up/down arrows from the sign of each number
+- Assembles the HTML for drivers, calendar, sources, and the track-record table
+- Writes the note under the table according to the **30-row rule**
+- **Validates that every placeholder is filled before writing anything.** If even one
+  is left, it errors out and writes nothing at all.
 
-ฟิลด์ที่ดึงข้อมูลจริงไม่ได้ ให้ใส่ `null` (`rsi`, `thb_orn.sell/delta`) หน้าเว็บจะขึ้น `—`
-**ห้ามเดาตัวเลขมาใส่แทน**
+Fields that genuinely could not be fetched go in as `null` (`rsi`, `thb_orn.sell/delta`)
+and the page renders `—`. **Never substitute a guess.**
 
-`morning` ทำเพิ่มอีก 2 อย่าง: เติม `actual_result` ให้ทุกแถวที่ถึง `actual_due_iso` แล้ว
-(วัดแบบ close-to-close เทียบกับราคาวันนี้ ขยับไม่ถึง ±0.5% นับเป็นเสมอ เพราะไม่คุ้มส่วนต่างซื้อ-ขายของร้าน)
-แล้วเพิ่มแถวของวันนี้ — ไม่ต้องไปค้นราคาย้อนหลังเองอีก
+`morning` does two more things: it fills `actual_result` for every row that has reached
+its `actual_due_iso` (close-to-close against today's price; a move under ±0.5% counts as
+a draw, since it does not clear the shop's bid/ask spread), then appends today's row. No
+more looking up historical prices by hand.
 
 ### `check` / `state`
 
-แทนที่การอ่านรหัส `[TH ... | XAU ...]` ท้าย subject อีเมล — ตอนนี้เก็บใน `data/state.json` แทน
-เชื่อถือได้กว่าเพราะไม่ต้องพึ่ง Gmail search และไม่พังถ้าอีเมลถูกลบหรือ search พลาด
-(รหัสท้าย subject ยังใส่ต่อไปเหมือนเดิม — `check` คืน `subject_code` มาให้พร้อมใช้
-ให้คนอ่านอีเมลเห็นได้ว่าเทียบกับราคาไหน และใช้กู้ state ได้ถ้าไฟล์หาย)
+Replaces reading the `[TH ... | XAU ...]` code off the email subject line — that state now
+lives in `data/state.json`. It is more reliable because it does not depend on a Gmail
+search and does not break if an email is deleted or missed. The subject-line code is still
+appended to every alert: `check` returns it as `subject_code`, so readers can see which
+price the comparison was against, and it can be used to rebuild the state file if lost.
 
-`check` คืน JSON: `alert`, `push`, `channels`, `reason`, `thb_move`, `xau_pct`, `subject_code`
-เรียก `state set` **เฉพาะตอนที่ส่งจริงเท่านั้น** ไม่งั้นการนับแบบสะสมจะเพี้ยน
+`check` returns JSON: `alert`, `push`, `channels`, `reason`, `thb_move`, `xau_pct`, `subject_code`.
+
+Call `state set` **only when an alert was actually sent**, otherwise the cumulative
+threshold drifts.
 
 ---
 
-## เกณฑ์ที่ hard-code ไว้ใน `gw.mjs` (แก้ได้ที่เดียว)
+## Thresholds, hard-coded in `gw.mjs` (one place to change them)
 
-| ค่า | เกณฑ์ |
+| Constant | Rule |
 |---|---|
-| `ALERT_THB = 150` | ทองไทยขยับ ≥ 150 บาท จากราคาที่แจ้งครั้งล่าสุด (สะสมได้) → แจ้ง |
-| `ALERT_XAU_PCT = 1.5` | Spot ขยับ ≥ 1.5% → แจ้ง |
-| `--news` | ข่าวใหญ่ระดับเขย่าตลาด → แจ้ง (คนตัดสิน ไม่ใช่ script) |
-| `PUSH_THB = 300` | ทองไทย ≥ 300 บาท → เด้ง push ด้วย (150–300 ส่งแค่อีเมล) |
-| `PUSH_XAU_PCT = 1.5` | Spot ≥ 1.5% → เด้ง push |
-| `MIN_ROWS_FOR_STATS = 30` | ต่ำกว่านี้ห้ามอ้าง % ความแม่น |
+| `ALERT_THB = 150` | Thai gold moved ≥ 150 THB from the last alerted price (cumulative) → alert |
+| `ALERT_XAU_PCT = 1.5` | Spot moved ≥ 1.5% → alert |
+| `--news` | Market-moving news → alert (a human decides this, not the script) |
+| `PUSH_THB = 300` | Thai gold ≥ 300 THB → also send a phone push (150–300 is email only) |
+| `PUSH_XAU_PCT = 1.5` | Spot ≥ 1.5% → also send a phone push |
+| `MIN_ROWS_FOR_STATS = 30` | Below this, never quote an accuracy percentage |
 
-ไม่เข้าเกณฑ์ = เงียบสนิท ไม่ส่งอะไรเลย
+Below threshold means total silence — nothing is sent at all.
 
-สูตรราคาทองไทยที่ควรเป็น อยู่ที่ `fairThb()` และในตัวคำนวณบนหน้าเว็บ:
+The fair Thai gold price lives in `fairThb()` and in the calculator on the page:
 
 ```
 (Spot ÷ 31.1035) × 15.244 × 0.965 × USDTHB
@@ -98,16 +105,22 @@ node gw.mjs log                          # สมุดบันทึกผล�
 
 ---
 
-## โทนเสียง
+## Language
 
-- **อีเมล / หน้า dashboard** — ไทยสุภาพเป็นกลางแบบนักวิเคราะห์ที่เป็นกันเอง มีคนอื่นอ่านด้วย **ห้าม มึง/กู**
-- **แชท / push** — มึง/กู ได้ตามปกติ
+Tooling, code, and docs are in English. The **dashboard page and the emails stay in Thai**,
+because that is what their readers read.
 
-ผู้รับอีเมลทุกฉบับ: `iminiwindy@gmail.com`, `pongkasame.oil@gmail.com`
+- **Email / dashboard** — polite, neutral Thai, the voice of a friendly analyst. Other
+  people read these, so never use มึง/กู.
+- **Chat / push** — casual Thai, มึง/กู is fine.
+
+Every email goes to: `iminiwindy@gmail.com`, `pongkasame.oil@gmail.com`
 
 ---
 
-## งานอัตโนมัติ
+## Scheduled jobs
 
-สรุปเช้า 08:00 น. (จ.–ส.) · สแกนเตือน 10:00 / 15:00 / 20:00 น. (จ.–ศ.) · ทบทวนตัวเองวันที่ 1 เวลา 09:00 น.
-รันบนเครื่องพลอยผ่าน Windows Task Scheduler — วิธีติดตั้งดู [PROMPTS.md](PROMPTS.md)
+Morning brief 08:00 (Mon–Sat) · Price scan 10:00 / 15:00 / 20:00 (Mon–Fri) ·
+Self review 09:00 on the 1st of each month.
+
+They run on Ploy's machine via Windows Task Scheduler — see [PROMPTS.md](PROMPTS.md) to install.

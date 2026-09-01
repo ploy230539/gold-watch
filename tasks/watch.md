@@ -1,34 +1,41 @@
-เฝ้าราคาทองให้พลอย ตามสกิล gold-watch
+Run a gold price scan for Ploy, following the gold-watch skill.
 
-โฟลเดอร์งาน: D:\Claude_AI\Ploy\Gold
+Working folder: D:\Claude_AI\Ploy\Gold
 
-**1. อ่านราคาที่แจ้งไปครั้งล่าสุด**
+**1. Read the last price an alert was sent for**
+
     node gw.mjs state get
-ได้ thb_sell (ทองแท่งขายออก) กับ xau (Spot ปัดเต็ม) — นี่คือค่าอ้างอิง
-ถ้าไฟล์ state มีปัญหา ให้ fallback ไปอ่านรหัสท้าย subject อีเมลแบบเดิม
-(Gmail search: in:sent subject:"ทองขยับ" newer_than:2d รูปแบบ [TH <ขายออก> | XAU <spot>])
-แล้วบอกในแชทว่า state file มีปัญหา
 
-**2. เช็คราคาปัจจุบันจริง** จากเว็บ ห้ามเดา
+It returns `thb_sell` (Thai bar gold, sell) and `xau` (Spot, rounded) — that is the
+reference point.
+If the state file is broken, fall back to reading the code off the email subject line as
+before (Gmail search: `in:sent subject:"ทองขยับ" newer_than:2d`, format
+`[TH <bar sell> | XAU <spot>]`) and say in chat that the state file has a problem.
 
-**3. ให้ script ตัดสินเกณฑ์**
-    node gw.mjs check --thb <ทองแท่งขายออกตอนนี้> --xau <spot ตอนนี้>
-ถ้ามีข่าวใหญ่ระดับเขย่าตลาด ให้เติม --news ต่อท้าย (ข่าวใหญ่คนตัดสิน ไม่ใช่ script)
+**2. Fetch the current prices** from the web. Never guess.
 
-script คืน alert / push / channels มาให้ ทำตามนั้น:
-- alert = false → **เงียบสนิท ไม่ส่งอะไรเลย ไม่ต้องเขียนอะไรในแชทด้วย**
-  การเตือนที่ไม่จำเป็นทำให้พลอยเลิกอ่านการเตือนที่จำเป็น
-- alert = true, push = false (ขยับ 150–300 บาท) → อีเมล + แชท **ไม่ต้องเด้ง push**
-- alert = true, push = true (≥300 บาท / Spot ≥1.5% / ข่าวใหญ่) → อีเมล + push + แชท
+**3. Let the script apply the thresholds**
 
-**4. ถ้าส่ง** — อีเมลถึง iminiwindy@gmail.com และ pongkasame.oil@gmail.com
-โทนไทยสุภาพเป็นกลาง **ห้าม มึง/กู** (แชทกับ push ใช้ได้ตามปกติ)
-subject ลงท้ายด้วย subject_code ที่ script คืนมา เช่น [TH 71500 | XAU 4620]
-ลิงก์ dashboard ในอีเมล/แชท/push ใช้ https://ploy230539.github.io/gold-watch/
+    node gw.mjs check --thb <current bar sell> --xau <current spot>
 
-**5. หลังส่งเสร็จเท่านั้น** บันทึกราคาที่เพิ่งแจ้ง แล้ว push ขึ้น repo:
-    node gw.mjs state set --thb <ที่แจ้ง> --xau <ที่แจ้ง> --note "<ทำไมถึงแจ้ง>"
-    node gw.mjs publish -m "state: แจ้งราคา <เวลา>"
-**ถ้าไม่ได้ส่ง ห้ามแตะ state** ไม่งั้นการนับแบบสะสมจะเพี้ยน
+Add `--news` if there is genuinely market-moving news — a human judges that, not the script.
 
-รอบนี้ห้ามแตะ payload-latest.json, log.json, docs/index.html
+The script returns `alert`, `push`, and `channels`. Follow them:
+- `alert = false` → **total silence. Send nothing, and write nothing in chat either.**
+  Unnecessary alerts are what make Ploy stop reading the necessary ones.
+- `alert = true`, `push = false` (moved 150–300 THB) → email + chat, **no phone push**
+- `alert = true`, `push = true` (≥300 THB, Spot ≥1.5%, or big news) → email + push + chat
+
+**4. If sending** — email iminiwindy@gmail.com and pongkasame.oil@gmail.com.
+Polite, neutral Thai. **No มึง/กู** in email (chat and push are fine).
+End the subject line with the `subject_code` the script returned, e.g. `[TH 71500 | XAU 4620]`.
+Any dashboard link in email, chat, or push uses https://ploy230539.github.io/gold-watch/
+
+**5. Only after sending**, record the price just alerted on and push it:
+
+    node gw.mjs state set --thb <alerted> --xau <alerted> --note "<why it was sent>"
+    node gw.mjs publish -m "state: alert sent <time>"
+
+**If nothing was sent, do not touch the state** — the cumulative threshold would drift.
+
+This job must not touch `payload-latest.json`, `log.json`, or `docs/index.html`.
