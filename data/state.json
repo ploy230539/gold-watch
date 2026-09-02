@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-02T10:31:40.573Z",
-    "thb_sell": 68000,
-    "xau": 4312,
-    "note": "Fed hawkish (Warsh) hike odds ~70%, higher yields/USD, Mideast tension"
+    "ts_iso": "2026-09-02T14:02:51.680Z",
+    "thb_sell": 68050,
+    "xau": 4382.1,
+    "note": "Spot +1.63% vs last alert (4312->4382); Fed hawkish repricing vs ME geopolitical/safe-haven tug-of-war, no single fresh headline"
   },
   "history": [
     {
@@ -23,6 +23,12 @@
       "thb_sell": 68000,
       "xau": 4312,
       "note": "Fed hawkish (Warsh) hike odds ~70%, higher yields/USD, Mideast tension"
+    },
+    {
+      "ts_iso": "2026-09-02T14:02:51.680Z",
+      "thb_sell": 68050,
+      "xau": 4382.1,
+      "note": "Spot +1.63% vs last alert (4312->4382); Fed hawkish repricing vs ME geopolitical/safe-haven tug-of-war, no single fresh headline"
     }
   ]
 }
