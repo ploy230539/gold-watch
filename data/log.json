@@ -13,7 +13,7 @@
       "support_usd_high": 4380,
       "support_thb": 67800,
       "invalid_note": "ทะลุ $4,725 แรงๆ = ขึ้นต่อ / หลุด $4,600 แรงๆ = รอแนวรับใหญ่ $4,380",
-      "actual_result": null,
+      "actual_result": "✓ ถูก — ฿71,850 → ฿67,750 (-4,100, -5.71%) · Spot -8.03% — รอแล้วราคาลงจริง ได้ของถูกลง [วัดวันที่ 2 ก.ย. 69]",
       "actual_due_iso": "2026-08-31",
       "actual_due_display": "31 ส.ค. 69"
     },
@@ -29,9 +29,25 @@
       "support_usd_high": 4600,
       "support_thb": 71150,
       "invalid_note": "ทะลุ $4,650 แรงๆ หลัง Warsh พูด = ขึ้นต่อ / หลุด $4,576 ต่อเนื่อง = อ่อนแรงจริง",
-      "actual_result": null,
+      "actual_result": "✓ ถูก — ฿71,350 → ฿67,750 (-3,600, -5.05%) · Spot -6.72% — รอแล้วราคาลงจริง ได้ของถูกลง [วัดวันที่ 2 ก.ย. 69]",
       "actual_due_iso": "2026-09-02",
       "actual_due_display": "2 ก.ย. 69"
+    },
+    {
+      "date_display": "2 ก.ย. 69",
+      "date_iso": "2026-09-02",
+      "spot": 4291.11,
+      "thb_sell": 67750,
+      "call": "wait",
+      "resistance_usd": 4365,
+      "resistance_thb": 68850,
+      "support_usd_low": 4192,
+      "support_usd_high": 4250,
+      "support_thb": 67000,
+      "invalid_note": "ถ้า Spot หลุดแนวรับ $4,192 ลงไปแรงๆ แปลว่าขาลงยังไม่จบ ควรรอต่อ / แต่ถ้าเด้งกลับทะลุ $4,365 ได้แรงๆ แปลว่ามุมมองนี้ผิด ตลาดกลับเป็นขาขึ้นแล้ว",
+      "actual_result": null,
+      "actual_due_iso": "2026-09-07",
+      "actual_due_display": "7 ก.ย. 69"
     }
   ]
 }
