@@ -279,7 +279,9 @@ AddButton $g3 "2. Log in + connect" 225 28 200 {
 } | Out-Null
 
 AddButton $g3 "3. Send test email" 434 28 200 {
-  RunNeedsClaude "Send test email" "claude -p `"Send a test email with subject 'Gold Watch system test' to iminiwindy@gmail.com`""
+  # Same flags the real jobs use (see tasks/run.cmd), otherwise the test hits a
+  # permission prompt nobody is there to approve and silently does nothing.
+  RunNeedsClaude "Send test email" "claude -p --dangerously-skip-permissions `"Send a test email with subject 'Gold Watch system test' to iminiwindy@gmail.com and pongkasame.oil@gmail.com. Body: one short line confirming the Gold Watch automation can send mail from this machine.`""
 } | Out-Null
 
 # -- status ----------------------------------------------------------------
