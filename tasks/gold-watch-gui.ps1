@@ -289,10 +289,10 @@ function RefreshStatus {
   $hasNode = [bool](Get-Command node -ErrorAction SilentlyContinue)
   $hasCli  = HasClaude
   $names = @("GoldWatch-Morning","GoldWatch-Scan-1000","GoldWatch-Scan-1500","GoldWatch-Scan-2000","GoldWatch-Review")
+  # Get-ScheduledTask is a cmdlet, so it has no native-stderr pitfall
   $n = 0
   foreach ($t in $names) {
-    schtasks /Query /TN $t 2>$null | Out-Null
-    if ($LASTEXITCODE -eq 0) { $n++ }
+    if (Get-ScheduledTask -TaskName $t -ErrorAction SilentlyContinue) { $n++ }
   }
   $parts = @()
   $parts += if ($hasNode) { "Node OK" } else { "Node not found" }

@@ -32,12 +32,20 @@ $jobs = @(
      Desc = "Monthly self review, 09:00 on the 1st" }
 )
 
+# /F already overwrites an existing task, so there is no pre-delete step. Redirecting
+# a native exe's stderr in PowerShell 5.1 turns plain output into NativeCommandError,
+# which $ErrorActionPreference = "Stop" then treats as fatal -- so never do it here.
 foreach ($j in $jobs) {
-  schtasks /Delete /TN $j.Name /F 2>$null | Out-Null
   $tr = '"' + $run + '" ' + $j.Prompt
   $argv = @("/Create","/TN",$j.Name,"/TR",$tr) + $j.Sc + @("/F","/RL","LIMITED")
+
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
   & schtasks @argv | Out-Null
-  if ($LASTEXITCODE -ne 0) { Write-Error "Failed to register $($j.Name)" }
+  $rc = $LASTEXITCODE
+  $ErrorActionPreference = $prev
+
+  if ($rc -ne 0) { Write-Error "Failed to register $($j.Name) (schtasks exit $rc)" }
   Write-Host "Registered: $($j.Name) -- $($j.Desc)"
 }
 
