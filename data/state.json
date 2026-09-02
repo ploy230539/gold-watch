@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-02T08:02:28.002Z",
-    "thb_sell": 68200,
-    "xau": 4324.600098,
-    "note": "Fed hawkish-bet unwind + Middle East safe-haven demand; +450 THB / +0.78% XAU"
+    "ts_iso": "2026-09-02T10:31:40.573Z",
+    "thb_sell": 68000,
+    "xau": 4312,
+    "note": "Fed hawkish (Warsh) hike odds ~70%, higher yields/USD, Mideast tension"
   },
   "history": [
     {
@@ -17,6 +17,12 @@
       "thb_sell": 68200,
       "xau": 4324.600098,
       "note": "Fed hawkish-bet unwind + Middle East safe-haven demand; +450 THB / +0.78% XAU"
+    },
+    {
+      "ts_iso": "2026-09-02T10:31:40.573Z",
+      "thb_sell": 68000,
+      "xau": 4312,
+      "note": "Fed hawkish (Warsh) hike odds ~70%, higher yields/USD, Mideast tension"
     }
   ]
 }
