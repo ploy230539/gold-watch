@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-02T03:46:42.090Z",
-    "thb_sell": 67750,
-    "xau": 4291.11,
-    "note": "แจ้งเตือนพร้อมสรุปเช้า 2 ก.ย. 69 — ทองร่วงสะสม -3,600 บาท / Spot -6.8% จากจุดแจ้งเตือนล่าสุด (28 ส.ค. 69)"
+    "ts_iso": "2026-09-02T08:02:28.002Z",
+    "thb_sell": 68200,
+    "xau": 4324.600098,
+    "note": "Fed hawkish-bet unwind + Middle East safe-haven demand; +450 THB / +0.78% XAU"
   },
   "history": [
     {
@@ -11,6 +11,12 @@
       "thb_sell": 67750,
       "xau": 4291.11,
       "note": "แจ้งเตือนพร้อมสรุปเช้า 2 ก.ย. 69 — ทองร่วงสะสม -3,600 บาท / Spot -6.8% จากจุดแจ้งเตือนล่าสุด (28 ส.ค. 69)"
+    },
+    {
+      "ts_iso": "2026-09-02T08:02:28.002Z",
+      "thb_sell": 68200,
+      "xau": 4324.600098,
+      "note": "Fed hawkish-bet unwind + Middle East safe-haven demand; +450 THB / +0.78% XAU"
     }
   ]
 }
