@@ -23,6 +23,10 @@ page said on any given day. The old setup simply overwrote itself each run.
 | `gw.mjs` | The whole tool, one file, no dependencies |
 | `data/log.json` | Track record — the call given each day, plus the actual outcome |
 | `data/state.json` | Price-watch memory — the last price an alert was sent for |
+| `data/history.json` | One price sample per scan; the Thai gold chart is drawn from it |
+| `data/health.json` | When a scan last succeeded, so silence is never ambiguous |
+| `data/targets.txt` | Price levels to be alerted on, one per line |
+| `data/recipients.txt` | Who gets the emails, one address per line |
 | `payload.example.json` | Fully commented example payload |
 | `tasks/` | The three job prompts, the runner, and the Task Scheduler installer |
 | `Gold Watch.cmd` | Control panel window (double-click to open) |
@@ -58,6 +62,8 @@ node gw.mjs log                          # print the track record as JSON
 node gw.mjs prices --pretty              # live prices from free APIs, no model
 node gw.mjs check --thb N --xau N --pretty     # readable instead of JSON
 node gw.mjs scan                         # prices + thresholds; exit 10 = alert needed
+node gw.mjs health --pretty              # is the watcher still watching? exit 11 = stale
+node gw.mjs targets                      # list the price levels being watched
 ```
 
 ### `morning` / `build`
@@ -111,6 +117,26 @@ produce an alert, where judgement is genuinely needed to explain the move.
 The morning brief still needs the model for the analysis, but it takes its raw numbers
 from `gw.mjs prices` and searches only for the news behind them.
 
+### Price targets
+
+`data/targets.txt` holds absolute levels, one per line:
+
+```
+thb  <= 66000   good re-entry level
+spot >= 4400    world gold breaking out
+```
+
+Relative thresholds answer "did something happen"; targets answer "did the level I care
+about get reached", which is the question people actually set alarms for. A target hit
+always sends both an email and a push — you asked to be told. Unparseable lines are
+reported in the alert rather than silently ignored, so a typo cannot sit there never firing.
+
+### Health — silence must not be ambiguous
+
+If no scan has succeeded for 24 hours, an empty inbox means the watcher is down, not that
+gold was quiet. `gw.mjs health` exits 11 in that case and `tasks/health.cmd` (12:07 daily)
+emails a warning. While everything is healthy it costs nothing.
+
 ---
 
 ## Thresholds, hard-coded in `gw.mjs` (one place to change them)
@@ -151,7 +177,11 @@ place addresses are written down.
 
 ## Scheduled jobs
 
-Morning brief 08:00 (Mon–Sat) · Price scan 10:00 / 15:00 / 20:00 (Mon–Fri) ·
-Self review 09:00 on the 1st of each month.
+Morning brief 08:00 (Mon–Sat) · Price scan **every 30 minutes, 08:30–22:00** (Mon–Sat) ·
+Health check 12:07 daily · Self review 09:00 on the 1st of each month.
+
+The scan went from three times a day to every half hour because it no longer costs
+anything to run: the association re-announces 10–20 times a day, and three checks left
+hours unwatched.
 
 They run on Ploy's machine via Windows Task Scheduler — see [PROMPTS.md](PROMPTS.md) to install.

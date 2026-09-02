@@ -15,6 +15,11 @@ re-decide whether to alert — decide *what to say*.
 - `subject_code` — put this at the end of the email subject, e.g. `[TH 67850 | XAU 4300]`
 - `prices` — live figures: `spot`, `thai.bar_sell` / `bar_buy` / `orn_sell`,
   `thai.announced` (announcement round and time), `fx`, `fair_thb`, `premium_pct`
+- `targets_hit` — price levels Ploy asked to be told about that have now been reached.
+  If this is non-empty, **lead with it**: it is the thing she actually asked for, and
+  it matters more than the size of the move. Quote the level and her own note on it.
+- `targets_unreadable` — lines in `data/targets.txt` that could not be parsed. Mention
+  these at the end of the email so a typo does not sit there silently never firing.
 
 Those numbers are already real and timestamped. Do not re-fetch them.
 

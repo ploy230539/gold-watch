@@ -1,0 +1,12 @@
+# Gold Watch price targets
+# One per line. Blank lines and lines starting with # are ignored.
+# The scan checks these every 30 minutes. A hit always sends an email AND a phone
+# push, because a level you asked to be told about is worth the interruption.
+#
+#   thb  >= 70000   Thai bar gold sell price, in baht
+#   thb  <= 66000
+#   spot >= 4400    world gold, USD per ounce
+#   spot <  4200
+#
+# Anything written after the number is a note and comes through in the alert.
+# Nothing is set yet - add a line whenever you have a level in mind.

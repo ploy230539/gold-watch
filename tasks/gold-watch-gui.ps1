@@ -176,8 +176,12 @@ AddButton $g1 "View track record" 364 28 165 {
   Run "Track record log" "node gw.mjs log --pretty"
 } | Out-Null
 
-AddButton $g1 "Live prices (free)" 236 116 210 {
+AddButton $g1 "Live prices (free)" 368 116 160 {
   Run "Live prices - no model used" "node gw.mjs prices --pretty"
+} | Out-Null
+
+AddButton $g1 "Is it still watching?" 536 116 157 {
+  Run "Watcher health" "node gw.mjs health --pretty & node gw.mjs targets"
 } | Out-Null
 
 AddButton $g1 "Open dashboard" 538 28 155 {
@@ -211,8 +215,12 @@ $chkNews.Text = "Big news"; $chkNews.Font = $FontUI
 $chkNews.Location = New-Object System.Drawing.Point(356, 76); $chkNews.Size = New-Object System.Drawing.Size(84, 24)
 $g1.Controls.Add($chkNews)
 
-AddButton $g1 "Edit email recipients" 16 116 210 {
+AddButton $g1 "Edit email recipients" 16 116 168 {
   Start-Process notepad.exe -ArgumentList (Join-Path $Root "data/recipients.txt")
+} | Out-Null
+
+AddButton $g1 "Set price targets" 192 116 168 {
+  Start-Process notepad.exe -ArgumentList (Join-Path $Root "data/targets.txt")
 } | Out-Null
 
 AddButton $g1 "Check alert thresholds" 444 72 175 {

@@ -12,6 +12,7 @@
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
 //   node gw.mjs log                                print the track-record log as JSON
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
+//   node gw.mjs targets                            list the price targets being watched
 
 import fs from "node:fs";
 import path from "node:path";
@@ -25,6 +26,7 @@ const P = {
   state: path.join(ROOT, "data", "state.json"),
   history: path.join(ROOT, "data", "history.json"),
   health: path.join(ROOT, "data", "health.json"),
+  targets: path.join(ROOT, "data", "targets.txt"),
   out: path.join(ROOT, "docs", "index.html"),
 };
 
@@ -382,6 +384,68 @@ function fillActuals(rows, today) {
   return filled;
 }
 
+// ── Price targets: absolute levels, the way a trader actually thinks ─────
+// Relative thresholds ("moved 150 THB") answer "did something happen".
+// Targets answer "did the level I care about get hit", which is a different
+// question and the one people actually set alarms for.
+//
+// data/targets.txt, one per line:
+//   thb >= 70000   note
+//   thb <= 66000   note
+//   spot >= 4400   note
+//   # comment
+const TARGET_RE = /^(thb|spot)\s*(>=|<=|>|<)\s*([0-9][0-9,.]*)\s*(.*)$/i;
+
+function loadTargets() {
+  if (!fs.existsSync(P.targets)) return [];
+  const out = [];
+  const lines = fs.readFileSync(P.targets, "utf8").split(/\r?\n/);
+  lines.forEach((raw, i) => {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) return;
+    const m = line.match(TARGET_RE);
+    if (!m) { out.push({ line: i + 1, raw: line, error: "could not read this line" }); return; }
+    const value = Number(m[3].replace(/,/g, ""));
+    if (!Number.isFinite(value)) { out.push({ line: i + 1, raw: line, error: "not a number" }); return; }
+    out.push({ line: i + 1, raw: line, field: m[1].toLowerCase(), op: m[2], value, note: m[4].trim() });
+  });
+  return out;
+}
+
+function checkTargets(thb, spot) {
+  const hit = [], bad = [];
+  for (const t of loadTargets()) {
+    if (t.error) { bad.push(t); continue; }
+    const now = t.field === "thb" ? thb : spot;
+    const ok = t.op === ">=" ? now >= t.value
+      : t.op === "<=" ? now <= t.value
+      : t.op === ">" ? now > t.value
+      : now < t.value;
+    if (ok) {
+      hit.push({
+        raw: t.raw, field: t.field, op: t.op, value: t.value, now, note: t.note,
+        text: `${t.field === "thb" ? "Thai gold" : "Spot"} ${t.op} ${num(t.value)}` +
+              ` (now ${num(now, t.field === "thb" ? 0 : 2)})` + (t.note ? ` - ${t.note}` : ""),
+      });
+    }
+  }
+  return { hit, bad };
+}
+
+function cmdTargets() {
+  const ts = loadTargets();
+  if (!ts.length) {
+    console.log("No targets set. Add lines to data/targets.txt, for example:");
+    console.log("  thb <= 66000   good re-entry level");
+    console.log("  spot >= 4400   world gold breaking out");
+    return;
+  }
+  for (const t of ts) {
+    console.log(t.error ? `  line ${t.line}: ${t.raw}   <-- ${t.error}`
+      : `  ${t.field} ${t.op} ${num(t.value)}${t.note ? "   " + t.note : ""}`);
+  }
+}
+
 // ── Health: silence must not be ambiguous ────────────────────────────────
 // "Nothing arrived" has to mean "gold did not move", never "the watcher died".
 // Every scan records its outcome; if no scan has succeeded for STALE_HOURS the
@@ -505,13 +569,18 @@ function decide(thb, xau, news) {
   const xauPct = ((xau - ref.xau) / ref.xau) * 100;
   const hitThb = Math.abs(thbMove) >= ALERT_THB;
   const hitXau = Math.abs(xauPct) >= ALERT_XAU_PCT;
-  const alert = hitThb || hitXau || news;
-  const push = Math.abs(thbMove) >= PUSH_THB || Math.abs(xauPct) >= PUSH_XAU_PCT || news;
+  const tg = checkTargets(thb, xau);
+  const alert = hitThb || hitXau || news || tg.hit.length > 0;
+  // A level you asked to be told about is always worth the interruption.
+  const push = Math.abs(thbMove) >= PUSH_THB || Math.abs(xauPct) >= PUSH_XAU_PCT ||
+    news || tg.hit.length > 0;
 
   const reasons = [];
   if (hitThb) reasons.push(`Thai gold moved ${signed(thbMove)} THB from the last alert (threshold ${ALERT_THB})`);
   if (hitXau) reasons.push(`Spot moved ${pct(xauPct)} from the last alert (threshold ${ALERT_XAU_PCT}%)`);
   if (news) reasons.push("Market-moving news flagged by the operator");
+  for (const h of tg.hit) reasons.push("Target hit: " + h.text);
+  for (const b of tg.bad) reasons.push(`targets.txt line ${b.line} unreadable: "${b.raw}"`);
   if (!alert) reasons.push(`Below threshold - Thai gold ${signed(thbMove)} THB / Spot ${pct(xauPct)} -> stay silent, send nothing`);
 
   return {
@@ -522,6 +591,8 @@ function decide(thb, xau, news) {
     now: { thb_sell: thb, xau },
     thb_move: Math.round(thbMove),
     xau_pct: Number(xauPct.toFixed(3)),
+    targets_hit: tg.hit,
+    targets_unreadable: tg.bad,
     subject_code: subjectCode(thb, xau),
   };
 }
@@ -553,6 +624,12 @@ function prettyDecision(d, title) {
     : "ALERT - email + chat (no phone push)";
   L.push("  " + pad("Decision") + "    " + verdict);
   L.push("  " + " ".repeat(20) + "    " + d.reason);
+  L.push("");
+  if (d.targets_hit && d.targets_hit.length) {
+    L.push("");
+    L.push("  Targets hit:");
+    for (const h of d.targets_hit) L.push("    - " + h.text);
+  }
   L.push("");
   L.push("  " + pad("Subject code") + "    " + d.subject_code);
   return L.join("\n");
@@ -841,6 +918,7 @@ switch (a._[0]) {
   case "prices": await cmdPrices(a); break;
   case "scan": await cmdScan(a); break;
   case "health": cmdHealth(a); break;
+  case "targets": cmdTargets(); break;
   case "state": cmdState(a); break;
   case "log": {
     const lf = readJson(P.log);
