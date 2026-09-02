@@ -176,6 +176,10 @@ AddButton $g1 "View track record" 364 28 165 {
   Run "Track record log" "node gw.mjs log"
 } | Out-Null
 
+AddButton $g1 "Live prices (free)" 236 116 210 {
+  Run "Live prices - no model used" "node gw.mjs prices"
+} | Out-Null
+
 AddButton $g1 "Open dashboard" 538 28 155 {
   Start-Process $Url
 } | Out-Null
@@ -229,7 +233,8 @@ AddButton $g2 "Run morning brief now" 16 28 165 {
 } | Out-Null
 
 AddButton $g2 "Run price scan now" 190 28 165 {
-  RunNeedsClaude "Price scan" "tasks\run.cmd watch.md & type logs\watch.log"
+  # scan.cmd decides in code first; a model only starts if the thresholds are met
+  RunNeedsClaude "Price scan (model runs only if thresholds are met)" "tasks\scan.cmd"
 } | Out-Null
 
 AddButton $g2 "Install schedule" 364 28 165 {

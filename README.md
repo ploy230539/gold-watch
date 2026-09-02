@@ -46,6 +46,8 @@ node gw.mjs check --thb 71500 --xau 4620 # has it moved enough to alert?
 node gw.mjs state set --thb 71500 --xau 4620   # record the price just alerted on
 node gw.mjs state get                    # show the current reference price
 node gw.mjs log                          # print the track record as JSON
+node gw.mjs prices                       # live prices from free APIs, no model
+node gw.mjs scan                         # prices + thresholds; exit 10 = alert needed
 ```
 
 ### `morning` / `build`
@@ -81,6 +83,23 @@ price the comparison was against, and it can be used to rebuild the state file i
 
 Call `state set` **only when an alert was actually sent**, otherwise the cumulative
 threshold drifts.
+
+### `prices` / `scan` — the model-free path
+
+`prices` pulls live figures from three free, keyless APIs: Gold Spot (api.gold-api.com),
+Thai bar and ornament gold with the association's announcement round
+(api.chnwt.dev/thai-gold-api), and USD/THB (frankfurter.dev). It also returns `fair_thb`
+and `premium_pct` already computed. If any source fails, the whole fetch fails loudly
+rather than reporting a partial picture that could drive a wrong alert.
+
+`scan` runs `prices`, applies the thresholds, prints the decision, and exits **0 when
+nothing crossed the line, 10 when an alert is warranted**. `tasks/scan.cmd` uses that exit
+code: below threshold it stops there and no model ever starts. The three daily price scans
+therefore cost nothing on most days — the model is spent only on the runs that actually
+produce an alert, where judgement is genuinely needed to explain the move.
+
+The morning brief still needs the model for the analysis, but it takes its raw numbers
+from `gw.mjs prices` and searches only for the news behind them.
 
 ---
 

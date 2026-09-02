@@ -2,14 +2,21 @@ Produce Ploy's morning gold brief, following the gold-watch skill.
 
 Working folder: D:\Claude_AI\Ploy\Gold
 
-**1. Fetch real prices** — Gold Spot, Thai bar gold (buy and sell), ornament gold sell,
-and USD/THB, from Trading Economics, Thai news citing the Gold Traders Association, and
-FXStreet.
-Never invent a number. Every figure must carry the time it was captured.
-If two sources disagree on Spot by more than $20, report a range and say they were
-captured at different times.
-Any field you genuinely cannot fetch goes in as `null` (`rsi`, `thb_orn`) and the page
-renders `—`. Do not substitute a guess.
+**1. Get the prices** — run this first; it pulls live figures from free APIs with no
+model usage at all:
+
+    node gw.mjs prices
+
+It returns Gold Spot, Thai bar gold buy/sell, ornament gold buy/sell, the announcement
+round and time from the Gold Traders Association, USD/THB, plus `fair_thb` and
+`premium_pct` already computed for you. Use these numbers.
+
+Only search the web for what those numbers cannot give you: **why** the price moved, the
+news calendar, and RSI. If a news source quotes a Spot more than $20 away from the feed,
+report a range and note that they were captured at different times - do not silently pick
+one. If the price feed fails entirely, fall back to searching, and say so in chat.
+Never invent a number. Any field you genuinely cannot get goes in as `null` (`rsi`,
+`thb_orn`) and the page renders an em dash.
 
 **2. Write the summary in chat** using the 7-part structure from the skill. Chat tone is
 casual Thai; มึง/กู is fine there.

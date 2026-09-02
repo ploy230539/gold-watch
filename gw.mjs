@@ -6,6 +6,8 @@
 //   node gw.mjs morning --in payload.json          fill due results + append today's row + build
 //   node gw.mjs publish [-m "msg"]                 commit + push to GitHub Pages
 //   node gw.mjs check   --thb N --xau N [--news]   compare against last alerted price -> alert?
+//   node gw.mjs prices                             fetch live prices from free APIs (no model)
+//   node gw.mjs scan    [--news]                   prices + threshold check; exit 10 = alert needed
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
 //   node gw.mjs log                                print the track-record log as JSON
 
@@ -304,19 +306,18 @@ function loadState() {
 }
 const subjectCode = (thb, xau) => `[TH ${Math.round(thb)} | XAU ${Math.round(xau)}]`;
 
-function cmdCheck(a) {
-  const thb = Number(a.thb), xau = Number(a.xau);
-  if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("check requires --thb and --xau");
-  const news = !!a.news;
+function decide(thb, xau, news) {
   const st = loadState();
   const ref = st.last_alert;
 
   if (!ref) {
-    return console.log(JSON.stringify({
-      alert: true, push: news, reason: "No alert sent yet - establishing the first reference point",
-      ref: null, thb_move: null, xau_pct: null,
+    return {
+      alert: true, push: news, channels: ["email", "chat"],
+      reason: "No alert sent yet - establishing the first reference point",
+      ref: null, now: { thb_sell: thb, xau },
+      thb_move: null, xau_pct: null,
       subject_code: subjectCode(thb, xau),
-    }, null, 2));
+    };
   }
 
   const thbMove = thb - ref.thb_sell;
@@ -332,7 +333,7 @@ function cmdCheck(a) {
   if (news) reasons.push("Market-moving news flagged by the operator");
   if (!alert) reasons.push(`Below threshold - Thai gold ${signed(thbMove)} THB / Spot ${pct(xauPct)} -> stay silent, send nothing`);
 
-  console.log(JSON.stringify({
+  return {
     alert, push,
     channels: alert ? (push ? ["email", "push", "chat"] : ["email", "chat"]) : [],
     reason: reasons.join(" · "),
@@ -341,7 +342,13 @@ function cmdCheck(a) {
     thb_move: Math.round(thbMove),
     xau_pct: Number(xauPct.toFixed(3)),
     subject_code: subjectCode(thb, xau),
-  }, null, 2));
+  };
+}
+
+function cmdCheck(a) {
+  const thb = Number(a.thb), xau = Number(a.xau);
+  if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("check requires --thb and --xau");
+  console.log(JSON.stringify(decide(thb, xau, !!a.news), null, 2));
 }
 
 function cmdState(a) {
@@ -364,6 +371,83 @@ function cmdState(a) {
   st.history = [...(st.history || []), entry].slice(-100);
   writeJson(P.state, st);
   console.log(JSON.stringify({ ok: true, last_alert: entry, subject_code: subjectCode(thb, xau) }, null, 2));
+}
+
+// ── Live prices, fetched without a model ─────────────────────────────────
+// Three free sources, no API keys. If any one fails the whole fetch fails loudly
+// rather than reporting a partial picture that could trigger a wrong alert.
+const SOURCES = {
+  spot: "https://api.gold-api.com/price/XAU",
+  thai: "https://api.chnwt.dev/thai-gold-api/latest",
+  fx: "https://api.frankfurter.dev/v1/latest?base=USD&symbols=THB",
+};
+
+async function getJson(url, ms = 15000) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), ms);
+  try {
+    const r = await fetch(url, { signal: ctl.signal, headers: { "user-agent": "gold-watch" } });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+
+const toNum = (v) => Number(String(v).replace(/,/g, ""));
+
+async function fetchPrices() {
+  const errors = [];
+  const [spotRes, thaiRes, fxRes] = await Promise.all(
+    ["spot", "thai", "fx"].map((k) =>
+      getJson(SOURCES[k]).catch((e) => { errors.push(`${k}: ${e.message}`); return null; })
+    )
+  );
+  if (errors.length) {
+    const err = new Error("could not fetch prices — " + errors.join(" · "));
+    err.partial = true;
+    throw err;
+  }
+
+  const spot = Number(spotRes.price);
+  const fx = Number(fxRes.rates.THB);
+  const t = thaiRes.response.price;
+  const barSell = toNum(t.gold_bar.sell);
+  const barBuy = toNum(t.gold_bar.buy);
+  const ornSell = toNum(t.gold.sell);
+  const ornBuy = toNum(t.gold.buy);
+
+  for (const [name, v] of [["spot", spot], ["fx", fx], ["bar sell", barSell]]) {
+    if (!Number.isFinite(v) || v <= 0) throw new Error(`bad ${name} value from source: ${v}`);
+  }
+
+  const fair = fairThb(spot, fx);
+  return {
+    fetched_at_iso: new Date().toISOString(),
+    spot: { value: spot, source: SOURCES.spot, as_of: spotRes.updatedAt || null },
+    thai: {
+      bar_sell: barSell, bar_buy: barBuy, orn_sell: ornSell, orn_buy: ornBuy,
+      announced: `${thaiRes.response.update_date} ${thaiRes.response.update_time}`,
+      source: SOURCES.thai,
+    },
+    fx: { value: fx, as_of: fxRes.date, source: SOURCES.fx },
+    fair_thb: Math.round(fair),
+    premium_pct: Number((((barSell - fair) / fair) * 100).toFixed(2)),
+  };
+}
+
+async function cmdPrices() {
+  try {
+    console.log(JSON.stringify(await fetchPrices(), null, 2));
+  } catch (e) { die(e.message); }
+}
+
+// Threshold-gated scan: pure code, zero model usage. Callers run the model only
+// when this exits 10, which is the rare case.
+async function cmdScan(a) {
+  let p;
+  try { p = await fetchPrices(); } catch (e) { die(e.message); }
+  const d = decide(p.thai.bar_sell, p.spot.value, !!a.news);
+  console.log(JSON.stringify({ ...d, prices: p }, null, 2));
+  process.exit(d.alert ? 10 : 0);
 }
 
 // ── build / morning / publish ──────────────────────────────────────────────
@@ -450,6 +534,8 @@ switch (a._[0]) {
   case "morning": cmdBuild(a, { updateLog: true }); break;
   case "publish": cmdPublish(a); break;
   case "check": cmdCheck(a); break;
+  case "prices": await cmdPrices(); break;
+  case "scan": await cmdScan(a); break;
   case "state": cmdState(a); break;
   case "log": console.log(fs.readFileSync(P.log, "utf8")); break;
   default:

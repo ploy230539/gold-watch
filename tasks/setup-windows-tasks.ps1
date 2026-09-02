@@ -14,21 +14,24 @@ if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
   Write-Error "Claude Code CLI not found. Run: npm install -g @anthropic-ai/claude-code"
 }
 
-$run = Join-Path $PSScriptRoot "run.cmd"
-if (-not (Test-Path $run)) { Write-Error "Not found: $run" }
+foreach ($f in @("run.cmd", "scan.cmd")) {
+  if (-not (Test-Path (Join-Path $PSScriptRoot $f))) { Write-Error "Not found: $f" }
+}
 
 # schtasks supports MONTHLY /D 1 directly; New-ScheduledTaskTrigger cannot express
 # "the 1st of every month", which is why this uses schtasks instead.
+# The scan jobs call scan.cmd, which decides in pure code and only starts a model
+# when an alert is actually warranted. The morning job always needs the model.
 $jobs = @(
-  @{ Name = "GoldWatch-Morning";   Prompt = "morning.md"; Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI,SAT","/ST","08:00")
+  @{ Name = "GoldWatch-Morning";   Runner = "run.cmd";  Prompt = "morning.md"; Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI,SAT","/ST","08:00")
      Desc = "Morning gold brief, 08:00 Mon-Sat" }
-  @{ Name = "GoldWatch-Scan-1000"; Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","10:00")
+  @{ Name = "GoldWatch-Scan-1000"; Runner = "scan.cmd"; Prompt = "";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","10:00")
      Desc = "Gold price scan, 10:00 Mon-Fri" }
-  @{ Name = "GoldWatch-Scan-1500"; Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","15:00")
+  @{ Name = "GoldWatch-Scan-1500"; Runner = "scan.cmd"; Prompt = "";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","15:00")
      Desc = "Gold price scan, 15:00 Mon-Fri" }
-  @{ Name = "GoldWatch-Scan-2000"; Prompt = "watch.md";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","20:00")
+  @{ Name = "GoldWatch-Scan-2000"; Runner = "scan.cmd"; Prompt = "";   Sc = @("/SC","WEEKLY","/D","MON,TUE,WED,THU,FRI","/ST","20:00")
      Desc = "Gold price scan, 20:00 Mon-Fri" }
-  @{ Name = "GoldWatch-Review";    Prompt = "review.md";  Sc = @("/SC","MONTHLY","/D","1","/ST","09:00")
+  @{ Name = "GoldWatch-Review";    Runner = "run.cmd";  Prompt = "review.md";  Sc = @("/SC","MONTHLY","/D","1","/ST","09:00")
      Desc = "Monthly self review, 09:00 on the 1st" }
 )
 
@@ -36,7 +39,9 @@ $jobs = @(
 # a native exe's stderr in PowerShell 5.1 turns plain output into NativeCommandError,
 # which $ErrorActionPreference = "Stop" then treats as fatal -- so never do it here.
 foreach ($j in $jobs) {
-  $tr = '"' + $run + '" ' + $j.Prompt
+  $runner = Join-Path $PSScriptRoot $j.Runner
+  $tr = '"' + $runner + '"'
+  if ($j.Prompt) { $tr += ' ' + $j.Prompt }
   $argv = @("/Create","/TN",$j.Name,"/TR",$tr) + $j.Sc + @("/F","/RL","LIMITED")
 
   $prev = $ErrorActionPreference

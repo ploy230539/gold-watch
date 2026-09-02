@@ -15,11 +15,19 @@ The old Artifact `751af5ad-2435-4077-8879-2bd35a1ccaa8` is **retired**.
 | Job | When | Prompt |
 |---|---|---|
 | Morning brief | 08:00, Mon–Sat | `tasks/morning.md` |
-| Price scan | **10:00 / 15:00 / 20:00**, Mon–Fri | `tasks/watch.md` |
+| Price scan | **10:00 / 15:00 / 20:00**, Mon–Fri | `tasks/scan.cmd` → `tasks/watch.md` only if an alert is due |
 | Monthly self review | 09:00 on the 1st | `tasks/review.md` |
 
 The scan times changed from the old 4 slots (09:00 / 12:00 / 15:00 / 18:00) to 3 slots
 at 10:00 / 15:00 / 20:00, matching what section 10 of the `gold-watch` skill already said.
+
+---
+
+## Cost
+
+The price scans decide in pure code and start a model only when a threshold is actually
+crossed, so on a quiet day all three cost nothing. The morning brief always uses the model,
+but takes its prices from the free feed and searches only for the news behind them.
 
 ---
 

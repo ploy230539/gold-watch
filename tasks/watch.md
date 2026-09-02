@@ -1,44 +1,50 @@
-Run a gold price scan for Ploy, following the gold-watch skill.
+Send a gold price alert for Ploy, following the gold-watch skill.
 
 Working folder: D:\Claude_AI\Ploy\Gold
 
-**1. Read the last price an alert was sent for**
+**You are only running because the thresholds were already met.** `tasks/scan.cmd`
+fetched live prices and applied the rules in code before invoking you; when nothing
+crosses the threshold it exits silently and never starts a model at all. So do not
+re-decide whether to alert — decide *what to say*.
 
-    node gw.mjs state get
+**1. Read the decision** in `logs/scan.json`. It contains:
+- `alert`, `push`, `channels` — what to send and where
+- `reason` — which threshold was crossed
+- `ref` — the price the last alert was sent at, and when
+- `now`, `thb_move`, `xau_pct` — the current move
+- `subject_code` — put this at the end of the email subject, e.g. `[TH 67850 | XAU 4300]`
+- `prices` — live figures: `spot`, `thai.bar_sell` / `bar_buy` / `orn_sell`,
+  `thai.announced` (announcement round and time), `fx`, `fair_thb`, `premium_pct`
 
-It returns `thb_sell` (Thai bar gold, sell) and `xau` (Spot, rounded) — that is the
-reference point.
-If the state file is broken, fall back to reading the code off the email subject line as
-before (Gmail search: `in:sent subject:"ทองขยับ" newer_than:2d`, format
-`[TH <bar sell> | XAU <spot>]`) and say in chat that the state file has a problem.
+Those numbers are already real and timestamped. Do not re-fetch them.
 
-**2. Fetch the current prices** from the web. Never guess.
+**2. Find out why** — search the web for what moved the price in the last few hours.
+This is the part that needs judgement: one or two concrete reasons from real news, not
+speculation. If you cannot find a clear cause, say plainly that the move has no obvious
+driver yet.
 
-**3. Let the script apply the thresholds**
+**3. Send it.** Follow `channels` from the scan:
+- `push = false` (moved 150–300 THB) → email + chat, **no phone push**
+- `push = true` (≥300 THB, Spot ≥1.5%, or big news) → email + push + chat
 
-    node gw.mjs check --thb <current bar sell> --xau <current spot>
+**Recipients** — every address listed in `data/recipients.txt`
+(one per line; ignore blank lines and lines starting with `#`). Read it at send time.
+Do not hard-code addresses.
 
-Add `--news` if there is genuinely market-moving news — a human judges that, not the script.
+Email in polite, neutral Thai — the voice of a friendly analyst. **No มึง/กู** in email
+(chat and push are fine). End the subject with the `subject_code` from the scan.
+Any dashboard link uses https://ploy230539.github.io/gold-watch/
 
-The script returns `alert`, `push`, and `channels`. Follow them:
-- `alert = false` → **total silence. Send nothing, and write nothing in chat either.**
-  Unnecessary alerts are what make Ploy stop reading the necessary ones.
-- `alert = true`, `push = false` (moved 150–300 THB) → email + chat, **no phone push**
-- `alert = true`, `push = true` (≥300 THB, Spot ≥1.5%, or big news) → email + push + chat
+Mention `premium_pct` when it is outside ±1.2%: above means shops are charging a fat
+premium and it is a poor moment to buy; below means Thai prices have not caught up with
+world gold yet.
 
-**4. If sending** — send the email.
-**Recipients** — send to every address listed in `data/recipients.txt`
-(one per line; ignore blank lines and lines starting with `#`).
-Read that file at send time. Do not hard-code addresses.
-Polite, neutral Thai. **No มึง/กู** in email (chat and push are fine).
-End the subject line with the `subject_code` the script returned, e.g. `[TH 71500 | XAU 4620]`.
-Any dashboard link in email, chat, or push uses https://ploy230539.github.io/gold-watch/
+**4. Only after sending**, record the price just alerted on and push it:
 
-**5. Only after sending**, record the price just alerted on and push it:
-
-    node gw.mjs state set --thb <alerted> --xau <alerted> --note "<why it was sent>"
+    node gw.mjs state set --thb <alerted bar sell> --xau <alerted spot> --note "<why it was sent>"
     node gw.mjs publish -m "state: alert sent <time>"
 
-**If nothing was sent, do not touch the state** — the cumulative threshold would drift.
+**If for any reason you did not send, do not touch the state** — the cumulative
+threshold would drift.
 
 This job must not touch `payload-latest.json`, `log.json`, or `docs/index.html`.
