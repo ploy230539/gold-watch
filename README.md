@@ -114,7 +114,9 @@ because that is what their readers read.
   people read these, so never use มึง/กู.
 - **Chat / push** — casual Thai, มึง/กู is fine.
 
-Every email goes to: `iminiwindy@gmail.com`, `pongkasame.oil@gmail.com`
+Recipients live in `data/recipients.txt`, one address per line. Edit that file to add or
+remove someone — the next scheduled run picks it up, nothing to restart. It is the only
+place addresses are written down.
 
 ---
 

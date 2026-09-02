@@ -37,7 +37,10 @@ and fix the payload — never skip the validation step.
 **Below 30 rows with an actual result, never quote an accuracy percentage**, and write up
 the misses as prominently as the hits.
 
-**5. Send the morning email** to iminiwindy@gmail.com and pongkasame.oil@gmail.com.
+**5. Send the morning email.**
+**Recipients** — send to every address listed in `data/recipients.txt`
+(one per line; ignore blank lines and lines starting with `#`).
+Read that file at send time. Do not hard-code addresses.
 Write it in polite, neutral Thai — the voice of a friendly analyst. **Never use มึง/กู**;
 other people read this mail.
 The "view full dashboard" button/link points to https://ploy230539.github.io/gold-watch/

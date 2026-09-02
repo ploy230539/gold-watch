@@ -12,7 +12,7 @@ $FontMono = New-Object System.Drawing.Font("Consolas", 9.5)
 
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Gold Watch"
-$form.Size = New-Object System.Drawing.Size(760, 720)
+$form.Size = New-Object System.Drawing.Size(760, 760)
 $form.StartPosition = "CenterScreen"
 $form.Font = $FontUI
 $form.BackColor = [System.Drawing.Color]::FromArgb(241, 239, 231)
@@ -32,7 +32,7 @@ $out.ReadOnly = $true
 $out.Font = $FontMono
 $out.BackColor = [System.Drawing.Color]::FromArgb(28, 26, 20)
 $out.ForeColor = [System.Drawing.Color]::FromArgb(242, 237, 225)
-$out.Location = New-Object System.Drawing.Point(16, 400)
+$out.Location = New-Object System.Drawing.Point(16, 440)
 $out.Size = New-Object System.Drawing.Size(710, 265)
 $form.Controls.Add($out)
 
@@ -162,7 +162,7 @@ function AddButton($parent, [string]$text, [int]$x, [int]$y, [int]$w, [scriptblo
 }
 
 # -- group 1: everyday -----------------------------------------------------
-$g1 = AddGroup "Everyday" 16 60 710 130
+$g1 = AddGroup "Everyday" 16 60 710 168
 
 AddButton $g1 "Rebuild page" 16 28 165 {
   Run "Build page from data\payload-latest.json" "node gw.mjs build --in data/payload-latest.json"
@@ -207,6 +207,10 @@ $chkNews.Text = "Big news"; $chkNews.Font = $FontUI
 $chkNews.Location = New-Object System.Drawing.Point(356, 76); $chkNews.Size = New-Object System.Drawing.Size(84, 24)
 $g1.Controls.Add($chkNews)
 
+AddButton $g1 "Edit email recipients" 16 116 210 {
+  Start-Process notepad.exe -ArgumentList (Join-Path $Root "data/recipients.txt")
+} | Out-Null
+
 AddButton $g1 "Check alert thresholds" 444 72 175 {
   $t = $txtThb.Text.Trim(); $x = $txtXau.Text.Trim()
   if (-not $t -or -not $x) {
@@ -218,7 +222,7 @@ AddButton $g1 "Check alert thresholds" 444 72 175 {
 } | Out-Null
 
 # -- group 2: scheduled jobs -----------------------------------------------
-$g2 = AddGroup "Scheduled jobs" 16 200 710 95
+$g2 = AddGroup "Scheduled jobs" 16 238 710 95
 
 AddButton $g2 "Run morning brief now" 16 28 165 {
   RunNeedsClaude "Morning brief (takes several minutes)" "tasks\run.cmd morning.md & type logs\morning.log"
@@ -257,7 +261,7 @@ AddButton $g2 "Remove schedule" 538 28 155 {
 } | Out-Null
 
 # -- group 3: one-time setup -----------------------------------------------
-$g3 = AddGroup "First-time setup -- run once, in order" 16 305 710 85
+$g3 = AddGroup "First-time setup -- run once, in order" 16 343 710 85
 
 AddButton $g3 "1. Install Claude Code CLI" 16 28 200 {
   Log "Installing. This can take 1-3 minutes -- wait for 'Done'."

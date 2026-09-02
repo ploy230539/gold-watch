@@ -26,7 +26,10 @@ The script returns `alert`, `push`, and `channels`. Follow them:
 - `alert = true`, `push = false` (moved 150–300 THB) → email + chat, **no phone push**
 - `alert = true`, `push = true` (≥300 THB, Spot ≥1.5%, or big news) → email + push + chat
 
-**4. If sending** — email iminiwindy@gmail.com and pongkasame.oil@gmail.com.
+**4. If sending** — send the email.
+**Recipients** — send to every address listed in `data/recipients.txt`
+(one per line; ignore blank lines and lines starting with `#`).
+Read that file at send time. Do not hard-code addresses.
 Polite, neutral Thai. **No มึง/กู** in email (chat and push are fine).
 End the subject line with the `subject_code` the script returned, e.g. `[TH 71500 | XAU 4620]`.
 Any dashboard link in email, chat, or push uses https://ploy230539.github.io/gold-watch/
