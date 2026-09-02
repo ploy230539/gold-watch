@@ -246,9 +246,10 @@ AddButton $g2 "Install schedule" 364 28 165 {
     return
   }
   $r = [System.Windows.Forms.MessageBox]::Show(
-    "Register 5 scheduled jobs in Windows Task Scheduler?`n`n" +
+    "Register the scheduled jobs in Windows Task Scheduler?`n`n" +
     "Morning brief  08:00  Mon-Sat`n" +
-    "Price scan     10:00 / 15:00 / 20:00  Mon-Fri`n" +
+    "Price scan     every 30 min, 08:30-22:00  Mon-Sat`n" +
+    "Health check   12:07 daily`n" +
     "Self review    09:00  1st of each month",
     "Confirm", "OKCancel", "Question")
   if ($r -eq "OK") {
@@ -257,9 +258,9 @@ AddButton $g2 "Install schedule" 364 28 165 {
 } | Out-Null
 
 AddButton $g2 "Remove schedule" 538 28 155 {
-  $r = [System.Windows.Forms.MessageBox]::Show("Remove all 5 Gold Watch jobs from Task Scheduler?", "Confirm", "OKCancel", "Warning")
+  $r = [System.Windows.Forms.MessageBox]::Show("Remove all Gold Watch jobs from Task Scheduler?", "Confirm", "OKCancel", "Warning")
   if ($r -eq "OK") {
-    $names = @("GoldWatch-Morning","GoldWatch-Scan-1000","GoldWatch-Scan-1500","GoldWatch-Scan-2000","GoldWatch-Review")
+    $names = @("GoldWatch-Morning","GoldWatch-Scan","GoldWatch-Health","GoldWatch-Review")
     $cmd = ($names | ForEach-Object { "schtasks /Delete /TN $_ /F" }) -join " & "
     Run "Remove schedule" $cmd
   }
@@ -297,7 +298,7 @@ AddButton $g3 "3. Send test email" 434 28 200 {
 function RefreshStatus {
   $hasNode = [bool](Get-Command node -ErrorAction SilentlyContinue)
   $hasCli  = HasClaude
-  $names = @("GoldWatch-Morning","GoldWatch-Scan-1000","GoldWatch-Scan-1500","GoldWatch-Scan-2000","GoldWatch-Review")
+  $names = @("GoldWatch-Morning","GoldWatch-Scan","GoldWatch-Health","GoldWatch-Review")
   # Get-ScheduledTask is a cmdlet, so it has no native-stderr pitfall
   $n = 0
   foreach ($t in $names) {
@@ -306,9 +307,9 @@ function RefreshStatus {
   $parts = @()
   $parts += if ($hasNode) { "Node OK" } else { "Node not found" }
   $parts += if ($hasCli)  { "Claude CLI OK" } else { "Claude CLI missing (press button 1)" }
-  $parts += "Scheduled jobs installed: $n / 5"
+  $parts += "Scheduled jobs installed: $n / 4"
   $status.Text = "Folder: $Root`r`n" + ($parts -join "   -   ")
-  $status.ForeColor = if ($hasNode -and $hasCli -and $n -eq 5) {
+  $status.ForeColor = if ($hasNode -and $hasCli -and $n -eq 4) {
     [System.Drawing.Color]::FromArgb(26, 112, 72)
   } else {
     [System.Drawing.Color]::FromArgb(138, 90, 18)

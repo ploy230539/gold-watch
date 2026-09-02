@@ -11,6 +11,7 @@
 //   node gw.mjs scan    [--news]                   prices + threshold check; exit 10 = alert needed
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
 //   node gw.mjs log                                print the track-record log as JSON
+//   node gw.mjs health [--pretty]                  is the watcher actually still watching?
 
 import fs from "node:fs";
 import path from "node:path";
@@ -22,6 +23,8 @@ const P = {
   template: path.join(ROOT, "template.html"),
   log: path.join(ROOT, "data", "log.json"),
   state: path.join(ROOT, "data", "state.json"),
+  history: path.join(ROOT, "data", "history.json"),
+  health: path.join(ROOT, "data", "health.json"),
   out: path.join(ROOT, "docs", "index.html"),
 };
 
@@ -164,6 +167,84 @@ function rsiRead(rsi) {
   return "เข้าเขตขายมากเกินไป (oversold) มีโอกาสเด้ง";
 }
 
+// ── Thai gold sparkline, drawn from our own samples ──────────────────────
+// Nobody publishes a chart of the association's prices, so this is the only
+// place it exists. It is deliberately a line, not candles: the samples are
+// periodic snapshots, and open/high/low/close reconstructed from snapshots
+// would invent detail the data does not contain.
+function loadHistory() {
+  if (!fs.existsSync(P.history)) return [];
+  try {
+    const h = readJson(P.history);
+    return Array.isArray(h.samples) ? h.samples : [];
+  } catch { return []; }
+}
+
+function thaiChartSvg(samples, days = 30) {
+  const cutoff = Date.now() - days * 86400000;
+  const pts = samples
+    .filter((x) => Date.parse(x.t) >= cutoff && Number.isFinite(x.thb_sell))
+    .sort((a, b) => Date.parse(a.t) - Date.parse(b.t));
+
+  if (pts.length < 3) {
+    return `<div class="spark-empty">ยังเก็บข้อมูลไม่พอวาดกราฟ — มี ${pts.length} จุด ` +
+      `ระบบบันทึกราคาทุก 30 นาที อีกไม่กี่ชั่วโมงเส้นจะเริ่มขึ้น</div>`;
+  }
+
+  const W = 900, H = 240, ML = 62, MR = 14, MT = 16, MB = 26;
+  const xs = pts.map((p) => Date.parse(p.t));
+  const ys = pts.map((p) => p.thb_sell);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  if (y1 === y0) { y0 -= 50; y1 += 50; }
+  const padY = (y1 - y0) * 0.12;
+  y0 -= padY; y1 += padY;
+
+  const px = (t) => ML + ((t - x0) / (x1 - x0 || 1)) * (W - ML - MR);
+  const py = (v) => MT + (1 - (v - y0) / (y1 - y0)) * (H - MT - MB);
+
+  const line = pts.map((p, i) => `${i ? "L" : "M"}${px(Date.parse(p.t)).toFixed(1)},${py(p.thb_sell).toFixed(1)}`).join("");
+  const area = `${line}L${px(x1).toFixed(1)},${py(y0).toFixed(1)}L${px(x0).toFixed(1)},${py(y0).toFixed(1)}Z`;
+
+  const first = pts[0], last = pts[pts.length - 1];
+  const change = last.thb_sell - first.thb_sell;
+  const up = change >= 0;
+  const stroke = up ? "var(--good)" : "var(--bad)";
+
+  const grid = [];
+  for (let i = 0; i <= 3; i++) {
+    const v = y0 + ((y1 - y0) * i) / 3;
+    const y = py(v).toFixed(1);
+    grid.push(`<line x1="${ML}" y1="${y}" x2="${W - MR}" y2="${y}" stroke="var(--line-2)" stroke-width="1"/>`);
+    grid.push(`<text x="${ML - 8}" y="${y}" text-anchor="end" dominant-baseline="middle" ` +
+      `font-size="11" fill="var(--muted)" font-family="monospace">${num(Math.round(v))}</text>`);
+  }
+
+  const dfmt = (t) => new Date(t).toLocaleDateString("th-TH", { day: "numeric", month: "short" });
+  const labels = [
+    `<text x="${ML}" y="${H - 6}" font-size="11" fill="var(--muted)">${dfmt(x0)}</text>`,
+    `<text x="${W - MR}" y="${H - 6}" text-anchor="end" font-size="11" fill="var(--muted)">${dfmt(x1)}</text>`,
+  ].join("");
+
+  const dot = `<circle cx="${px(Date.parse(last.t)).toFixed(1)}" cy="${py(last.thb_sell).toFixed(1)}" r="4" fill="${stroke}"/>`;
+
+  const headline =
+    `<text x="${ML}" y="${MT - 2}" font-size="12" fill="var(--muted)">` +
+    `${pts.length} จุด · ${up ? "+" : ""}${num(Math.round(change))} บาท ในช่วงที่เก็บ</text>`;
+
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" width="100%" height="${H}" ` +
+    `preserveAspectRatio="xMidYMid meet" role="img" ` +
+    `aria-label="กราฟราคาทองแท่งขายออกย้อนหลัง ${pts.length} จุด">` +
+    `<defs><linearGradient id="sparkfill" x1="0" y1="0" x2="0" y2="1">` +
+    `<stop offset="0%" stop-color="${stroke}" stop-opacity="0.20"/>` +
+    `<stop offset="100%" stop-color="${stroke}" stop-opacity="0"/></linearGradient></defs>` +
+    grid.join("") +
+    `<path d="${area}" fill="url(#sparkfill)"/>` +
+    `<path d="${line}" fill="none" stroke="${stroke}" stroke-width="2.2" ` +
+    `stroke-linejoin="round" stroke-linecap="round"/>` +
+    dot + labels + headline + `</svg>`;
+}
+
 // ── render ─────────────────────────────────────────────────────────────────
 // Must carry a real value - null is rejected
 const REQUIRED = [
@@ -247,6 +328,7 @@ function render(payload, rows) {
     CALC_FX: Number(fx.value).toFixed(2),
     CALC_ACTUAL: String(Math.round(thb_bar.sell)),
 
+    THAI_CHART_SVG: thaiChartSvg(loadHistory()),
     LOG_ROWS_HTML: logRowsHtml(rows),
     LOG_NOTE: esc(logNote(rows)),
   };
@@ -298,6 +380,104 @@ function fillActuals(rows, today) {
     filled.push(r.date_display);
   }
   return filled;
+}
+
+// ── Health: silence must not be ambiguous ────────────────────────────────
+// "Nothing arrived" has to mean "gold did not move", never "the watcher died".
+// Every scan records its outcome; if no scan has succeeded for STALE_HOURS the
+// system says so out loud instead of looking calm.
+const STALE_HOURS = 24;
+
+function loadHealth() {
+  if (!fs.existsSync(P.health)) {
+    return { last_success_iso: null, last_failure_iso: null, last_error: null,
+             consecutive_failures: 0, last_notified_stale_iso: null };
+  }
+  return readJson(P.health);
+}
+
+function recordHealth(ok, error) {
+  const h = loadHealth();
+  const now = new Date().toISOString();
+  if (ok) {
+    h.last_success_iso = now;
+    h.consecutive_failures = 0;
+    h.last_error = null;
+  } else {
+    h.last_failure_iso = now;
+    h.consecutive_failures = (h.consecutive_failures || 0) + 1;
+    h.last_error = String(error || "").slice(0, 400);
+  }
+  writeJson(P.health, h);
+  return h;
+}
+
+function healthReport() {
+  const h = loadHealth();
+  const now = Date.now();
+  const last = h.last_success_iso ? Date.parse(h.last_success_iso) : null;
+  const hours = last === null ? null : (now - last) / 3600000;
+  const stale = last === null || hours > STALE_HOURS;
+  return {
+    ok: !stale,
+    stale,
+    hours_since_success: hours === null ? null : Number(hours.toFixed(1)),
+    stale_after_hours: STALE_HOURS,
+    consecutive_failures: h.consecutive_failures || 0,
+    last_success_iso: h.last_success_iso,
+    last_failure_iso: h.last_failure_iso,
+    last_error: h.last_error,
+    verdict: stale
+      ? (last === null
+          ? "No scan has ever succeeded - the watcher is not actually watching."
+          : `No successful scan for ${Math.floor(hours)}h. Silence right now means the watcher is down, not that gold is quiet.`)
+      : `Watching normally - last successful scan ${hours < 1 ? Math.round(hours * 60) + " min" : hours.toFixed(1) + "h"} ago.`,
+  };
+}
+
+function cmdHealth(a) {
+  const r = healthReport();
+  if (!a.pretty) { console.log(JSON.stringify(r, null, 2)); }
+  else {
+    const pad = (l) => l.padEnd(22, " ");
+    const L = [];
+    L.push("  WATCHER HEALTH");
+    L.push("  " + "=".repeat(58));
+    L.push("");
+    L.push("  " + pad("Status") + (r.ok ? "OK" : "STALE"));
+    L.push("  " + pad("Last successful scan") + (r.last_success_iso
+      ? new Date(r.last_success_iso).toLocaleString("en-GB", { hour12: false }).replace(",", "")
+      : "never"));
+    L.push("  " + pad("Hours since") + (r.hours_since_success === null ? "-" : r.hours_since_success));
+    L.push("  " + pad("Failures in a row") + r.consecutive_failures);
+    if (r.last_error) L.push("  " + pad("Last error") + r.last_error);
+    L.push("");
+    L.push("  " + r.verdict);
+    console.log(L.join("\n"));
+  }
+  process.exit(r.ok ? 0 : 11);
+}
+
+// ── Price history: one sample per scan, so a chart can be drawn later ─────
+const MAX_HISTORY = 20000; // ~2 years of half-hourly samples
+
+function appendHistory(p) {
+  let h = { samples: [] };
+  if (fs.existsSync(P.history)) {
+    try { h = readJson(P.history); } catch { h = { samples: [] }; }
+  }
+  if (!Array.isArray(h.samples)) h.samples = [];
+  h.samples.push({
+    t: p.fetched_at_iso,
+    spot: Number(p.spot.value.toFixed(2)),
+    thb_sell: p.thai.bar_sell,
+    thb_buy: p.thai.bar_buy,
+    fx: p.fx.value,
+    fair: p.fair_thb,
+  });
+  if (h.samples.length > MAX_HISTORY) h.samples = h.samples.slice(-MAX_HISTORY);
+  writeJson(P.history, h);
+  return h.samples.length;
 }
 
 // ── State: the price-watch memory ─────────────────────────────────────────
@@ -508,17 +688,26 @@ function prettyPrices(p) {
 }
 
 async function cmdPrices(a) {
-  try {
-    const p = await fetchPrices();
-    console.log(a.pretty || a.p ? prettyPrices(p) : JSON.stringify(p, null, 2));
-  } catch (e) { die(e.message); }
+  let p;
+  try { p = await fetchPrices(); }
+  catch (e) { recordHealth(false, e.message); die(e.message); }
+  recordHealth(true);
+  if (!a.nolog) appendHistory(p);
+  console.log(a.pretty || a.p ? prettyPrices(p) : JSON.stringify(p, null, 2));
 }
 
 // Threshold-gated scan: pure code, zero model usage. Callers run the model only
 // when this exits 10, which is the rare case.
 async function cmdScan(a) {
   let p;
-  try { p = await fetchPrices(); } catch (e) { die(e.message); }
+  try { p = await fetchPrices(); }
+  catch (e) {
+    const h = recordHealth(false, e.message);
+    console.error(`gw: ${e.message} (failures in a row: ${h.consecutive_failures})`);
+    process.exit(1);
+  }
+  recordHealth(true);
+  appendHistory(p);
   const d = decide(p.thai.bar_sell, p.spot.value, !!a.news);
   if (a.pretty) {
     console.log(prettyPrices(p));
@@ -651,6 +840,7 @@ switch (a._[0]) {
   case "check": cmdCheck(a); break;
   case "prices": await cmdPrices(a); break;
   case "scan": await cmdScan(a); break;
+  case "health": cmdHealth(a); break;
   case "state": cmdState(a); break;
   case "log": {
     const lf = readJson(P.log);

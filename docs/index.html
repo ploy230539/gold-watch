@@ -101,6 +101,19 @@
   .lvl .tag b{font-family:var(--font-mono);color:var(--ink);font-weight:600;}
   .lvl.now .tag b{color:var(--accent-ink);}
 
+  /* trend */
+  .tv-wrap{height:420px;border-radius:10px;overflow:hidden;border:1px solid var(--line-2);background:var(--surface-2);}
+  @media (max-width:640px){.tv-wrap{height:320px;}}
+  .chart-note{font-size:12px;color:var(--muted);margin-top:10px;}
+  .spark{width:100%;height:auto;aspect-ratio:900/240;display:block;}
+  .spark-empty{font-size:13px;color:var(--muted);padding:22px 4px;text-align:center;}
+  .chart-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+  .chart-tab{
+    font:600 12.5px var(--font-body);padding:6px 13px;border-radius:999px;cursor:pointer;
+    background:var(--surface-2);border:1px solid var(--line-2);color:var(--muted);
+  }
+  .chart-tab[aria-selected="true"]{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent;}
+
   /* read the game */
   .card.read{border-left:3px solid var(--accent);}
   .read p{margin:0 0 10px;font-size:14.5px;}
@@ -206,6 +219,34 @@
       <div class="val num">33.34</div>
       <span class="delta up">+0.14%</span>
       <div class="sub">Investing.com / XE.com · เก็บ 10:43 น. (เวลาไทย)</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h2">แนวโน้มราคา</div>
+    <div class="chart-tabs" role="tablist">
+      <button class="chart-tab" role="tab" aria-selected="true" data-panel="p-thai">ทองไทย · ที่เราจดเอง</button>
+      <button class="chart-tab" role="tab" aria-selected="false" data-panel="p-world">ทองโลก · แท่งเทียน</button>
+    </div>
+
+    <div class="card" id="p-thai">
+      <svg class="spark" viewBox="0 0 900 240" width="100%" height="240" preserveAspectRatio="xMidYMid meet" role="img" aria-label="กราฟราคาทองแท่งขายออกย้อนหลัง 4 จุด"><defs><linearGradient id="sparkfill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--bad)" stop-opacity="0.20"/><stop offset="100%" stop-color="var(--bad)" stop-opacity="0"/></linearGradient></defs><line x1="62" y1="214.0" x2="886" y2="214.0" stroke="var(--line-2)" stroke-width="1"/><text x="54" y="214.0" text-anchor="end" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-family="monospace">67,258</text><line x1="62" y1="148.0" x2="886" y2="148.0" stroke="var(--line-2)" stroke-width="1"/><text x="54" y="148.0" text-anchor="end" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-family="monospace">68,953</text><line x1="62" y1="82.0" x2="886" y2="82.0" stroke="var(--line-2)" stroke-width="1"/><text x="54" y="82.0" text-anchor="end" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-family="monospace">70,647</text><line x1="62" y1="16.0" x2="886" y2="16.0" stroke="var(--line-2)" stroke-width="1"/><text x="54" y="16.0" text-anchor="end" dominant-baseline="middle" font-size="11" fill="var(--muted)" font-family="monospace">72,342</text><path d="M62.0,35.2L285.5,54.6L844.3,194.8L886.0,183.2L886.0,214.0L62.0,214.0Z" fill="url(#sparkfill)"/><path d="M62.0,35.2L285.5,54.6L844.3,194.8L886.0,183.2" fill="none" stroke="var(--bad)" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/><circle cx="886.0" cy="183.2" r="4" fill="var(--bad)"/><text x="62" y="234" font-size="11" fill="var(--muted)">26 ส.ค.</text><text x="886" y="234" text-anchor="end" font-size="11" fill="var(--muted)">2 ก.ย.</text><text x="62" y="14" font-size="12" fill="var(--muted)">4 จุด · -3,800 บาท ในช่วงที่เก็บ</text></svg>
+      <div class="chart-note">
+        ราคาทองแท่งขายออกที่ระบบบันทึกไว้เองทุกรอบสแกน ไม่มีที่ไหนทำกราฟราคาสมาคมค้าทองคำให้
+        จึงเก็บเอง ยิ่งเวลาผ่านไปเส้นยิ่งยาวขึ้น
+      </div>
+    </div>
+
+    <div class="card" id="p-world" hidden>
+      <div class="tv-wrap">
+        <div class="tradingview-widget-container" style="height:100%;width:100%">
+          <div id="tv-chart" style="height:100%;width:100%"></div>
+        </div>
+      </div>
+      <div class="chart-note">
+        ทองโลก XAU/USD แบบแท่งเทียน ซูมและเปลี่ยนช่วงเวลาได้ กราฟจาก TradingView
+        โหลดในเบราว์เซอร์ของผู้อ่านเอง — ทองไทยขยับตามนี้ แต่ไม่เท่ากันเป๊ะ เพราะค่าเงินบาทเข้ามาเกี่ยวด้วย
+      </div>
     </div>
   </section>
 
@@ -323,5 +364,43 @@
     document.getElementById(id).addEventListener("input", calc);
   });
   calc();
+
+  // Chart tabs. The TradingView script is only fetched when that tab is first
+  // opened, so the page stays fast for readers who never look at world gold.
+  var tvLoaded = false;
+  function loadTV(){
+    if (tvLoaded) return;
+    tvLoaded = true;
+    var dark = document.documentElement.getAttribute("data-theme") === "dark" ||
+      (document.documentElement.getAttribute("data-theme") !== "light" &&
+       window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    var s = document.createElement("script");
+    s.src = "https://s3.tradingview.com/tv.js";
+    s.onload = function(){
+      if (!window.TradingView) return;
+      new TradingView.widget({
+        container_id: "tv-chart", symbol: "OANDA:XAUUSD", interval: "60",
+        timezone: "Asia/Bangkok", theme: dark ? "dark" : "light", style: "1",
+        locale: "th_TH", autosize: true, hide_side_toolbar: true,
+        allow_symbol_change: false, withdateranges: true,
+        studies: ["RSI@tv-basicstudies"]
+      });
+    };
+    s.onerror = function(){
+      document.getElementById("tv-chart").innerHTML =
+        '<div class="spark-empty">โหลดกราฟจาก TradingView ไม่ได้ ลองรีเฟรชหน้าอีกครั้ง</div>';
+    };
+    document.head.appendChild(s);
+  }
+  var tabs = document.querySelectorAll(".chart-tab");
+  Array.prototype.forEach.call(tabs, function(tab){
+    tab.addEventListener("click", function(){
+      Array.prototype.forEach.call(tabs, function(o){
+        o.setAttribute("aria-selected", String(o === tab));
+        document.getElementById(o.dataset.panel).hidden = (o !== tab);
+      });
+      if (tab.dataset.panel === "p-world") loadTV();
+    });
+  });
 })();
 </script>
