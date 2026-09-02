@@ -6,7 +6,8 @@
 //   node gw.mjs morning --in payload.json          fill due results + append today's row + build
 //   node gw.mjs publish [-m "msg"]                 commit + push to GitHub Pages
 //   node gw.mjs check   --thb N --xau N [--news]   compare against last alerted price -> alert?
-//   node gw.mjs prices                             fetch live prices from free APIs (no model)
+//     add --pretty to check / scan / prices / log for readable output instead of JSON
+//   node gw.mjs prices [--pretty]                  fetch live prices from free APIs (no model)
 //   node gw.mjs scan    [--news]                   prices + threshold check; exit 10 = alert needed
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
 //   node gw.mjs log                                print the track-record log as JSON
@@ -345,10 +346,43 @@ function decide(thb, xau, news) {
   };
 }
 
+function prettyDecision(d, title) {
+  const pad = (l) => l.padEnd(20, " ");
+  const money = (n, dp = 0) => num(n, dp).padStart(10, " ");
+  const when = new Date().toLocaleString("en-GB", { hour12: false }).replace(",", "");
+  const L = [];
+  L.push("  " + title + " ".repeat(Math.max(1, 39 - title.length)) + when);
+  L.push("  " + "=".repeat(58));
+  L.push("");
+  if (d.ref) {
+    const rt = new Date(d.ref.ts_iso).toLocaleString("en-GB", { hour12: false }).replace(",", "");
+    L.push("  " + pad("Last alerted at") + "THB " + money(d.ref.thb_sell) + "     XAU " + num(d.ref.xau, 2));
+    L.push("  " + " ".repeat(20) + "    " + " ".repeat(10) + "     " + rt);
+  } else {
+    L.push("  " + pad("Last alerted at") + "    (never - first reference point)");
+  }
+  L.push("  " + pad("Now") + "THB " + money(d.now.thb_sell) + "     XAU " + num(d.now.xau, 2));
+  L.push("");
+  if (d.thb_move !== null && d.thb_move !== undefined) {
+    L.push("  " + pad("Moved") + "THB " + signed(d.thb_move).padStart(10, " ") +
+           "     Spot " + pct(d.xau_pct));
+  }
+  L.push("");
+  const verdict = !d.alert ? "SILENT - nothing sent, no model used"
+    : d.push ? "ALERT - email + phone push + chat"
+    : "ALERT - email + chat (no phone push)";
+  L.push("  " + pad("Decision") + "    " + verdict);
+  L.push("  " + " ".repeat(20) + "    " + d.reason);
+  L.push("");
+  L.push("  " + pad("Subject code") + "    " + d.subject_code);
+  return L.join("\n");
+}
+
 function cmdCheck(a) {
   const thb = Number(a.thb), xau = Number(a.xau);
   if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("check requires --thb and --xau");
-  console.log(JSON.stringify(decide(thb, xau, !!a.news), null, 2));
+  const d = decide(thb, xau, !!a.news);
+  console.log(a.pretty ? prettyDecision(d, "ALERT CHECK") : JSON.stringify(d, null, 2));
 }
 
 function cmdState(a) {
@@ -434,9 +468,49 @@ async function fetchPrices() {
   };
 }
 
-async function cmdPrices() {
+// Human-readable rendering. Deliberately ASCII-only: the control panel shows this in a
+// monospace font that has no Thai glyphs, so the association's Thai timestamp is parsed
+// into digits rather than passed through.
+function prettyPrices(p) {
+  const pad = (label) => label.padEnd(20, " ");
+  const money = (n, d = 0) => num(n, d).padStart(10, " ");
+  const t = p.thai;
+
+  const m = t.announced.match(/(\d{2}\/\d{2}\/\d{4}).*?(\d{1,2}:\d{2}).*?(\d+)/);
+  const announced = m ? `${m[1]}  ${m[2]}  (round ${m[3]})` : t.announced;
+
+  const localTime = new Date(p.fetched_at_iso)
+    .toLocaleString("en-GB", { hour12: false }).replace(",", "");
+
+  const gap = p.premium_pct;
+  const read = gap > 1.2 ? "shops are charging a fat premium - poor moment to buy"
+    : gap < -1.2 ? "Thai price has not caught up with world gold yet"
+    : "normal, tracking world gold";
+
+  const L = [];
+  L.push("  LIVE PRICES" + " ".repeat(28) + localTime);
+  L.push("  " + "=".repeat(58));
+  L.push("");
+  L.push("  " + pad("Gold Spot") + "USD " + money(p.spot.value, 2));
+  L.push("  " + pad("USD/THB") + "    " + money(p.fx.value, 3) + "        as of " + p.fx.as_of);
+  L.push("");
+  L.push("  " + pad("Thai bar sell") + "THB " + money(t.bar_sell) + "     buy  THB " + num(t.bar_buy));
+  L.push("  " + pad("Thai ornament sell") + "THB " + money(t.orn_sell) + "     buy  THB " + num(t.orn_buy));
+  L.push("  " + pad("Announced") + "    " + announced);
+  L.push("");
+  L.push("  " + "-".repeat(58));
+  L.push("  " + pad("Fair price") + "THB " + money(p.fair_thb));
+  L.push("  " + pad("Premium vs fair") + "    " + pct(gap).padStart(10, " ") + "     " + read);
+  L.push("");
+  L.push("  " + pad("Shop spread") + "THB " + money(t.bar_sell - t.bar_buy) +
+         "     gold must clear this before a trade profits");
+  return L.join("\n");
+}
+
+async function cmdPrices(a) {
   try {
-    console.log(JSON.stringify(await fetchPrices(), null, 2));
+    const p = await fetchPrices();
+    console.log(a.pretty || a.p ? prettyPrices(p) : JSON.stringify(p, null, 2));
   } catch (e) { die(e.message); }
 }
 
@@ -446,8 +520,49 @@ async function cmdScan(a) {
   let p;
   try { p = await fetchPrices(); } catch (e) { die(e.message); }
   const d = decide(p.thai.bar_sell, p.spot.value, !!a.news);
-  console.log(JSON.stringify({ ...d, prices: p }, null, 2));
+  if (a.pretty) {
+    console.log(prettyPrices(p));
+    console.log("");
+    console.log(prettyDecision(d, "ALERT CHECK"));
+  } else {
+    console.log(JSON.stringify({ ...d, prices: p }, null, 2));
+  }
   process.exit(d.alert ? 10 : 0);
+}
+
+function prettyLog(rows) {
+  const done = rows.filter((r) => r.actual_result != null).length;
+  const L = [];
+  L.push("  TRACK RECORD");
+  L.push("  " + "=".repeat(58));
+  L.push("  " + rows.length + " rows, " + done + " with an actual result");
+  L.push("");
+  if (done < MIN_ROWS_FOR_STATS) {
+    L.push("  Below " + MIN_ROWS_FOR_STATS + " results, so no accuracy percentage is quoted -");
+    L.push("  a run of one-way market would flatter any call.");
+  } else {
+    const right = rows.filter((r) => /^\u2713/.test(String(r.actual_result))).length;
+    const wrong = rows.filter((r) => /^\u2717/.test(String(r.actual_result))).length;
+    L.push("  Right " + right + "   Wrong " + wrong + "   Draw " + (done - right - wrong) +
+           "   out of " + done + " - past results guarantee nothing.");
+  }
+  L.push("");
+  L.push("  DATE        CALL   SPOT        THAI BAR    OUTCOME");
+  L.push("  " + "-".repeat(58));
+  for (const r of [...rows].reverse()) {
+    const call = String(r.call).toUpperCase().padEnd(6, " ");
+    const spot = ("$" + num(r.spot, 0)).padStart(9, " ");
+    const thb = num(r.thb_sell).padStart(10, " ");
+    let res = "pending, due " + (r.actual_due_display || "?");
+    if (r.actual_result != null) {
+      const a = String(r.actual_result);
+      const mark = a.startsWith("\u2713") ? "RIGHT" : a.startsWith("\u2717") ? "WRONG" : "DRAW ";
+      const move = a.match(/\(([+-][\d,]+),\s*([+-][\d.]+%)\)/);
+      res = mark + (move ? "  " + move[1] + " THB  " + move[2] : "");
+    }
+    L.push("  " + String(r.date_iso).padEnd(12, " ") + call + spot + "  " + thb + "  " + res);
+  }
+  return L.join("\n");
 }
 
 // ── build / morning / publish ──────────────────────────────────────────────
@@ -534,10 +649,14 @@ switch (a._[0]) {
   case "morning": cmdBuild(a, { updateLog: true }); break;
   case "publish": cmdPublish(a); break;
   case "check": cmdCheck(a); break;
-  case "prices": await cmdPrices(); break;
+  case "prices": await cmdPrices(a); break;
   case "scan": await cmdScan(a); break;
   case "state": cmdState(a); break;
-  case "log": console.log(fs.readFileSync(P.log, "utf8")); break;
+  case "log": {
+    const lf = readJson(P.log);
+    console.log(a.pretty ? prettyLog(lf.rows) : JSON.stringify(lf, null, 2));
+    break;
+  }
   default:
     console.log(fs.readFileSync(new URL(import.meta.url)).toString().split("\n")
       .slice(1, 14).map((l) => l.replace(/^\/\/ ?/, "")).join("\n"));

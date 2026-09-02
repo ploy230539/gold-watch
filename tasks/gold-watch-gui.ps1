@@ -173,11 +173,11 @@ AddButton $g1 "Publish to web" 190 28 165 {
 } | Out-Null
 
 AddButton $g1 "View track record" 364 28 165 {
-  Run "Track record log" "node gw.mjs log"
+  Run "Track record log" "node gw.mjs log --pretty"
 } | Out-Null
 
 AddButton $g1 "Live prices (free)" 236 116 210 {
-  Run "Live prices - no model used" "node gw.mjs prices"
+  Run "Live prices - no model used" "node gw.mjs prices --pretty"
 } | Out-Null
 
 AddButton $g1 "Open dashboard" 538 28 155 {
@@ -222,7 +222,7 @@ AddButton $g1 "Check alert thresholds" 444 72 175 {
     return
   }
   $news = if ($chkNews.Checked) { " --news" } else { "" }
-  Run "Check alert thresholds" "node gw.mjs check --thb $t --xau $x$news"
+  Run "Check alert thresholds" "node gw.mjs check --thb $t --xau $x$news --pretty"
 } | Out-Null
 
 # -- group 2: scheduled jobs -----------------------------------------------

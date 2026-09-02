@@ -26,13 +26,22 @@ page said on any given day. The old setup simply overwrote itself each run.
 | `payload.example.json` | Fully commented example payload |
 | `tasks/` | The three job prompts, the runner, and the Task Scheduler installer |
 | `Gold Watch.cmd` | Control panel window (double-click to open) |
+| `gold-watch.ico` | App icon used by the desktop shortcut |
 | `docs/index.html` | What GitHub Pages serves — generated only, never edit by hand |
 
 ---
 
 ## Control panel
 
-Double-click `Gold Watch.cmd`. Every action has a button — no typing required.
+Double-click the **Gold Watch** icon on the desktop (or `Gold Watch.cmd` in this folder).
+Every action has a button — no typing required. To recreate the desktop shortcut:
+
+```bash
+powershell -ExecutionPolicy Bypass -File tasks\create-desktop-shortcut.ps1
+```
+
+Readable output is the default in the panel; every command also has a raw JSON form for
+scripts — drop `--pretty` to get it.
 
 ---
 
@@ -46,7 +55,8 @@ node gw.mjs check --thb 71500 --xau 4620 # has it moved enough to alert?
 node gw.mjs state set --thb 71500 --xau 4620   # record the price just alerted on
 node gw.mjs state get                    # show the current reference price
 node gw.mjs log                          # print the track record as JSON
-node gw.mjs prices                       # live prices from free APIs, no model
+node gw.mjs prices --pretty              # live prices from free APIs, no model
+node gw.mjs check --thb N --xau N --pretty     # readable instead of JSON
 node gw.mjs scan                         # prices + thresholds; exit 10 = alert needed
 ```
 
