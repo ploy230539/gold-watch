@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-03T06:32:12.200Z",
-    "thb_sell": 69150,
-    "xau": 4421.799805,
-    "note": "Gold spot -0.32% on Fed rate-hike expectations (Warsh comments) and Middle East escalation; THB bar sell -150"
+    "ts_iso": "2026-09-03T09:03:40.022Z",
+    "thb_sell": 69300,
+    "xau": 4437.5,
+    "note": "alert: +150 THB from last alert, gold rebound on US yield pullback"
   },
   "history": [
     {
@@ -47,6 +47,12 @@
       "thb_sell": 69150,
       "xau": 4421.799805,
       "note": "Gold spot -0.32% on Fed rate-hike expectations (Warsh comments) and Middle East escalation; THB bar sell -150"
+    },
+    {
+      "ts_iso": "2026-09-03T09:03:40.022Z",
+      "thb_sell": 69300,
+      "xau": 4437.5,
+      "note": "alert: +150 THB from last alert, gold rebound on US yield pullback"
     }
   ]
 }
