@@ -13,11 +13,13 @@
 //   node gw.mjs log                                print the track-record log as JSON
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
 //   node gw.mjs targets                            list the price targets being watched
+//   node gw.mjs email --in content.json            render an email from the fixed template
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import { renderEmail, renderPlain } from "./email.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const P = {
@@ -831,6 +833,28 @@ function prettyLog(rows) {
   return L.join("\n");
 }
 
+// ── Email rendering ──────────────────────────────────────────────────────
+// The model writes content only; email.mjs owns the layout, so every message
+// looks the same as the last one instead of being redesigned each run.
+function cmdEmail(a) {
+  if (!a.in) die("--in <content.json> is required");
+  const d = readJson(path.resolve(a.in));
+  if (!d.headline) die("email content needs a headline");
+  const html = renderEmail(d);
+  const out = a.out ? path.resolve(a.out) : path.join(ROOT, "logs", "email.html");
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, html);
+  const txt = out.replace(/\.html?$/i, "") + ".txt";
+  fs.writeFileSync(txt, renderPlain(d));
+  console.log(JSON.stringify({
+    ok: true,
+    html: path.relative(ROOT, out),
+    text: path.relative(ROOT, txt),
+    bytes: html.length,
+    hint: "send with the Gmail tool: htmlBody = contents of the html file, body = contents of the txt file",
+  }, null, 2));
+}
+
 // ── build / morning / publish ──────────────────────────────────────────────
 function cmdBuild(a, { updateLog = false } = {}) {
   if (!a.in) die("--in <payload.json> is required");
@@ -919,6 +943,7 @@ switch (a._[0]) {
   case "scan": await cmdScan(a); break;
   case "health": cmdHealth(a); break;
   case "targets": cmdTargets(); break;
+  case "email": cmdEmail(a); break;
   case "state": cmdState(a); break;
   case "log": {
     const lf = readJson(P.log);

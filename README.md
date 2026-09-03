@@ -19,7 +19,8 @@ page said on any given day. The old setup simply overwrote itself each run.
 
 | Path | What it is |
 |---|---|
-| `template.html` | Dashboard template with 44 `{{...}}` placeholders (copied from Drive, structure untouched) |
+| `template.html` | Dashboard template with `{{...}}` placeholders |
+| `email.mjs` | Email layout — the model supplies content, this owns every pixel |
 | `gw.mjs` | The whole tool, one file, no dependencies |
 | `data/log.json` | Track record — the call given each day, plus the actual outcome |
 | `data/state.json` | Price-watch memory — the last price an alert was sent for |
@@ -130,6 +131,17 @@ Relative thresholds answer "did something happen"; targets answer "did the level
 about get reached", which is the question people actually set alarms for. A target hit
 always sends both an email and a push — you asked to be told. Unparseable lines are
 reported in the alert rather than silently ignored, so a typo cannot sit there never firing.
+
+### Emails
+
+`node gw.mjs email --in content.json --out logs/email.html` renders the message from a
+fixed layout in `email.mjs` and writes a plain-text alternative beside it. The jobs send
+the HTML file as `htmlBody` and the text file as `body`.
+
+The look used to drift every run because the model rebuilt the layout from scratch each
+time. It does not any more: content is the model's job, layout is the template's. Inline
+styles and table layout throughout, because Gmail strips `<style>` blocks in several of
+its clients.
 
 ### Health — silence must not be ambiguous
 

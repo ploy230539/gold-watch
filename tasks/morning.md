@@ -45,13 +45,41 @@ and fix the payload — never skip the validation step.
 the misses as prominently as the hits.
 
 **5. Send the morning email.**
-**Recipients** — send to every address listed in `data/recipients.txt`
-(one per line; ignore blank lines and lines starting with `#`).
-Read that file at send time. Do not hard-code addresses.
-Write it in polite, neutral Thai — the voice of a friendly analyst. **Never use มึง/กู**;
-other people read this mail.
-The "view full dashboard" button/link points to https://ploy230539.github.io/gold-watch/
-Mention that the link opens without any login. Close with the disclaimer that this is not
-investment advice.
+**Recipients** — every address listed in `data/recipients.txt`
+(one per line; ignore blank lines and lines starting with `#`). Read it at send time.
+Do not hard-code addresses.
+
+**Build the email from the fixed template — never hand-write the HTML.**
+Write the content as JSON to `logs/email-content.json`, then run:
+
+    node gw.mjs email --in logs/email-content.json --out logs/email.html
+
+Content fields:
+- `eyebrow`   small gold line above the headline, e.g. "สรุปทองเช้า · 2 กันยายน 2569"
+- `headline`  the one thing the reader should take away, one sentence
+- `lead`      optional short paragraph under the header
+- `rows`      the price table: `[{"label","value","change","dir"}]` where `dir` is
+              `up` / `down` / `flat` and `change` is the bracketed part, e.g. "-1,600 บาท"
+- `footnote`  small print under the table — USD/THB and which announcement round the
+              Thai price came from, with its time
+- `sections`  `[{"heading","paragraphs":[],"bullets":[{"sign":"plus|minus|flat","text"}],
+              "rows":[],"note":"..."}]` — `note` renders as the warm highlighted box,
+              use it for the "this view is wrong if..." line
+- `dashboard_url` "https://ploy230539.github.io/gold-watch/"
+
+Then send with the Gmail tool: `htmlBody` = the contents of `logs/email.html`,
+`body` = the contents of `logs/email.txt` (the plain-text alternative it writes alongside).
+
+The template owns every colour, font and spacing decision. Do not restyle it, do not
+inline your own HTML, and do not skip it — it exists so every email looks the same as
+the last one.
+
+Write the words in polite, neutral Thai — the voice of a friendly analyst.
+**Never use มึง/กู**; other people read this mail. Mention that the dashboard link
+opens without any login.
+
+Sections to include, in this order: **ทำไมขยับ** (bullets, real news only),
+**ตัวเลขที่ต้องจ้อง** (support/resistance rows), **ข่าวที่ต้องระวัง** (calendar),
+**อ่านเกม** (buy / hold / wait with the reason, and the "wrong if..." line as `note`).
 
 **6. Check the push criteria** from the skill. Send a push only if they are met.

@@ -24,6 +24,12 @@ implying the system is still down.
 
 Subject: `⚠️ Gold Watch หยุดเฝ้าราคา — ตรวจสอบด่วน`
 
+Build it with the same fixed template as every other Gold Watch email:
+write the content to `logs/email-content.json`, run
+`node gw.mjs email --in logs/email-content.json --out logs/email.html`,
+then send `logs/email.html` as `htmlBody` and `logs/email.txt` as `body`.
+Use eyebrow "GOLD WATCH · แจ้งปัญหาระบบ" and leave `rows` empty.
+
 Body, in polite neutral Thai, **no มึง/กู**:
 - state plainly that the system has not been able to check prices since <time>,
   and that no alert during that window means nothing about the market
