@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-03T04:31:44.795Z",
-    "thb_sell": 69300,
-    "xau": 4436.100098,
-    "note": "email+chat alert: +150 THB move, no clear single news driver, likely short technical bounce amid Fed rate/dollar volatility"
+    "ts_iso": "2026-09-03T06:32:12.200Z",
+    "thb_sell": 69150,
+    "xau": 4421.799805,
+    "note": "Gold spot -0.32% on Fed rate-hike expectations (Warsh comments) and Middle East escalation; THB bar sell -150"
   },
   "history": [
     {
@@ -41,6 +41,12 @@
       "thb_sell": 69300,
       "xau": 4436.100098,
       "note": "email+chat alert: +150 THB move, no clear single news driver, likely short technical bounce amid Fed rate/dollar volatility"
+    },
+    {
+      "ts_iso": "2026-09-03T06:32:12.200Z",
+      "thb_sell": 69150,
+      "xau": 4421.799805,
+      "note": "Gold spot -0.32% on Fed rate-hike expectations (Warsh comments) and Middle East escalation; THB bar sell -150"
     }
   ]
 }
