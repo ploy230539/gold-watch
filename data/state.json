@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-02T14:02:51.680Z",
-    "thb_sell": 68050,
-    "xau": 4382.1,
-    "note": "Spot +1.63% vs last alert (4312->4382); Fed hawkish repricing vs ME geopolitical/safe-haven tug-of-war, no single fresh headline"
+    "ts_iso": "2026-09-03T02:31:59.582Z",
+    "thb_sell": 69150,
+    "xau": 4411.299805,
+    "note": "Rebound after Warsh-driven rate-hike bets selloff; USD/yields pulled back ahead of Friday payrolls"
   },
   "history": [
     {
@@ -29,6 +29,12 @@
       "thb_sell": 68050,
       "xau": 4382.1,
       "note": "Spot +1.63% vs last alert (4312->4382); Fed hawkish repricing vs ME geopolitical/safe-haven tug-of-war, no single fresh headline"
+    },
+    {
+      "ts_iso": "2026-09-03T02:31:59.582Z",
+      "thb_sell": 69150,
+      "xau": 4411.299805,
+      "note": "Rebound after Warsh-driven rate-hike bets selloff; USD/yields pulled back ahead of Friday payrolls"
     }
   ]
 }
