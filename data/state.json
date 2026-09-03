@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-03T02:31:59.582Z",
-    "thb_sell": 69150,
-    "xau": 4411.299805,
-    "note": "Rebound after Warsh-driven rate-hike bets selloff; USD/yields pulled back ahead of Friday payrolls"
+    "ts_iso": "2026-09-03T04:31:44.795Z",
+    "thb_sell": 69300,
+    "xau": 4436.100098,
+    "note": "email+chat alert: +150 THB move, no clear single news driver, likely short technical bounce amid Fed rate/dollar volatility"
   },
   "history": [
     {
@@ -35,6 +35,12 @@
       "thb_sell": 69150,
       "xau": 4411.299805,
       "note": "Rebound after Warsh-driven rate-hike bets selloff; USD/yields pulled back ahead of Friday payrolls"
+    },
+    {
+      "ts_iso": "2026-09-03T04:31:44.795Z",
+      "thb_sell": 69300,
+      "xau": 4436.100098,
+      "note": "email+chat alert: +150 THB move, no clear single news driver, likely short technical bounce amid Fed rate/dollar volatility"
     }
   ]
 }
