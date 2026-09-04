@@ -64,6 +64,22 @@
       "actual_result": null,
       "actual_due_iso": "2026-09-08",
       "actual_due_display": "8 ก.ย. 69"
+    },
+    {
+      "date_display": "4 ก.ย. 69",
+      "date_iso": "2026-09-04",
+      "spot": 4487.4,
+      "thb_sell": 69200,
+      "call": "wait",
+      "resistance_usd": 4500,
+      "resistance_thb": 70200,
+      "support_usd_low": 4400,
+      "support_usd_high": 4450,
+      "support_thb": 68640,
+      "invalid_note": "ถ้า Spot ทะลุ $4,500 ขึ้นไปได้แรงๆ และยืนได้ (ราว ฿70,200) = ขาขึ้นต่อ เล็งซื้อได้ / แต่ถ้าหลุด $4,400 ลงมาแรงๆ (หรือทองไทยหลุด ฿68,640) แปลว่าแรงเด้งนี้จบแล้ว ควรรอราคาลงต่อ",
+      "actual_result": null,
+      "actual_due_iso": "2026-09-09",
+      "actual_due_display": "9 ก.ย. 69"
     }
   ]
 }
