@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-04T02:04:02.097Z",
-    "thb_sell": 69150,
-    "xau": 4479.700195,
-    "note": "email+chat alert: -150 THB move despite +0.95% XAU rise; baht strengthened 33.23->32.99 offsetting global gains, round 28 (17:17) settled lower"
+    "ts_iso": "2026-09-04T02:36:58.936Z",
+    "thb_sell": 69800,
+    "xau": 4473.600098,
+    "note": "Thai gold +650 THB in ~30min within round 1 (09:00) as world gold rally from Iran re-escalation fears / soft USD carries through"
   },
   "history": [
     {
@@ -59,6 +59,12 @@
       "thb_sell": 69150,
       "xau": 4479.700195,
       "note": "email+chat alert: -150 THB move despite +0.95% XAU rise; baht strengthened 33.23->32.99 offsetting global gains, round 28 (17:17) settled lower"
+    },
+    {
+      "ts_iso": "2026-09-04T02:36:58.936Z",
+      "thb_sell": 69800,
+      "xau": 4473.600098,
+      "note": "Thai gold +650 THB in ~30min within round 1 (09:00) as world gold rally from Iran re-escalation fears / soft USD carries through"
     }
   ]
 }
