@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-04T09:32:35.138Z",
-    "thb_sell": 69650,
-    "xau": 4465.700195,
-    "note": "Thai gold -150 THB from last alert; dollar firmed ahead of Aug NFP, consolidating after 2-day advance"
+    "ts_iso": "2026-09-07T02:44:44.347Z",
+    "thb_sell": 68750,
+    "xau": 4414.3,
+    "note": "morning brief: NFP เดือน ส.ค. แรงเกินคาด (+162k) หนุนโอกาสเฟดขึ้นดอกเบี้ยเป็น ~65%; ทองร่วง -900 บาท / -1.15% จากจุดแจ้งเตือนล่าสุด"
   },
   "history": [
     {
@@ -71,6 +71,12 @@
       "thb_sell": 69650,
       "xau": 4465.700195,
       "note": "Thai gold -150 THB from last alert; dollar firmed ahead of Aug NFP, consolidating after 2-day advance"
+    },
+    {
+      "ts_iso": "2026-09-07T02:44:44.347Z",
+      "thb_sell": 68750,
+      "xau": 4414.3,
+      "note": "morning brief: NFP เดือน ส.ค. แรงเกินคาด (+162k) หนุนโอกาสเฟดขึ้นดอกเบี้ยเป็น ~65%; ทองร่วง -900 บาท / -1.15% จากจุดแจ้งเตือนล่าสุด"
     }
   ]
 }
