@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-08T05:02:48.008Z",
-    "thb_sell": 69050,
-    "xau": 4440.600098,
-    "note": "Gulf/Iran tension safe-haven bid outweighed hawkish Fed odds from strong Aug jobs data"
+    "ts_iso": "2026-09-08T06:02:17.002Z",
+    "thb_sell": 68850,
+    "xau": 4421.200195,
+    "note": "US jobs data (NFP +162k) still weighing on gold, dollar strength"
   },
   "history": [
     {
@@ -95,6 +95,12 @@
       "thb_sell": 69050,
       "xau": 4440.600098,
       "note": "Gulf/Iran tension safe-haven bid outweighed hawkish Fed odds from strong Aug jobs data"
+    },
+    {
+      "ts_iso": "2026-09-08T06:02:17.002Z",
+      "thb_sell": 68850,
+      "xau": 4421.200195,
+      "note": "US jobs data (NFP +162k) still weighing on gold, dollar strength"
     }
   ]
 }
