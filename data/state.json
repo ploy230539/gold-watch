@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-08T02:34:56.093Z",
-    "thb_sell": 68800,
-    "xau": 4426.299805,
-    "note": "Thai gold +250 THB (announcement round 2, 09:13) vs last alert; global spot roughly flat/-0.18%, move mostly domestic catch-up to fair value; gold week pressured by strong US NFP raising Fed hike odds"
+    "ts_iso": "2026-09-08T05:02:48.008Z",
+    "thb_sell": 69050,
+    "xau": 4440.600098,
+    "note": "Gulf/Iran tension safe-haven bid outweighed hawkish Fed odds from strong Aug jobs data"
   },
   "history": [
     {
@@ -89,6 +89,12 @@
       "thb_sell": 68800,
       "xau": 4426.299805,
       "note": "Thai gold +250 THB (announcement round 2, 09:13) vs last alert; global spot roughly flat/-0.18%, move mostly domestic catch-up to fair value; gold week pressured by strong US NFP raising Fed hike odds"
+    },
+    {
+      "ts_iso": "2026-09-08T05:02:48.008Z",
+      "thb_sell": 69050,
+      "xau": 4440.600098,
+      "note": "Gulf/Iran tension safe-haven bid outweighed hawkish Fed odds from strong Aug jobs data"
     }
   ]
 }
