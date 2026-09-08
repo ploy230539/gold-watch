@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-08T01:33:39.339Z",
-    "thb_sell": 68550,
-    "xau": 4434.3,
-    "note": "ทองไทยลด 200 บาท สวนทาง Spot โลกที่ขึ้น 0.45% (แรงหนุนจากตะวันออกกลาง/จีนซื้อทอง vs แรงกดจาก NFP สหรัฐฯ; ราคาไทยยังไม่มีรอบประกาศใหม่)"
+    "ts_iso": "2026-09-08T02:34:56.093Z",
+    "thb_sell": 68800,
+    "xau": 4426.299805,
+    "note": "Thai gold +250 THB (announcement round 2, 09:13) vs last alert; global spot roughly flat/-0.18%, move mostly domestic catch-up to fair value; gold week pressured by strong US NFP raising Fed hike odds"
   },
   "history": [
     {
@@ -83,6 +83,12 @@
       "thb_sell": 68550,
       "xau": 4434.3,
       "note": "ทองไทยลด 200 บาท สวนทาง Spot โลกที่ขึ้น 0.45% (แรงหนุนจากตะวันออกกลาง/จีนซื้อทอง vs แรงกดจาก NFP สหรัฐฯ; ราคาไทยยังไม่มีรอบประกาศใหม่)"
+    },
+    {
+      "ts_iso": "2026-09-08T02:34:56.093Z",
+      "thb_sell": 68800,
+      "xau": 4426.299805,
+      "note": "Thai gold +250 THB (announcement round 2, 09:13) vs last alert; global spot roughly flat/-0.18%, move mostly domestic catch-up to fair value; gold week pressured by strong US NFP raising Fed hike odds"
     }
   ]
 }
