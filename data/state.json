@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-08T06:02:17.002Z",
-    "thb_sell": 68850,
-    "xau": 4421.200195,
-    "note": "US jobs data (NFP +162k) still weighing on gold, dollar strength"
+    "ts_iso": "2026-09-08T06:31:53.840Z",
+    "thb_sell": 68650,
+    "xau": 4402,
+    "note": "Fed rate-hike bets after strong US jobs data pushed dollar up, gold down -0.43%/-200 THB"
   },
   "history": [
     {
@@ -101,6 +101,12 @@
       "thb_sell": 68850,
       "xau": 4421.200195,
       "note": "US jobs data (NFP +162k) still weighing on gold, dollar strength"
+    },
+    {
+      "ts_iso": "2026-09-08T06:31:53.840Z",
+      "thb_sell": 68650,
+      "xau": 4402,
+      "note": "Fed rate-hike bets after strong US jobs data pushed dollar up, gold down -0.43%/-200 THB"
     }
   ]
 }
