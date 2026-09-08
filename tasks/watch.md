@@ -39,7 +39,7 @@ Do not hard-code addresses.
 **Build the email from the fixed template — never hand-write the HTML.**
 Write the content as JSON to `logs/email-content.json`, then run:
 
-    node gw.mjs email --in logs/email-content.json --out logs/email.html
+    node gw.mjs email --in logs/email-content.json
 
 Content fields:
 - `eyebrow`   small gold line above the headline, e.g. "GOLD MOVE · 2 ก.ย. 2569 · 11:08 น."
@@ -54,8 +54,22 @@ Content fields:
               use it for the "this view is wrong if..." line
 - `dashboard_url` "https://ploy230539.github.io/gold-watch/"
 
-Then send with the Gmail tool: `htmlBody` = the contents of `logs/email.html`,
-`body` = the contents of `logs/email.txt` (the plain-text alternative it writes alongside).
+### Sending — get this exactly right
+
+The command writes two files, each named after the Gmail parameter it belongs in:
+
+| File | Goes in |
+|---|---|
+| `logs/email.htmlBody.html` | `htmlBody` |
+| `logs/email.body.txt` | `body` |
+
+Read both files and pass their full contents to the Gmail send tool in those two
+parameters. **Never put the HTML into `body`.** If you do, the recipients open the mail
+and see a wall of raw markup instead of the message — this has happened before, and it
+is the single easiest way to ruin an otherwise correct run.
+
+Before sending, check yourself: does the value you are putting in `body` start with
+plain Thai text (correct) or with `<!doctype html>` (wrong)?
 
 The template owns every colour, font and spacing decision. Do not restyle it, do not
 inline your own HTML, and do not skip it — it exists so every email looks the same as

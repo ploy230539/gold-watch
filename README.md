@@ -134,9 +134,12 @@ reported in the alert rather than silently ignored, so a typo cannot sit there n
 
 ### Emails
 
-`node gw.mjs email --in content.json --out logs/email.html` renders the message from a
-fixed layout in `email.mjs` and writes a plain-text alternative beside it. The jobs send
-the HTML file as `htmlBody` and the text file as `body`.
+`node gw.mjs email --in content.json` renders the message from a fixed layout in
+`email.mjs` and writes two files, each named after the Gmail parameter it belongs in:
+`logs/email.htmlBody.html` and `logs/email.body.txt`.
+
+The names are deliberate. A run once sent the HTML in `body`, and the recipients opened
+the mail to a wall of raw markup, so the filenames now say where each one goes.
 
 The look used to drift every run because the model rebuilt the layout from scratch each
 time. It does not any more: content is the model's job, layout is the template's. Inline

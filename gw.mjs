@@ -841,17 +841,24 @@ function cmdEmail(a) {
   const d = readJson(path.resolve(a.in));
   if (!d.headline) die("email content needs a headline");
   const html = renderEmail(d);
-  const out = a.out ? path.resolve(a.out) : path.join(ROOT, "logs", "email.html");
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, html);
-  const txt = out.replace(/\.html?$/i, "") + ".txt";
-  fs.writeFileSync(txt, renderPlain(d));
+  // The files are named after the Gmail parameter each one belongs in. Putting the
+  // HTML in `body` sends the reader a screenful of raw markup, which is exactly the
+  // mistake these names exist to prevent.
+  const dir = a.out ? path.dirname(path.resolve(a.out)) : path.join(ROOT, "logs");
+  const htmlFile = path.join(dir, "email.htmlBody.html");
+  const textFile = path.join(dir, "email.body.txt");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(htmlFile, html);
+  fs.writeFileSync(textFile, renderPlain(d));
   console.log(JSON.stringify({
     ok: true,
-    html: path.relative(ROOT, out),
-    text: path.relative(ROOT, txt),
+    send_like_this: {
+      htmlBody: "<the entire contents of " + path.relative(ROOT, htmlFile) + ">",
+      body: "<the entire contents of " + path.relative(ROOT, textFile) + ">",
+    },
+    warning: "htmlBody takes the .html file. Never put HTML into `body` - the reader " +
+             "would see raw markup instead of the message.",
     bytes: html.length,
-    hint: "send with the Gmail tool: htmlBody = contents of the html file, body = contents of the txt file",
   }, null, 2));
 }
 

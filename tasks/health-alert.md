@@ -24,10 +24,13 @@ implying the system is still down.
 
 Subject: `⚠️ Gold Watch หยุดเฝ้าราคา — ตรวจสอบด่วน`
 
-Build it with the same fixed template as every other Gold Watch email:
-write the content to `logs/email-content.json`, run
-`node gw.mjs email --in logs/email-content.json --out logs/email.html`,
-then send `logs/email.html` as `htmlBody` and `logs/email.txt` as `body`.
+Build it with the same fixed template as every other Gold Watch email: write the content
+to `logs/email-content.json`, then run `node gw.mjs email --in logs/email-content.json`.
+
+That writes two files named after the parameter each belongs in — send
+`logs/email.htmlBody.html` as `htmlBody` and `logs/email.body.txt` as `body`.
+**Never put the HTML into `body`**; the reader would see raw markup.
+
 Use eyebrow "GOLD WATCH · แจ้งปัญหาระบบ" and leave `rows` empty.
 
 Body, in polite neutral Thai, **no มึง/กู**:
