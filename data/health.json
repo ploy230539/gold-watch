@@ -1,7 +1,7 @@
 {
-  "last_success_iso": "2026-09-08T06:30:02.950Z",
-  "last_failure_iso": "2026-09-08T04:30:16.510Z",
-  "last_error": null,
-  "consecutive_failures": 0,
+  "last_success_iso": "2026-09-08T15:00:02.420Z",
+  "last_failure_iso": "2026-09-09T01:00:37.267Z",
+  "last_error": "could not fetch prices — thai: HTTP 500",
+  "consecutive_failures": 3,
   "last_notified_stale_iso": null
 }
