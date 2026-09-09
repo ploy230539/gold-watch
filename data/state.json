@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-08T06:31:53.840Z",
-    "thb_sell": 68650,
-    "xau": 4402,
-    "note": "Fed rate-hike bets after strong US jobs data pushed dollar up, gold down -0.43%/-200 THB"
+    "ts_iso": "2026-09-09T02:32:43.504Z",
+    "thb_sell": 68150,
+    "xau": 4373.5,
+    "note": "Real yields up pre-Fed outweighed ME safe-haven bid + profit-taking after Aug rally"
   },
   "history": [
     {
@@ -107,6 +107,12 @@
       "thb_sell": 68650,
       "xau": 4402,
       "note": "Fed rate-hike bets after strong US jobs data pushed dollar up, gold down -0.43%/-200 THB"
+    },
+    {
+      "ts_iso": "2026-09-09T02:32:43.504Z",
+      "thb_sell": 68150,
+      "xau": 4373.5,
+      "note": "Real yields up pre-Fed outweighed ME safe-haven bid + profit-taking after Aug rally"
     }
   ]
 }
