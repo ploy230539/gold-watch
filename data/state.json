@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-09T02:32:43.504Z",
-    "thb_sell": 68150,
-    "xau": 4373.5,
-    "note": "Real yields up pre-Fed outweighed ME safe-haven bid + profit-taking after Aug rally"
+    "ts_iso": "2026-09-09T06:02:09.158Z",
+    "thb_sell": 68400,
+    "xau": 4400.600098,
+    "note": "Mideast tensions lifting oil/safe-haven demand vs firmer Fed rate-hike odds (~60%)"
   },
   "history": [
     {
@@ -113,6 +113,12 @@
       "thb_sell": 68150,
       "xau": 4373.5,
       "note": "Real yields up pre-Fed outweighed ME safe-haven bid + profit-taking after Aug rally"
+    },
+    {
+      "ts_iso": "2026-09-09T06:02:09.158Z",
+      "thb_sell": 68400,
+      "xau": 4400.600098,
+      "note": "Mideast tensions lifting oil/safe-haven demand vs firmer Fed rate-hike odds (~60%)"
     }
   ]
 }
