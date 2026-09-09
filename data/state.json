@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-09T06:02:09.158Z",
-    "thb_sell": 68400,
-    "xau": 4400.600098,
-    "note": "Mideast tensions lifting oil/safe-haven demand vs firmer Fed rate-hike odds (~60%)"
+    "ts_iso": "2026-09-09T08:02:23.968Z",
+    "thb_sell": 68550,
+    "xau": 4409.700195,
+    "note": "Iran/Strait of Hormuz safe-haven demand vs Fed hike bets from strong jobs data; +150 THB alert"
   },
   "history": [
     {
@@ -119,6 +119,12 @@
       "thb_sell": 68400,
       "xau": 4400.600098,
       "note": "Mideast tensions lifting oil/safe-haven demand vs firmer Fed rate-hike odds (~60%)"
+    },
+    {
+      "ts_iso": "2026-09-09T08:02:23.968Z",
+      "thb_sell": 68550,
+      "xau": 4409.700195,
+      "note": "Iran/Strait of Hormuz safe-haven demand vs Fed hike bets from strong jobs data; +150 THB alert"
     }
   ]
 }
