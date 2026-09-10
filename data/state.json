@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-10T06:34:21.591Z",
-    "thb_sell": 68800,
-    "xau": 4418,
-    "note": "Thai gold -200 THB from last alert; spot -0.28%, no single clear driver, likely short-term profit-taking ahead of US PPI/CPI and Sept 16 Fed decision"
+    "ts_iso": "2026-09-10T08:02:03.387Z",
+    "thb_sell": 68650,
+    "xau": 4412.5,
+    "note": "gold -150 THB from 68800, small pullback, US yields ~4.75% + Iran tanker strike volatility, no push"
   },
   "history": [
     {
@@ -149,6 +149,12 @@
       "thb_sell": 68800,
       "xau": 4418,
       "note": "Thai gold -200 THB from last alert; spot -0.28%, no single clear driver, likely short-term profit-taking ahead of US PPI/CPI and Sept 16 Fed decision"
+    },
+    {
+      "ts_iso": "2026-09-10T08:02:03.387Z",
+      "thb_sell": 68650,
+      "xau": 4412.5,
+      "note": "gold -150 THB from 68800, small pullback, US yields ~4.75% + Iran tanker strike volatility, no push"
     }
   ]
 }
