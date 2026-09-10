@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-10T02:32:35.154Z",
-    "thb_sell": 68700,
-    "xau": 4417,
-    "note": "แจ้งเตือน +150 บาท จากประกาศรอบที่ 1 (10 ก.ย. 69) ดอลลาร์อ่อน รอ CPI/เฟด"
+    "ts_iso": "2026-09-10T05:33:09.633Z",
+    "thb_sell": 68850,
+    "xau": 4419.700195,
+    "note": "Thai gold +150 THB from last alert; spot flat +0.06%, mostly routine round update, market awaiting US PPI/CPI and Sept 16 Fed decision"
   },
   "history": [
     {
@@ -131,6 +131,12 @@
       "thb_sell": 68700,
       "xau": 4417,
       "note": "แจ้งเตือน +150 บาท จากประกาศรอบที่ 1 (10 ก.ย. 69) ดอลลาร์อ่อน รอ CPI/เฟด"
+    },
+    {
+      "ts_iso": "2026-09-10T05:33:09.633Z",
+      "thb_sell": 68850,
+      "xau": 4419.700195,
+      "note": "Thai gold +150 THB from last alert; spot flat +0.06%, mostly routine round update, market awaiting US PPI/CPI and Sept 16 Fed decision"
     }
   ]
 }
