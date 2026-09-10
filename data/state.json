@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-09T08:02:23.968Z",
-    "thb_sell": 68550,
-    "xau": 4409.700195,
-    "note": "Iran/Strait of Hormuz safe-haven demand vs Fed hike bets from strong jobs data; +150 THB alert"
+    "ts_iso": "2026-09-10T02:32:35.154Z",
+    "thb_sell": 68700,
+    "xau": 4417,
+    "note": "แจ้งเตือน +150 บาท จากประกาศรอบที่ 1 (10 ก.ย. 69) ดอลลาร์อ่อน รอ CPI/เฟด"
   },
   "history": [
     {
@@ -125,6 +125,12 @@
       "thb_sell": 68550,
       "xau": 4409.700195,
       "note": "Iran/Strait of Hormuz safe-haven demand vs Fed hike bets from strong jobs data; +150 THB alert"
+    },
+    {
+      "ts_iso": "2026-09-10T02:32:35.154Z",
+      "thb_sell": 68700,
+      "xau": 4417,
+      "note": "แจ้งเตือน +150 บาท จากประกาศรอบที่ 1 (10 ก.ย. 69) ดอลลาร์อ่อน รอ CPI/เฟด"
     }
   ]
 }
