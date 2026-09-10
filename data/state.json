@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-10T06:02:52.438Z",
-    "thb_sell": 69000,
-    "xau": 4430.200195,
-    "note": "Thai gold +150 THB from last alert; USD weak (4-mo low) ahead of PPI/CPI, Middle East tensions"
+    "ts_iso": "2026-09-10T06:34:21.591Z",
+    "thb_sell": 68800,
+    "xau": 4418,
+    "note": "Thai gold -200 THB from last alert; spot -0.28%, no single clear driver, likely short-term profit-taking ahead of US PPI/CPI and Sept 16 Fed decision"
   },
   "history": [
     {
@@ -143,6 +143,12 @@
       "thb_sell": 69000,
       "xau": 4430.200195,
       "note": "Thai gold +150 THB from last alert; USD weak (4-mo low) ahead of PPI/CPI, Middle East tensions"
+    },
+    {
+      "ts_iso": "2026-09-10T06:34:21.591Z",
+      "thb_sell": 68800,
+      "xau": 4418,
+      "note": "Thai gold -200 THB from last alert; spot -0.28%, no single clear driver, likely short-term profit-taking ahead of US PPI/CPI and Sept 16 Fed decision"
     }
   ]
 }
