@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-11T02:03:14.776Z",
-    "thb_sell": 68550,
-    "xau": 4327.399902,
-    "note": "Spot -1.52% vs last alert; Fed hawkish (Warsh)/hot PPI/oil pushed gold down, Thai bar barely moved (+50 THB)"
+    "ts_iso": "2026-09-11T02:33:38.556Z",
+    "thb_sell": 68000,
+    "xau": 4328.1,
+    "note": "Thai gold announcement round 1 (09:10) reset -550 THB catching up to overnight global drop; spot flat"
   },
   "history": [
     {
@@ -167,6 +167,12 @@
       "thb_sell": 68550,
       "xau": 4327.399902,
       "note": "Spot -1.52% vs last alert; Fed hawkish (Warsh)/hot PPI/oil pushed gold down, Thai bar barely moved (+50 THB)"
+    },
+    {
+      "ts_iso": "2026-09-11T02:33:38.556Z",
+      "thb_sell": 68000,
+      "xau": 4328.1,
+      "note": "Thai gold announcement round 1 (09:10) reset -550 THB catching up to overnight global drop; spot flat"
     }
   ]
 }
