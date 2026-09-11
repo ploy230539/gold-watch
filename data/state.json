@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-11T05:02:37.366Z",
-    "thb_sell": 68000,
-    "xau": 4334.5,
-    "note": "alert: +150 THB, spot +0.57%, dollar at 4-month low ahead of CPI + Mideast tension"
+    "ts_iso": "2026-09-11T06:31:42.636Z",
+    "thb_sell": 68200,
+    "xau": 4352.9,
+    "note": "Fed 25bp cut weakened USD + Middle East safe-haven demand, +200 THB from last alert"
   },
   "history": [
     {
@@ -185,6 +185,12 @@
       "thb_sell": 68000,
       "xau": 4334.5,
       "note": "alert: +150 THB, spot +0.57%, dollar at 4-month low ahead of CPI + Mideast tension"
+    },
+    {
+      "ts_iso": "2026-09-11T06:31:42.636Z",
+      "thb_sell": 68200,
+      "xau": 4352.9,
+      "note": "Fed 25bp cut weakened USD + Middle East safe-haven demand, +200 THB from last alert"
     }
   ]
 }
