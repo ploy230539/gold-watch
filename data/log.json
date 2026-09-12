@@ -160,6 +160,22 @@
       "actual_result": null,
       "actual_due_iso": "2026-09-16",
       "actual_due_display": "16 ก.ย. 69"
+    },
+    {
+      "date_display": "12 ก.ย. 69",
+      "date_iso": "2026-09-12",
+      "spot": 4349.700195,
+      "thb_sell": 68000,
+      "call": "wait",
+      "resistance_usd": 4400,
+      "resistance_thb": 68800,
+      "support_usd_low": 4305,
+      "support_usd_high": 4330,
+      "support_thb": 67300,
+      "invalid_note": "มุมมองนี้ผิดถ้าทะลุ $4,400 ขึ้นไปแรงๆ และยืนได้ (ราว ฿68,800) โดยเฉพาะถ้าเฟดส่งสัญญาณนุ่มนวลกว่าคาด = ไล่ซื้อได้ / หรือถ้าหลุด $4,305 ลงไปแรงๆ (ต่ำกว่า ฿67,300) หลังเฟดออกท่าทีเหยี่ยวชัดเจน = ขาลงยังไม่จบ ควรรอราคาต่ำกว่านี้",
+      "actual_result": null,
+      "actual_due_iso": "2026-09-16",
+      "actual_due_display": "16 ก.ย. 69"
     }
   ]
 }
