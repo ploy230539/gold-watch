@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-11T10:02:03.123Z",
-    "thb_sell": 68000,
-    "xau": 4347.799805,
-    "note": "Hot US PPI raised Fed hike odds; oil surged on Iran tensions lifting yields"
+    "ts_iso": "2026-09-12T02:33:32.905Z",
+    "thb_sell": 68250,
+    "xau": 4349.700195,
+    "note": "Hot Aug CPI keeps Fed hike odds ~90% for Sept 16, gold near 1-month low; Thai round 1 (09:03) tracked modest late-week rebound, +250 THB from last alert"
   },
   "history": [
     {
@@ -197,6 +197,12 @@
       "thb_sell": 68000,
       "xau": 4347.799805,
       "note": "Hot US PPI raised Fed hike odds; oil surged on Iran tensions lifting yields"
+    },
+    {
+      "ts_iso": "2026-09-12T02:33:32.905Z",
+      "thb_sell": 68250,
+      "xau": 4349.700195,
+      "note": "Hot Aug CPI keeps Fed hike odds ~90% for Sept 16, gold near 1-month low; Thai round 1 (09:03) tracked modest late-week rebound, +250 THB from last alert"
     }
   ]
 }
