@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-14T09:31:55.730Z",
-    "thb_sell": 67750,
-    "xau": 4285.700195,
-    "note": "Fed CPI hot, rate-hike odds up, gold down 1.07%"
+    "ts_iso": "2026-09-14T10:32:15.207Z",
+    "thb_sell": 67600,
+    "xau": 4292.299805,
+    "note": "Thai bar sell -150 THB (67,750->67,600); Fed rate-hike bets on hot US CPI ahead of Sep 15-16 FOMC kept gold soft, THB premium normal at 0.71%"
   },
   "history": [
     {
@@ -215,6 +215,12 @@
       "thb_sell": 67750,
       "xau": 4285.700195,
       "note": "Fed CPI hot, rate-hike odds up, gold down 1.07%"
+    },
+    {
+      "ts_iso": "2026-09-14T10:32:15.207Z",
+      "thb_sell": 67600,
+      "xau": 4292.299805,
+      "note": "Thai bar sell -150 THB (67,750->67,600); Fed rate-hike bets on hot US CPI ahead of Sep 15-16 FOMC kept gold soft, THB premium normal at 0.71%"
     }
   ]
 }
