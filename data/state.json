@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-12T02:33:32.905Z",
-    "thb_sell": 68250,
-    "xau": 4349.700195,
-    "note": "Hot Aug CPI keeps Fed hike odds ~90% for Sept 16, gold near 1-month low; Thai round 1 (09:03) tracked modest late-week rebound, +250 THB from last alert"
+    "ts_iso": "2026-09-14T03:02:13.178Z",
+    "thb_sell": 68050,
+    "xau": 4332.100098,
+    "note": "alert: -200 THB from last ref, hawkish Fed rate-hike bets after hot US PPI"
   },
   "history": [
     {
@@ -203,6 +203,12 @@
       "thb_sell": 68250,
       "xau": 4349.700195,
       "note": "Hot Aug CPI keeps Fed hike odds ~90% for Sept 16, gold near 1-month low; Thai round 1 (09:03) tracked modest late-week rebound, +250 THB from last alert"
+    },
+    {
+      "ts_iso": "2026-09-14T03:02:13.178Z",
+      "thb_sell": 68050,
+      "xau": 4332.100098,
+      "note": "alert: -200 THB from last ref, hawkish Fed rate-hike bets after hot US PPI"
     }
   ]
 }
