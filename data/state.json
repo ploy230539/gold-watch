@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-15T03:02:32.642Z",
-    "thb_sell": 67900,
-    "xau": 4314,
-    "note": "150 THB move alert - pre-FOMC drift, Middle East safe-haven bid vs Fed hike bets"
+    "ts_iso": "2026-09-15T05:32:38.897Z",
+    "thb_sell": 67750,
+    "xau": 4299,
+    "note": "moved -150 THB before FOMC (Sept 15-16); hot PPI raised hike odds to ~60%, stronger USD pressured gold"
   },
   "history": [
     {
@@ -233,6 +233,12 @@
       "thb_sell": 67900,
       "xau": 4314,
       "note": "150 THB move alert - pre-FOMC drift, Middle East safe-haven bid vs Fed hike bets"
+    },
+    {
+      "ts_iso": "2026-09-15T05:32:38.897Z",
+      "thb_sell": 67750,
+      "xau": 4299,
+      "note": "moved -150 THB before FOMC (Sept 15-16); hot PPI raised hike odds to ~60%, stronger USD pressured gold"
     }
   ]
 }
