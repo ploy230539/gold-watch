@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-15T02:33:55.074Z",
-    "thb_sell": 67750,
-    "xau": 4310.100098,
-    "note": "Thai bar sell +150 THB (67,600->67,750); gold bounced 0.42% off Fed-hike-bet selloff as ME oil-supply tension (Saudi pipeline/Hormuz) offers safe-haven support ahead of Sep 15-16 FOMC decision"
+    "ts_iso": "2026-09-15T03:02:32.642Z",
+    "thb_sell": 67900,
+    "xau": 4314,
+    "note": "150 THB move alert - pre-FOMC drift, Middle East safe-haven bid vs Fed hike bets"
   },
   "history": [
     {
@@ -227,6 +227,12 @@
       "thb_sell": 67750,
       "xau": 4310.100098,
       "note": "Thai bar sell +150 THB (67,600->67,750); gold bounced 0.42% off Fed-hike-bet selloff as ME oil-supply tension (Saudi pipeline/Hormuz) offers safe-haven support ahead of Sep 15-16 FOMC decision"
+    },
+    {
+      "ts_iso": "2026-09-15T03:02:32.642Z",
+      "thb_sell": 67900,
+      "xau": 4314,
+      "note": "150 THB move alert - pre-FOMC drift, Middle East safe-haven bid vs Fed hike bets"
     }
   ]
 }
