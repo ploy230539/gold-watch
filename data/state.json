@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-16T05:03:01.801Z",
-    "thb_sell": 68100,
-    "xau": 4323.200195,
-    "note": "Thai gold -150 THB from last alert; USD firmed to 2-week high pre-Fed decision, oil-driven inflation impulse from Saudi pipeline shutdown"
+    "ts_iso": "2026-09-16T07:32:12.323Z",
+    "thb_sell": 68250,
+    "xau": 4336.700195,
+    "note": "pre-FOMC positioning ahead of tonight's Fed decision, hot Aug PPI keeps hike odds elevated"
   },
   "history": [
     {
@@ -263,6 +263,12 @@
       "thb_sell": 68100,
       "xau": 4323.200195,
       "note": "Thai gold -150 THB from last alert; USD firmed to 2-week high pre-Fed decision, oil-driven inflation impulse from Saudi pipeline shutdown"
+    },
+    {
+      "ts_iso": "2026-09-16T07:32:12.323Z",
+      "thb_sell": 68250,
+      "xau": 4336.700195,
+      "note": "pre-FOMC positioning ahead of tonight's Fed decision, hot Aug PPI keeps hike odds elevated"
     }
   ]
 }
