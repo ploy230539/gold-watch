@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-15T08:04:20.247Z",
-    "thb_sell": 67450,
-    "xau": 4281.1,
-    "note": "Fed rate-hike bets ahead of Sept 15-16 FOMC; oil rally on Saudi pipeline attack reports"
+    "ts_iso": "2026-09-16T03:03:21.805Z",
+    "thb_sell": 67900,
+    "xau": 4321.100098,
+    "note": "moved +450 THB / +0.93% Spot - Saudi pipeline drone attack risk + Fed FOMC uncertainty"
   },
   "history": [
     {
@@ -245,6 +245,12 @@
       "thb_sell": 67450,
       "xau": 4281.1,
       "note": "Fed rate-hike bets ahead of Sept 15-16 FOMC; oil rally on Saudi pipeline attack reports"
+    },
+    {
+      "ts_iso": "2026-09-16T03:03:21.805Z",
+      "thb_sell": 67900,
+      "xau": 4321.100098,
+      "note": "moved +450 THB / +0.93% Spot - Saudi pipeline drone attack risk + Fed FOMC uncertainty"
     }
   ]
 }
