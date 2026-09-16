@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-16T07:32:12.323Z",
-    "thb_sell": 68250,
-    "xau": 4336.700195,
-    "note": "pre-FOMC positioning ahead of tonight's Fed decision, hot Aug PPI keeps hike odds elevated"
+    "ts_iso": "2026-09-16T10:33:09.142Z",
+    "thb_sell": 68400,
+    "xau": 4348,
+    "note": "150 THB move, pre-FOMC positioning, no single clear driver"
   },
   "history": [
     {
@@ -269,6 +269,12 @@
       "thb_sell": 68250,
       "xau": 4336.700195,
       "note": "pre-FOMC positioning ahead of tonight's Fed decision, hot Aug PPI keeps hike odds elevated"
+    },
+    {
+      "ts_iso": "2026-09-16T10:33:09.142Z",
+      "thb_sell": 68400,
+      "xau": 4348,
+      "note": "150 THB move, pre-FOMC positioning, no single clear driver"
     }
   ]
 }
