@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-16T03:33:07.687Z",
-    "thb_sell": 68250,
-    "xau": 4334.600098,
-    "note": "Thai gold +350 THB from last alert; Spot +0.31% ahead of Fed decision"
+    "ts_iso": "2026-09-16T05:03:01.801Z",
+    "thb_sell": 68100,
+    "xau": 4323.200195,
+    "note": "Thai gold -150 THB from last alert; USD firmed to 2-week high pre-Fed decision, oil-driven inflation impulse from Saudi pipeline shutdown"
   },
   "history": [
     {
@@ -257,6 +257,12 @@
       "thb_sell": 68250,
       "xau": 4334.600098,
       "note": "Thai gold +350 THB from last alert; Spot +0.31% ahead of Fed decision"
+    },
+    {
+      "ts_iso": "2026-09-16T05:03:01.801Z",
+      "thb_sell": 68100,
+      "xau": 4323.200195,
+      "note": "Thai gold -150 THB from last alert; USD firmed to 2-week high pre-Fed decision, oil-driven inflation impulse from Saudi pipeline shutdown"
     }
   ]
 }
