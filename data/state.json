@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-16T03:03:21.805Z",
-    "thb_sell": 67900,
-    "xau": 4321.100098,
-    "note": "moved +450 THB / +0.93% Spot - Saudi pipeline drone attack risk + Fed FOMC uncertainty"
+    "ts_iso": "2026-09-16T03:33:07.687Z",
+    "thb_sell": 68250,
+    "xau": 4334.600098,
+    "note": "Thai gold +350 THB from last alert; Spot +0.31% ahead of Fed decision"
   },
   "history": [
     {
@@ -251,6 +251,12 @@
       "thb_sell": 67900,
       "xau": 4321.100098,
       "note": "moved +450 THB / +0.93% Spot - Saudi pipeline drone attack risk + Fed FOMC uncertainty"
+    },
+    {
+      "ts_iso": "2026-09-16T03:33:07.687Z",
+      "thb_sell": 68250,
+      "xau": 4334.600098,
+      "note": "Thai gold +350 THB from last alert; Spot +0.31% ahead of Fed decision"
     }
   ]
 }
