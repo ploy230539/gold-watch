@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-17T02:32:57.446Z",
-    "thb_sell": 67900,
-    "xau": 4291.6,
-    "note": "Fed hiked rates first time in 3 years, gold fell >1%"
+    "ts_iso": "2026-09-17T07:03:21.475Z",
+    "thb_sell": 68050,
+    "xau": 4311.5,
+    "note": "Fed 25bp hike (16 Sep) digested; gold rebounds as USD/yields ease off post-decision highs"
   },
   "history": [
     {
@@ -281,6 +281,12 @@
       "thb_sell": 67900,
       "xau": 4291.6,
       "note": "Fed hiked rates first time in 3 years, gold fell >1%"
+    },
+    {
+      "ts_iso": "2026-09-17T07:03:21.475Z",
+      "thb_sell": 68050,
+      "xau": 4311.5,
+      "note": "Fed 25bp hike (16 Sep) digested; gold rebounds as USD/yields ease off post-decision highs"
     }
   ]
 }
