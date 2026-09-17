@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-16T10:33:09.142Z",
-    "thb_sell": 68400,
-    "xau": 4348,
-    "note": "150 THB move, pre-FOMC positioning, no single clear driver"
+    "ts_iso": "2026-09-17T02:32:57.446Z",
+    "thb_sell": 67900,
+    "xau": 4291.6,
+    "note": "Fed hiked rates first time in 3 years, gold fell >1%"
   },
   "history": [
     {
@@ -275,6 +275,12 @@
       "thb_sell": 68400,
       "xau": 4348,
       "note": "150 THB move, pre-FOMC positioning, no single clear driver"
+    },
+    {
+      "ts_iso": "2026-09-17T02:32:57.446Z",
+      "thb_sell": 67900,
+      "xau": 4291.6,
+      "note": "Fed hiked rates first time in 3 years, gold fell >1%"
     }
   ]
 }
