@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-18T04:02:46.402Z",
-    "thb_sell": 68650,
-    "xau": 4359,
-    "note": "Fed hawkish hold digestion, 150 THB threshold crossed"
+    "ts_iso": "2026-09-18T05:32:46.999Z",
+    "thb_sell": 68800,
+    "xau": 4365,
+    "note": "alert: +150 THB from ref, Fed hike backdrop + softer oil, no distinct fresh driver"
   },
   "history": [
     {
@@ -317,6 +317,12 @@
       "thb_sell": 68650,
       "xau": 4359,
       "note": "Fed hawkish hold digestion, 150 THB threshold crossed"
+    },
+    {
+      "ts_iso": "2026-09-18T05:32:46.999Z",
+      "thb_sell": 68800,
+      "xau": 4365,
+      "note": "alert: +150 THB from ref, Fed hike backdrop + softer oil, no distinct fresh driver"
     }
   ]
 }
