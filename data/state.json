@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-17T12:33:36.885Z",
-    "thb_sell": 68050,
-    "xau": 4380.399902,
-    "note": "Spot +1.71% post-Fed-hike rally, THB flat (round 33)"
+    "ts_iso": "2026-09-18T02:32:12.020Z",
+    "thb_sell": 68500,
+    "xau": 4353.5,
+    "note": "Fed hiked 25bp to 3.75-4%, first hike in 3 years; XAU -0.6% but baht weakened to ~33.40 keeping THB gold up +450"
   },
   "history": [
     {
@@ -305,6 +305,12 @@
       "thb_sell": 68050,
       "xau": 4380.399902,
       "note": "Spot +1.71% post-Fed-hike rally, THB flat (round 33)"
+    },
+    {
+      "ts_iso": "2026-09-18T02:32:12.020Z",
+      "thb_sell": 68500,
+      "xau": 4353.5,
+      "note": "Fed hiked 25bp to 3.75-4%, first hike in 3 years; XAU -0.6% but baht weakened to ~33.40 keeping THB gold up +450"
     }
   ]
 }
