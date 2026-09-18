@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-18T05:32:46.999Z",
-    "thb_sell": 68800,
-    "xau": 4365,
-    "note": "alert: +150 THB from ref, Fed hike backdrop + softer oil, no distinct fresh driver"
+    "ts_iso": "2026-09-18T07:33:16.943Z",
+    "thb_sell": 69150,
+    "xau": 4394.700195,
+    "note": "Fed hiked 25bp to 3.75-4.00% (16-17 Sep); gold rebounded on softer real yields/oil after 6-week low, THB flat"
   },
   "history": [
     {
@@ -323,6 +323,12 @@
       "thb_sell": 68800,
       "xau": 4365,
       "note": "alert: +150 THB from ref, Fed hike backdrop + softer oil, no distinct fresh driver"
+    },
+    {
+      "ts_iso": "2026-09-18T07:33:16.943Z",
+      "thb_sell": 69150,
+      "xau": 4394.700195,
+      "note": "Fed hiked 25bp to 3.75-4.00% (16-17 Sep); gold rebounded on softer real yields/oil after 6-week low, THB flat"
     }
   ]
 }
