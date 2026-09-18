@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-18T02:32:12.020Z",
-    "thb_sell": 68500,
-    "xau": 4353.5,
-    "note": "Fed hiked 25bp to 3.75-4%, first hike in 3 years; XAU -0.6% but baht weakened to ~33.40 keeping THB gold up +450"
+    "ts_iso": "2026-09-18T04:02:46.402Z",
+    "thb_sell": 68650,
+    "xau": 4359,
+    "note": "Fed hawkish hold digestion, 150 THB threshold crossed"
   },
   "history": [
     {
@@ -311,6 +311,12 @@
       "thb_sell": 68500,
       "xau": 4353.5,
       "note": "Fed hiked 25bp to 3.75-4%, first hike in 3 years; XAU -0.6% but baht weakened to ~33.40 keeping THB gold up +450"
+    },
+    {
+      "ts_iso": "2026-09-18T04:02:46.402Z",
+      "thb_sell": 68650,
+      "xau": 4359,
+      "note": "Fed hawkish hold digestion, 150 THB threshold crossed"
     }
   ]
 }
