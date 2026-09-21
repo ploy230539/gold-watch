@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-21T02:33:13.349Z",
-    "thb_sell": 68850,
-    "xau": 4369.200195,
-    "note": "Fed hawkish 25bp hike + dollar strength, gold retreated from Friday's ,380 high"
+    "ts_iso": "2026-09-21T06:02:42.517Z",
+    "thb_sell": 68700,
+    "xau": 4354.8,
+    "note": "alert: -150 thb from ref, Fed hawkish drag continues"
   },
   "history": [
     {
@@ -335,6 +335,12 @@
       "thb_sell": 68850,
       "xau": 4369.200195,
       "note": "Fed hawkish 25bp hike + dollar strength, gold retreated from Friday's ,380 high"
+    },
+    {
+      "ts_iso": "2026-09-21T06:02:42.517Z",
+      "thb_sell": 68700,
+      "xau": 4354.8,
+      "note": "alert: -150 thb from ref, Fed hawkish drag continues"
     }
   ]
 }
