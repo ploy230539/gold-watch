@@ -277,12 +277,12 @@ AddButton $g2 "Remove schedule" 538 28 155 {
 # -- group 3: one-time setup -----------------------------------------------
 $g3 = AddGroup "First-time setup -- run once, in order" 16 343 710 85
 
-AddButton $g3 "1. Install Claude Code CLI" 16 28 200 {
+AddButton $g3 "1. Install Claude CLI" 16 28 160 {
   Log "Installing. This can take 1-3 minutes -- wait for 'Done'."
   Run "Install Claude Code CLI" "npm install -g @anthropic-ai/claude-code"
 } | Out-Null
 
-AddButton $g3 "2. Log in + connect" 225 28 200 {
+AddButton $g3 "2. Log in + connect" 184 28 160 {
   if (-not (HasClaude)) {
     [System.Windows.Forms.MessageBox]::Show("Press button 1 and let the install finish first.", "Not ready", "OK", "Warning") | Out-Null
     return
@@ -296,10 +296,17 @@ AddButton $g3 "2. Log in + connect" 225 28 200 {
   Start-Process "cmd.exe" -ArgumentList "/k", "cd /d `"$Root`" && claude"
 } | Out-Null
 
-AddButton $g3 "3. Send test email" 434 28 200 {
+AddButton $g3 "3. Send test email" 352 28 160 {
   # Same flags the real jobs use (see tasks/run.cmd), otherwise the test hits a
   # permission prompt nobody is there to approve and silently does nothing.
   RunNeedsClaude "Send test email" "claude -p --dangerously-skip-permissions `"Send a test email with subject 'Gold Watch system test' to iminiwindy@gmail.com and pongkasame.oil@gmail.com. Body: one short line confirming the Gold Watch automation can send mail from this machine.`""
+} | Out-Null
+
+AddButton $g3 "4. Phone push" 520 28 173 {
+  # Shows the private topic to subscribe to in the ntfy app, then sends a test push.
+  Run "Phone push - setup and test" ("node gw.mjs push-setup & echo. & " +
+    "node gw.mjs notify --title " + [char]34 + "Gold Watch test" + [char]34 +
+    " --message " + [char]34 + "Push works - alerts will arrive here." + [char]34 + " --tags white_check_mark")
 } | Out-Null
 
 # -- status ----------------------------------------------------------------

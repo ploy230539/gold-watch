@@ -28,9 +28,14 @@ This is the part that needs judgement: one or two concrete reasons from real new
 speculation. If you cannot find a clear cause, say plainly that the move has no obvious
 driver yet.
 
-**3. Send it.** Follow `channels` from the scan:
-- `push = false` (moved 150–300 THB) → email + chat, **no phone push**
-- `push = true` (≥300 THB, Spot ≥1.5%, big news, or a target hit) → email + push + chat
+**3. Send it.**
+
+**The phone push has already gone out.** The scan sends it itself, straight from code,
+the moment the threshold trips - see `push_sent` in `logs/scan.json`. **Do not send
+another one**, and never use the PushNotification tool (it cannot reach the phone from a
+scheduled run). If `push_sent` is `false`, mention `push_error` in chat so it gets noticed.
+
+Your job is the email and the chat note.
 
 **Recipients** — every address listed in `data/recipients.txt`
 (one per line; ignore blank lines and lines starting with `#`). Read it at send time.

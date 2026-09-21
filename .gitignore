@@ -3,3 +3,5 @@ node_modules/
 .DS_Store
 payload.local.json
 logs/
+# private: the ntfy push topic. The repo is public.
+local/

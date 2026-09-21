@@ -43,7 +43,15 @@ Body, in polite neutral Thai, **no มึง/กู**:
 
 Keep it short and calm. This is a maintenance notice, not a market alert.
 
-**4. Also send a push notification** — this one is worth interrupting for, because the
-longer it goes unnoticed the longer Ploy is trading blind.
+**4. Also send a phone push** — this one is worth interrupting for, because the longer it
+goes unnoticed the longer Ploy is trading blind.
+
+**Phone push** — never use the PushNotification tool: it needs Remote Control, which a
+scheduled run never has, so it always fails silently. Push with
+
+    node gw.mjs notify --title "<short Thai title>" --message "<2-3 short lines>"
+
+Casual Thai is fine in a push. Keep it short - it is read on a lock screen.
+
 
 Do not touch `data/state.json`, `data/log.json` or `docs/index.html`.

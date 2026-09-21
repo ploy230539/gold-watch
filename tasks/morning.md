@@ -97,3 +97,11 @@ Sections to include, in this order: **ทำไมขยับ** (bullets, real 
 **อ่านเกม** (buy / hold / wait with the reason, and the "wrong if..." line as `note`).
 
 **6. Check the push criteria** from the skill. Send a push only if they are met.
+
+**Phone push** — never use the PushNotification tool: it needs Remote Control, which a
+scheduled run never has, so it always fails silently. Push with
+
+    node gw.mjs notify --title "<short Thai title>" --message "<2-3 short lines>"
+
+Casual Thai is fine in a push. Keep it short - it is read on a lock screen.
+

@@ -146,6 +146,21 @@ time. It does not any more: content is the model's job, layout is the template's
 styles and table layout throughout, because Gmail strips `<style>` blocks in several of
 its clients.
 
+### Phone push (ntfy)
+
+Claude's own push tool only reaches a phone when Remote Control is attached, and a
+scheduled headless run never has that — so from the move until 21 Sep 2026 every push
+quietly failed while the emails kept arriving. Pushes now go through
+[ntfy](https://ntfy.sh): a plain HTTP POST, no account, no model.
+
+- `node gw.mjs push-setup` creates a private topic and prints how to subscribe to it
+- `node gw.mjs notify --title T --message M` sends one
+- `scan` sends the push itself, straight from code, the moment a push-level threshold
+  trips — minutes before the model has finished writing the email
+
+The topic lives in `local/ntfy-topic.txt`, which is gitignored. **This repo is public, and
+anyone who has the topic can read every push sent to it** — it must never be committed.
+
 ### Health — silence must not be ambiguous
 
 If no scan has succeeded for 24 hours, an empty inbox means the watcher is down, not that

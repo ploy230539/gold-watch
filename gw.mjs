@@ -14,11 +14,14 @@
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
 //   node gw.mjs targets                            list the price targets being watched
 //   node gw.mjs email --in content.json            render an email from the fixed template
+//   node gw.mjs push-setup                         create / show the private ntfy topic
+//   node gw.mjs notify --title T --message M       send a phone push (no model)
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { renderEmail, renderPlain } from "./email.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -29,6 +32,9 @@ const P = {
   history: path.join(ROOT, "data", "history.json"),
   health: path.join(ROOT, "data", "health.json"),
   targets: path.join(ROOT, "data", "targets.txt"),
+  // local/ is gitignored: the repo is public, and anyone who knows the topic can
+  // read every push sent to it.
+  ntfy: path.join(ROOT, "local", "ntfy-topic.txt"),
   out: path.join(ROOT, "docs", "index.html"),
 };
 
@@ -788,6 +794,14 @@ async function cmdScan(a) {
   recordHealth(true);
   appendHistory(p);
   const d = decide(p.thai.bar_sell, p.spot.value, !!a.news);
+
+  // Push straight from code, before any model starts. A failed push must never
+  // block the email path, so it is recorded rather than thrown.
+  if (d.push && !a.nopush) {
+    try { d.push_sent = await sendPush(pushFromDecision(d, p)); }
+    catch (e) { d.push_sent = false; d.push_error = e.message; }
+  }
+
   if (a.pretty) {
     console.log(prettyPrices(p));
     console.log("");
@@ -860,6 +874,96 @@ function cmdEmail(a) {
              "would see raw markup instead of the message.",
     bytes: html.length,
   }, null, 2));
+}
+
+// ── Phone push via ntfy ──────────────────────────────────────────────────
+// Claude's own push tool only reaches the phone when Remote Control is attached,
+// which a scheduled headless run never is - so for three weeks every push quietly
+// failed. ntfy is a plain HTTP POST: no account, no model, no Remote Control.
+// The scan sends it directly the moment a threshold trips, before any model starts.
+function ntfyTopic() {
+  if (!fs.existsSync(P.ntfy)) return null;
+  const t = fs.readFileSync(P.ntfy, "utf8").trim();
+  return t || null;
+}
+
+function cmdPushSetup() {
+  let topic = ntfyTopic();
+  let created = false;
+  if (!topic) {
+    // 20 chars of base32 = 100 bits: unguessable, still typeable on a phone
+    const alphabet = "abcdefghijklmnopqrstuvwxyz234567";
+    const bytes = randomBytes(20);
+    topic = "goldwatch-" + [...bytes].map((b) => alphabet[b % 32]).join("");
+    fs.mkdirSync(path.dirname(P.ntfy), { recursive: true });
+    fs.writeFileSync(P.ntfy, topic + "\n");
+    created = true;
+  }
+  console.log([
+    created ? "  Created a new private push topic." : "  Push topic already set.",
+    "",
+    "  Topic:  " + topic,
+    "",
+    "  On the phone:",
+    "    1. Install the free app \"ntfy\" (App Store / Google Play)",
+    "    2. Tap +, choose \"Subscribe to topic\"",
+    "    3. Type the topic above exactly, keep the server as ntfy.sh, tap Subscribe",
+    "",
+    "  Keep the topic private - anyone who has it can read these pushes.",
+    "  It is stored only on this machine (local/ntfy-topic.txt), never in the public repo.",
+  ].join("\n"));
+}
+
+async function sendPush({ title, message, priority = 4, tags = [], click }) {
+  const topic = ntfyTopic();
+  if (!topic) throw new Error("no push topic set - run: node gw.mjs push-setup");
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 15000);
+  try {
+    // JSON publishing, not headers: headers cannot carry Thai text without encoding.
+    const r = await fetch("https://ntfy.sh/", {
+      method: "POST",
+      signal: ctl.signal,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ topic, title, message, priority, tags, click }),
+    });
+    if (!r.ok) throw new Error(`ntfy HTTP ${r.status}: ${(await r.text()).slice(0, 200)}`);
+    const j = await r.json();
+    return { id: j.id, time: j.time };
+  } finally { clearTimeout(timer); }
+}
+
+async function cmdNotify(a) {
+  if (!a.title || !a.message) die("notify requires --title and --message");
+  try {
+    const r = await sendPush({
+      title: String(a.title), message: String(a.message),
+      priority: a.priority ? Number(a.priority) : 4,
+      tags: a.tags ? String(a.tags).split(",") : [],
+      click: a.click ? String(a.click) : "https://ploy230539.github.io/gold-watch/",
+    });
+    console.log(JSON.stringify({ ok: true, sent: true, ...r }, null, 2));
+  } catch (e) { die("push failed - " + e.message); }
+}
+
+/** The push the scan sends on its own, straight from the decision. */
+function pushFromDecision(d, p) {
+  const down = (d.thb_move ?? 0) < 0;
+  const arrow = down ? "▼" : "▲";
+  const move = d.thb_move === null || d.thb_move === undefined ? "" : ` ${arrow}${num(Math.abs(d.thb_move))}`;
+  const lines = [];
+  for (const h of d.targets_hit || []) lines.push("🎯 " + h.text);
+  lines.push(`Spot $${num(p.spot.value, 0)} (${pct(d.xau_pct ?? 0)})`);
+  if (d.ref) lines.push(`เทียบกับที่แจ้งล่าสุด ${num(d.ref.thb_sell)}`);
+  const m = String(p.thai.announced).match(/(\d{1,2}:\d{2}).*?(\d+)\)?\s*$/);
+  if (m) lines.push(`ประกาศครั้งที่ ${m[2]} เวลา ${m[1]} น.`);
+  return {
+    title: `ทองแท่ง${move} → ${num(p.thai.bar_sell)}`,
+    message: lines.join("\n"),
+    priority: (d.targets_hit || []).length ? 5 : 4,
+    tags: [down ? "chart_with_downwards_trend" : "chart_with_upwards_trend"],
+    click: "https://ploy230539.github.io/gold-watch/",
+  };
 }
 
 // ── build / morning / publish ──────────────────────────────────────────────
@@ -951,6 +1055,8 @@ switch (a._[0]) {
   case "health": cmdHealth(a); break;
   case "targets": cmdTargets(); break;
   case "email": cmdEmail(a); break;
+  case "push-setup": cmdPushSetup(); break;
+  case "notify": await cmdNotify(a); break;
   case "state": cmdState(a); break;
   case "log": {
     const lf = readJson(P.log);
