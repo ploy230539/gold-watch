@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-21T06:02:42.517Z",
-    "thb_sell": 68700,
-    "xau": 4354.8,
-    "note": "alert: -150 thb from ref, Fed hawkish drag continues"
+    "ts_iso": "2026-09-21T10:02:15.498Z",
+    "thb_sell": 68550,
+    "xau": 4346.4,
+    "note": "US Treasury yields up, Fed hawkish expectations pressuring gold; -150 THB from last alert"
   },
   "history": [
     {
@@ -341,6 +341,12 @@
       "thb_sell": 68700,
       "xau": 4354.8,
       "note": "alert: -150 thb from ref, Fed hawkish drag continues"
+    },
+    {
+      "ts_iso": "2026-09-21T10:02:15.498Z",
+      "thb_sell": 68550,
+      "xau": 4346.4,
+      "note": "US Treasury yields up, Fed hawkish expectations pressuring gold; -150 THB from last alert"
     }
   ]
 }
