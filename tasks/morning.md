@@ -25,7 +25,10 @@ casual Thai; มึง/กู is fine there.
 Write `D:\Claude_AI\Ploy\Gold\data\payload-latest.json` following the shape in
 `payload.example.json`. It must contain: `stamp, lede_h1, lede_p, spot, thb_bar, thb_orn,
 fx, levels, rsi, read_text, invalid_text, drivers, calendar, sources, call, log`.
-- `call` is one of `buy` / `hold` / `wait`
+- `call` is one of `buy` / `hold` / `sell` / `wait`
+- `call_reason` — **one short Thai line** saying why. Every price push for the rest of
+  the day quotes it under "มุมมองเช้านี้", so write it to be read on a lock screen,
+  e.g. "ยังยืนเหนือแนวรับ $4,300 ถือต่อ ขายเมื่อหลุด"
 - `log` carries `date_display, date_iso, actual_due_iso, actual_due_display`,
   where the due date is 3 business days out
 
@@ -44,28 +47,58 @@ and fix the payload — never skip the validation step.
 **Below 30 rows with an actual result, never quote an accuracy percentage**, and write up
 the misses as prominently as the hits.
 
-**5. Send the morning email.**
-**Recipients** — every address listed in `data/recipients.txt`
+## Who is reading, and what she wants
+
+Ploy follows the **price going up or down, and what to do about it**. She does not read
+tables or charts. So every message leads with a call and a reason, in plain words:
+
+- **ซื้อ** (`buy`) — a good moment to enter
+- **ถือ** (`hold`) — keep what she has, nothing to do yet
+- **ขาย** (`sell`) — take profit or get out
+- **รอ** (`wait`) — stay out for now
+
+Pick the one you would actually act on, and say **why in one or two sentences a person
+can read on a phone**, plus **the price that would prove you wrong**. A view that cannot
+be wrong is useless. Do not hedge into mush — if it is genuinely unclear, say รอ and why.
+
+No price tables, no charts, no ladders in anything sent to her. Numbers go in sentences
+("ทองแท่งลง 300 บาทมาที่ 68,850"), not rows. The dashboard link stays for anyone who wants
+the detail — do not reproduce it.
+
+This is a market view, not personal financial advice — keep the one-line disclaimer the
+email template adds, and do not claim certainty you do not have.
+
+**5. Push the morning summary to her phone** — this is the message she actually reads.
+
+    node gw.mjs notify --title "<title>" --message "<message>"
+
+- title: `ทองแท่ง <sell price> · <ซื้อ|ถือ|ขาย|รอ>` e.g. `ทองแท่ง 68,850 · ถือ`
+- message, 3–4 short lines:
+  1. how Thai bar gold moved since yesterday, e.g. `▼300 จากเมื่อวาน · Spot $4,369 (-0.6%)`
+  2. the reason for the call, one line
+  3. `ผิดถ้า: <the price that proves it wrong>`
+
+Casual Thai is fine in a push. Never use the PushNotification tool — it cannot reach the
+phone from a scheduled run.
+
+**6. Send the morning email** to every address in `data/recipients.txt`
 (one per line; ignore blank lines and lines starting with `#`). Read it at send time.
-Do not hard-code addresses.
 
-**Build the email from the fixed template — never hand-write the HTML.**
-Write the content as JSON to `logs/email-content.json`, then run:
+Write the content to `logs/email-content.json`, then run
+`node gw.mjs email --in logs/email-content.json`. Fields:
 
-    node gw.mjs email --in logs/email-content.json
+- `eyebrow`   `สรุปทองเช้า · <date>`
+- `headline`  one sentence: what gold did and what it means
+- `verdict`   `{"call": "buy|hold|sell|wait", "reason": "...", "wrong_if": "..."}`
+              — this renders as the big coloured block straight under the header.
+              It is the point of the email.
+- `lead`      optional: two or three sentences of context, numbers written in the prose
+- `sections`  at most one, headed **ทำไม**, with 2–3 bullets of real news
+              (`{"sign": "plus|minus|flat", "text": "..."}`)
+- `dashboard_url` `https://ploy230539.github.io/gold-watch/`
 
-Content fields:
-- `eyebrow`   small gold line above the headline, e.g. "สรุปทองเช้า · 2 กันยายน 2569"
-- `headline`  the one thing the reader should take away, one sentence
-- `lead`      optional short paragraph under the header
-- `rows`      the price table: `[{"label","value","change","dir"}]` where `dir` is
-              `up` / `down` / `flat` and `change` is the bracketed part, e.g. "-1,600 บาท"
-- `footnote`  small print under the table — USD/THB and which announcement round the
-              Thai price came from, with its time
-- `sections`  `[{"heading","paragraphs":[],"bullets":[{"sign":"plus|minus|flat","text"}],
-              "rows":[],"note":"..."}]` — `note` renders as the warm highlighted box,
-              use it for the "this view is wrong if..." line
-- `dashboard_url` "https://ploy230539.github.io/gold-watch/"
+**Leave `rows` out entirely** — no price table. Polite, neutral Thai (other people read
+this email): **never มึง/กู**. Mention the dashboard link opens without logging in.
 
 ### Sending — get this exactly right
 
@@ -77,31 +110,6 @@ The command writes two files, each named after the Gmail parameter it belongs in
 | `logs/email.body.txt` | `body` |
 
 Read both files and pass their full contents to the Gmail send tool in those two
-parameters. **Never put the HTML into `body`.** If you do, the recipients open the mail
-and see a wall of raw markup instead of the message — this has happened before, and it
-is the single easiest way to ruin an otherwise correct run.
-
-Before sending, check yourself: does the value you are putting in `body` start with
-plain Thai text (correct) or with `<!doctype html>` (wrong)?
-
-The template owns every colour, font and spacing decision. Do not restyle it, do not
-inline your own HTML, and do not skip it — it exists so every email looks the same as
-the last one.
-
-Write the words in polite, neutral Thai — the voice of a friendly analyst.
-**Never use มึง/กู**; other people read this mail. Mention that the dashboard link
-opens without any login.
-
-Sections to include, in this order: **ทำไมขยับ** (bullets, real news only),
-**ตัวเลขที่ต้องจ้อง** (support/resistance rows), **ข่าวที่ต้องระวัง** (calendar),
-**อ่านเกม** (buy / hold / wait with the reason, and the "wrong if..." line as `note`).
-
-**6. Check the push criteria** from the skill. Send a push only if they are met.
-
-**Phone push** — never use the PushNotification tool: it needs Remote Control, which a
-scheduled run never has, so it always fails silently. Push with
-
-    node gw.mjs notify --title "<short Thai title>" --message "<2-3 short lines>"
-
-Casual Thai is fine in a push. Keep it short - it is read on a lock screen.
-
+parameters. **Never put the HTML into `body`** — the recipients would see raw markup.
+Check yourself before sending: the value going into `body` must start with plain Thai
+text, never with `<!doctype html>`.

@@ -41,23 +41,44 @@ Your job is the email and the chat note.
 (one per line; ignore blank lines and lines starting with `#`). Read it at send time.
 Do not hard-code addresses.
 
-**Build the email from the fixed template — never hand-write the HTML.**
-Write the content as JSON to `logs/email-content.json`, then run:
+## Who is reading, and what she wants
 
-    node gw.mjs email --in logs/email-content.json
+Ploy follows the **price going up or down, and what to do about it**. She does not read
+tables or charts. So every message leads with a call and a reason, in plain words:
 
-Content fields:
-- `eyebrow`   small gold line above the headline, e.g. "GOLD MOVE · 2 ก.ย. 2569 · 11:08 น."
-- `headline`  the one thing the reader should take away, one sentence
-- `lead`      optional short paragraph under the header
-- `rows`      the price table: `[{"label","value","change","dir"}]` where `dir` is
-              `up` / `down` / `flat` and `change` is the bracketed part, e.g. "-1,600 บาท"
-- `footnote`  small print under the table — USD/THB and which announcement round the
-              Thai price came from, with its time
-- `sections`  `[{"heading","paragraphs":[],"bullets":[{"sign":"plus|minus|flat","text"}],
-              "rows":[],"note":"..."}]` — `note` renders as the warm highlighted box,
-              use it for the "this view is wrong if..." line
-- `dashboard_url` "https://ploy230539.github.io/gold-watch/"
+- **ซื้อ** (`buy`) — a good moment to enter
+- **ถือ** (`hold`) — keep what she has, nothing to do yet
+- **ขาย** (`sell`) — take profit or get out
+- **รอ** (`wait`) — stay out for now
+
+Pick the one you would actually act on, and say **why in one or two sentences a person
+can read on a phone**, plus **the price that would prove you wrong**. A view that cannot
+be wrong is useless. Do not hedge into mush — if it is genuinely unclear, say รอ and why.
+
+No price tables, no charts, no ladders in anything sent to her. Numbers go in sentences
+("ทองแท่งลง 300 บาทมาที่ 68,850"), not rows. The dashboard link stays for anyone who wants
+the detail — do not reproduce it.
+
+This is a market view, not personal financial advice — keep the one-line disclaimer the
+email template adds, and do not claim certainty you do not have.
+
+**Given this move, is the morning call still right?** Read the morning call from the last
+row of `data/log.json` (`call`, `call_reason`). Then decide: does this move change it? A
+drop through the support level may turn ถือ into ขาย; a bounce off it may turn รอ into ซื้อ.
+If it still holds, say so plainly — "ยังถือได้" is a useful answer.
+
+Write the content to `logs/email-content.json`, then run
+`node gw.mjs email --in logs/email-content.json`. Fields:
+
+- `eyebrow`   `GOLD MOVE · <date> · <time> น.`
+- `headline`  one sentence: how far it moved and in which direction, from the last alert
+- `verdict`   `{"call", "reason", "wrong_if"}` — your view **after** this move
+- `lead`      two or three sentences: which announcement round, the move in words,
+              and whether the morning call changed
+- `sections`  at most one, headed **ทำไมขยับ**, with the reason you found
+- `dashboard_url` `https://ploy230539.github.io/gold-watch/`
+
+**Leave `rows` out entirely** — no price table.
 
 ### Sending — get this exactly right
 
@@ -69,27 +90,16 @@ The command writes two files, each named after the Gmail parameter it belongs in
 | `logs/email.body.txt` | `body` |
 
 Read both files and pass their full contents to the Gmail send tool in those two
-parameters. **Never put the HTML into `body`.** If you do, the recipients open the mail
-and see a wall of raw markup instead of the message — this has happened before, and it
-is the single easiest way to ruin an otherwise correct run.
+parameters. **Never put the HTML into `body`** — the recipients would see raw markup.
+Check yourself before sending: the value going into `body` must start with plain Thai
+text, never with `<!doctype html>`.
 
-Before sending, check yourself: does the value you are putting in `body` start with
-plain Thai text (correct) or with `<!doctype html>` (wrong)?
-
-The template owns every colour, font and spacing decision. Do not restyle it, do not
-inline your own HTML, and do not skip it — it exists so every email looks the same as
-the last one.
-
-For an alert the shape is: `lead` explains which announcement round this is and how
-far it has moved from the price last reported; `rows` carries ทองแท่งขายออก, ทองแท่งรับซื้อ,
-Gold Spot and USD/THB; then one section headed **ทำไมขยับ** with the reason you found.
-
-Polite, neutral Thai in the email — **no มึง/กู** (chat and push are fine).
+Polite, neutral Thai in the email — **no มึง/กู** (chat is fine).
 End the subject with the `subject_code` from the scan, e.g. `[TH 67850 | XAU 4300]`.
 
-Mention `premium_pct` when it is outside ±1.2%: above means shops are charging a fat
-premium and it is a poor moment to buy; below means Thai prices have not caught up
-with world gold yet.
+Mention `premium_pct` in the lead when it is outside ±1.2%: above means shops are
+charging a fat premium and it is a poor moment to buy; below means Thai prices have not
+caught up with world gold yet.
 
 **4. Only after sending**, record the price just alerted on and push it:
 

@@ -90,6 +90,34 @@ function section(sec) {
   </td></tr>`;
 }
 
+// The verdict is the point of the email: what to do, why, and how you would know it
+// was wrong. It sits straight under the header, above everything else.
+const VERDICT = {
+  buy:  { label: "ซื้อ", bg: "#e4f2ea", fg: "#1a7048" },
+  hold: { label: "ถือ",  bg: "#f1e4c2", fg: "#5c4213" },
+  sell: { label: "ขาย", bg: "#fbe9e6", fg: "#a8342b" },
+  wait: { label: "รอ",   bg: "#f7ecd4", fg: "#8a5a12" },
+};
+
+function verdictBlock(v) {
+  if (!v || !VERDICT[v.call]) return "";
+  const c = VERDICT[v.call];
+  const wrong = v.wrong_if
+    ? `<div style="margin-top:12px;font:400 14px ${FONT};color:${MUTED};line-height:1.55;">
+         <b style="color:${INK};">มุมมองนี้ผิดถ้า</b> ${esc(v.wrong_if)}</div>`
+    : "";
+  return `
+  <tr><td style="padding:22px 26px 4px;">
+    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+      <td style="background:${c.bg};border-radius:10px;padding:8px 18px;
+                 font:800 22px ${FONT};color:${c.fg};">${c.label}</td>
+      <td style="padding-left:14px;font:600 13px ${FONT};color:${MUTED};">มุมมองตอนนี้</td>
+    </tr></table>
+    <p style="margin:14px 0 0;font:400 16px ${FONT};color:${INK};line-height:1.62;">${esc(v.reason || "")}</p>
+    ${wrong}
+  </td></tr>`;
+}
+
 function ctaButton(url, label) {
   return `
   <tr><td style="padding:22px 26px 6px;">
@@ -109,6 +137,7 @@ function ctaButton(url, label) {
  * @param {object} d
  *   eyebrow      small gold line above the headline
  *   headline     the one thing the reader should take away
+ *   verdict      {call: buy|hold|sell|wait, reason, wrong_if} - leads the email
  *   lead         optional paragraph under the header, before the price table
  *   rows         price table rows [{label, value, change, dir}]
  *   footnote     small print under the price table
@@ -124,13 +153,15 @@ export function renderEmail(d) {
 <html lang="th"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(d.headline || "Gold Watch")}</title></head>
-<body style="margin:0;padding:0;background:${PAPER};">
+<body style="margin:0;padding:0;background:${PAPER};word-wrap:break-word;overflow-wrap:anywhere;">
 <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:${PAPER};padding:18px 12px;">
 <tr><td align="center">
 
-<table role="presentation" cellpadding="0" cellspacing="0" width="600"
-  style="width:600px;max-width:100%;background:${CARD};border-radius:14px;overflow:hidden;
-         border:1px solid ${LINE};">
+<!-- Fluid, capped at 600px. A fixed width="600" attribute makes the table cell grow to
+     fit it, so on a phone the card ran off the right edge and clipped every line. -->
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%"
+  style="width:100%;max-width:600px;background:${CARD};border-radius:14px;overflow:hidden;
+         border:1px solid ${LINE};table-layout:fixed;">
 
   <tr><td style="background:${DARK};padding:26px;">
     <div style="font:700 12.5px ${FONT};letter-spacing:0.08em;color:${GOLD};margin-bottom:12px;">
@@ -140,6 +171,8 @@ export function renderEmail(d) {
       ${esc(d.headline || "")}
     </div>
   </td></tr>
+
+  ${verdictBlock(d.verdict)}
 
   ${d.lead ? `<tr><td style="padding:20px 26px 0;">
     <p style="margin:0;font:400 15px ${FONT};color:${INK};line-height:1.62;">${esc(d.lead)}</p>
@@ -175,6 +208,11 @@ export function renderPlain(d) {
   const L = [];
   if (d.eyebrow) L.push(d.eyebrow);
   if (d.headline) L.push("", d.headline);
+  if (d.verdict && VERDICT[d.verdict.call]) {
+    L.push("", `มุมมองตอนนี้: ${VERDICT[d.verdict.call].label}`);
+    if (d.verdict.reason) L.push(d.verdict.reason);
+    if (d.verdict.wrong_if) L.push(`มุมมองนี้ผิดถ้า ${d.verdict.wrong_if}`);
+  }
   if (d.lead) L.push("", d.lead);
   if (d.rows && d.rows.length) {
     L.push("");

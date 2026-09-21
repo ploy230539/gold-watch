@@ -8,7 +8,8 @@
 //   node gw.mjs check   --thb N --xau N [--news]   compare against last alerted price -> alert?
 //     add --pretty to check / scan / prices / log for readable output instead of JSON
 //   node gw.mjs prices [--pretty]                  fetch live prices from free APIs (no model)
-//   node gw.mjs scan    [--news]                   prices + threshold check; exit 10 = alert needed
+//   node gw.mjs scan    [--news] [--dry]           prices + threshold check; exit 10 = alert needed
+//                                                  (--dry: preview the push, do not send it)
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
 //   node gw.mjs log                                print the track-record log as JSON
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
@@ -130,7 +131,9 @@ const sourcesHtml = (list) =>
   list.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.label)}</a>`)
     .join(" · ");
 
-const CALL_LABEL = { buy: "ซื้อ", hold: "ถือ", wait: "รอ" };
+// buy = enter · hold = keep what you have · sell = take profit / get out · wait = stay out
+const CALL_LABEL = { buy: "ซื้อ", hold: "ถือ", sell: "ขาย", wait: "รอ" };
+const CALLS = Object.keys(CALL_LABEL);
 
 function logRowsHtml(rows) {
   return [...rows].reverse().map((r) => {
@@ -373,7 +376,7 @@ function fillActuals(rows, today) {
     const up = pThb >= 0.5, down = pThb <= -0.5;
     let verdict;
     if (r.call === "buy") verdict = up ? "ถูก" : down ? "ผิด" : "เสมอ";
-    else if (r.call === "wait") verdict = down ? "ถูก" : up ? "ผิด" : "เสมอ";
+    else if (r.call === "wait" || r.call === "sell") verdict = down ? "ถูก" : up ? "ผิด" : "เสมอ";
     else verdict = down ? "ผิด" : up ? "ถูก" : "เสมอ";
 
     const mark = verdict === "ถูก" ? "✓" : verdict === "ผิด" ? "✗" : "=";
@@ -381,6 +384,7 @@ function fillActuals(rows, today) {
       buy: { ถูก: "ซื้อแล้วราคาขึ้นจริง", ผิด: "ซื้อแล้วราคาลง", เสมอ: "ราคาแทบไม่ขยับ ไม่คุ้มส่วนต่างซื้อ-ขาย" },
       wait: { ถูก: "รอแล้วราคาลงจริง ได้ของถูกลง", ผิด: "รอแล้วราคาขึ้น พลาดจังหวะ", เสมอ: "ราคาแทบไม่ขยับ รอแล้วไม่เสียอะไร" },
       hold: { ถูก: "ถือแล้วราคาขึ้น", ผิด: "ถือแล้วราคาลง", เสมอ: "ราคาแทบไม่ขยับ" },
+      sell: { ถูก: "ขายแล้วราคาลงจริง หนีทันก่อนลง", ผิด: "ขายแล้วราคาขึ้นต่อ ขายเร็วไป", เสมอ: "ราคาแทบไม่ขยับ ขายแล้วไม่เสียโอกาส" },
     }[r.call]?.[verdict] || "";
 
     r.actual_result =
@@ -797,7 +801,10 @@ async function cmdScan(a) {
 
   // Push straight from code, before any model starts. A failed push must never
   // block the email path, so it is recorded rather than thrown.
-  if (d.push && !a.nopush) {
+  if (a.dry) {
+    // show what would be pushed without sending it
+    d.push_preview = pushFromDecision(d, p);
+  } else if (d.push && !a.nopush) {
     try { d.push_sent = await sendPush(pushFromDecision(d, p)); }
     catch (e) { d.push_sent = false; d.push_error = e.message; }
   }
@@ -946,6 +953,19 @@ async function cmdNotify(a) {
   } catch (e) { die("push failed - " + e.message); }
 }
 
+/** The most recent morning call, so a model-free push can still say hold/sell. */
+function latestView() {
+  try {
+    const rows = readJson(P.log).rows || [];
+    const r = rows[rows.length - 1];
+    if (!r || !CALL_LABEL[r.call]) return null;
+    // today in Bangkok, so a Sunday push does not pass off Saturday's call as fresh
+    const today = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
+    return { call: r.call, label: CALL_LABEL[r.call], reason: r.call_reason || "",
+             date: r.date_display, fresh: r.date_iso === today };
+  } catch { return null; }
+}
+
 /** The push the scan sends on its own, straight from the decision. */
 function pushFromDecision(d, p) {
   const down = (d.thb_move ?? 0) < 0;
@@ -957,6 +977,12 @@ function pushFromDecision(d, p) {
   if (d.ref) lines.push(`เทียบกับที่แจ้งล่าสุด ${num(d.ref.thb_sell)}`);
   const m = String(p.thai.announced).match(/(\d{1,2}:\d{2}).*?(\d+)\)?\s*$/);
   if (m) lines.push(`ประกาศครั้งที่ ${m[2]} เวลา ${m[1]} น.`);
+  // The view comes from the morning brief; the scan itself makes no judgement call.
+  const v = latestView();
+  if (v) {
+    const when = v.fresh ? "มุมมองเช้านี้" : `มุมมองล่าสุด (${v.date})`;
+    lines.push(`${when}: ${v.label}` + (v.reason ? ` — ${v.reason}` : ""));
+  }
   return {
     title: `ทองแท่ง${move} → ${num(p.thai.bar_sell)}`,
     message: lines.join("\n"),
@@ -980,8 +1006,8 @@ function cmdBuild(a, { updateLog = false } = {}) {
     for (const k of ["date_display", "date_iso", "actual_due_iso", "actual_due_display"]) {
       if (!L[k]) die(`payload.log is missing: ${k}`);
     }
-    if (!payload.call) die("morning requires payload.call (buy|hold|wait)");
-    if (!["buy", "hold", "wait"].includes(payload.call)) die("payload.call must be buy|hold|wait");
+    if (!payload.call) die("morning requires payload.call (" + CALLS.join("|") + ")");
+    if (!CALLS.includes(payload.call)) die("payload.call must be one of " + CALLS.join("|"));
 
     const filled = fillActuals(rows, {
       date_iso: L.date_iso, date_display: L.date_display,
@@ -995,6 +1021,7 @@ function cmdBuild(a, { updateLog = false } = {}) {
       spot: payload.spot.value,
       thb_sell: payload.thb_bar.sell,
       call: payload.call,
+      call_reason: payload.call_reason || null,
       resistance_usd: payload.levels.resistance_usd,
       resistance_thb: payload.levels.resistance_thb,
       support_usd_low: payload.levels.support_usd_low,

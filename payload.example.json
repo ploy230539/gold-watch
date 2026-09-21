@@ -70,7 +70,8 @@
       "url": "https://www.goldtraders.or.th/dailyprices"
     }
   ],
-  "call": "wait",
+  "call": "hold",
+  "call_reason": "ยังอยู่เหนือแนวรับ $4,300 ถือต่อได้ ขายเมื่อหลุด",
   "log": {
     "date_display": "28 ส.ค. 69",
     "date_iso": "2026-08-28",

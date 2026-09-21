@@ -146,6 +146,24 @@ time. It does not any more: content is the model's job, layout is the template's
 styles and table layout throughout, because Gmail strips `<style>` blocks in several of
 its clients.
 
+### What gets sent, and to whom
+
+Ploy follows the price moving and what to do about it; she does not read tables or
+charts. So everything sent to her leads with a **call** — ซื้อ (`buy`), ถือ (`hold`),
+ขาย (`sell`), รอ (`wait`) — a one-line reason, and the price that would prove it wrong.
+
+- **Morning push** — title `ทองแท่ง 68,850 · ถือ`, then the move, the reason, and
+  `ผิดถ้า: ...`. This is the message she actually reads.
+- **Morning email** — the same call as a coloured block under the header, a few
+  sentences of context, the news behind it. No price table.
+- **Alert push** (from the scan, no model) — the move, plus the morning call quoted from
+  `call_reason` in the track record, dated if it is not today's.
+- **Alert email** — whether the move changed the morning call, and why it moved.
+
+The dashboard keeps its charts and tables for anyone who wants the detail.
+
+`sell` is scored like `wait` in the track record: right if the price then fell.
+
 ### Phone push (ntfy)
 
 Claude's own push tool only reaches a phone when Remote Control is attached, and a
