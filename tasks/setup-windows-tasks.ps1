@@ -50,8 +50,11 @@ $jobs = @(
 # a native exe's stderr in PowerShell 5.1 turns plain output into NativeCommandError,
 # which $ErrorActionPreference = "Stop" then treats as fatal -- so never do it here.
 foreach ($j in $jobs) {
+  # conhost --headless gives the job a console without a window. Without it, every
+  # half-hourly scan flashed a black window on the desktop, and alert runs sat there
+  # for minutes looking stuck. Output still goes to logs\ as before.
   $runner = Join-Path $PSScriptRoot $j.Runner
-  $tr = '"' + $runner + '"'
+  $tr = 'conhost.exe --headless "' + $runner + '"'
   if ($j.Prompt) { $tr += ' ' + $j.Prompt }
   $argv = @("/Create","/TN",$j.Name,"/TR",$tr) + $j.Sc + @("/F","/RL","LIMITED")
 
