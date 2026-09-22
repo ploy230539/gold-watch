@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-22T05:32:51.431Z",
-    "thb_sell": 68250,
-    "xau": 4333.299805,
-    "note": "Fed hawkish/dollar strength pullback, still range-bound ,296-4,400, wait call unchanged"
+    "ts_iso": "2026-09-22T06:32:02.657Z",
+    "thb_sell": 68100,
+    "xau": 4320,
+    "note": "Thai gold moved -150 THB from last alert (68250->68100), still within wait range"
   },
   "history": [
     {
@@ -359,6 +359,12 @@
       "thb_sell": 68250,
       "xau": 4333.299805,
       "note": "Fed hawkish/dollar strength pullback, still range-bound ,296-4,400, wait call unchanged"
+    },
+    {
+      "ts_iso": "2026-09-22T06:32:02.657Z",
+      "thb_sell": 68100,
+      "xau": 4320,
+      "note": "Thai gold moved -150 THB from last alert (68250->68100), still within wait range"
     }
   ]
 }
