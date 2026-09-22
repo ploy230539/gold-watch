@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-22T06:32:02.657Z",
-    "thb_sell": 68100,
-    "xau": 4320,
-    "note": "Thai gold moved -150 THB from last alert (68250->68100), still within wait range"
+    "ts_iso": "2026-09-22T08:02:13.253Z",
+    "thb_sell": 67900,
+    "xau": 4301.5,
+    "note": "ทองแท่งลง 200 บาทจากรอบก่อน ทดสอบแนวรับ 4296/67550 จากแรงกดดันเฟดเหยี่ยว (Warsh)"
   },
   "history": [
     {
@@ -365,6 +365,12 @@
       "thb_sell": 68100,
       "xau": 4320,
       "note": "Thai gold moved -150 THB from last alert (68250->68100), still within wait range"
+    },
+    {
+      "ts_iso": "2026-09-22T08:02:13.253Z",
+      "thb_sell": 67900,
+      "xau": 4301.5,
+      "note": "ทองแท่งลง 200 บาทจากรอบก่อน ทดสอบแนวรับ 4296/67550 จากแรงกดดันเฟดเหยี่ยว (Warsh)"
     }
   ]
 }
