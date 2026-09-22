@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-22T09:02:22.913Z",
-    "thb_sell": 68150,
-    "xau": 4328.899902,
-    "note": "Fed hawkish (Collins, Musalem) vs dollar strength, bounce off Fibonacci 4321 support"
+    "ts_iso": "2026-09-22T09:32:18.790Z",
+    "thb_sell": 68000,
+    "xau": 4315.799805,
+    "note": "Fed hawkish talk (Goolsbee, Musalem) pushed spot toward support band, wait call held"
   },
   "history": [
     {
@@ -377,6 +377,12 @@
       "thb_sell": 68150,
       "xau": 4328.899902,
       "note": "Fed hawkish (Collins, Musalem) vs dollar strength, bounce off Fibonacci 4321 support"
+    },
+    {
+      "ts_iso": "2026-09-22T09:32:18.790Z",
+      "thb_sell": 68000,
+      "xau": 4315.799805,
+      "note": "Fed hawkish talk (Goolsbee, Musalem) pushed spot toward support band, wait call held"
     }
   ]
 }
