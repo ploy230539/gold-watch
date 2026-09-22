@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-21T10:02:15.498Z",
-    "thb_sell": 68550,
-    "xau": 4346.4,
-    "note": "US Treasury yields up, Fed hawkish expectations pressuring gold; -150 THB from last alert"
+    "ts_iso": "2026-09-22T03:32:03.560Z",
+    "thb_sell": 68400,
+    "xau": 4346.6,
+    "note": "alert: THB -150 from last alert, XAU roughly flat, morning wait call still holds within 4313-4376 range"
   },
   "history": [
     {
@@ -347,6 +347,12 @@
       "thb_sell": 68550,
       "xau": 4346.4,
       "note": "US Treasury yields up, Fed hawkish expectations pressuring gold; -150 THB from last alert"
+    },
+    {
+      "ts_iso": "2026-09-22T03:32:03.560Z",
+      "thb_sell": 68400,
+      "xau": 4346.6,
+      "note": "alert: THB -150 from last alert, XAU roughly flat, morning wait call still holds within 4313-4376 range"
     }
   ]
 }
