@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-22T08:02:13.253Z",
-    "thb_sell": 67900,
-    "xau": 4301.5,
-    "note": "ทองแท่งลง 200 บาทจากรอบก่อน ทดสอบแนวรับ 4296/67550 จากแรงกดดันเฟดเหยี่ยว (Warsh)"
+    "ts_iso": "2026-09-22T09:02:22.913Z",
+    "thb_sell": 68150,
+    "xau": 4328.899902,
+    "note": "Fed hawkish (Collins, Musalem) vs dollar strength, bounce off Fibonacci 4321 support"
   },
   "history": [
     {
@@ -371,6 +371,12 @@
       "thb_sell": 67900,
       "xau": 4301.5,
       "note": "ทองแท่งลง 200 บาทจากรอบก่อน ทดสอบแนวรับ 4296/67550 จากแรงกดดันเฟดเหยี่ยว (Warsh)"
+    },
+    {
+      "ts_iso": "2026-09-22T09:02:22.913Z",
+      "thb_sell": 68150,
+      "xau": 4328.899902,
+      "note": "Fed hawkish (Collins, Musalem) vs dollar strength, bounce off Fibonacci 4321 support"
     }
   ]
 }
