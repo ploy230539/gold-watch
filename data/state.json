@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-22T09:32:18.790Z",
-    "thb_sell": 68000,
-    "xau": 4315.799805,
-    "note": "Fed hawkish talk (Goolsbee, Musalem) pushed spot toward support band, wait call held"
+    "ts_iso": "2026-09-23T02:32:06.599Z",
+    "thb_sell": 68150,
+    "xau": 4340.100098,
+    "note": "ทองดีดจากแรงหนุนน้ำมันร่วง/การทูตตะวันออกกลาง แต่เฟดยังฮอว์กิช กดไว้ใต้แนวต้าน 4400"
   },
   "history": [
     {
@@ -383,6 +383,12 @@
       "thb_sell": 68000,
       "xau": 4315.799805,
       "note": "Fed hawkish talk (Goolsbee, Musalem) pushed spot toward support band, wait call held"
+    },
+    {
+      "ts_iso": "2026-09-23T02:32:06.599Z",
+      "thb_sell": 68150,
+      "xau": 4340.100098,
+      "note": "ทองดีดจากแรงหนุนน้ำมันร่วง/การทูตตะวันออกกลาง แต่เฟดยังฮอว์กิช กดไว้ใต้แนวต้าน 4400"
     }
   ]
 }
