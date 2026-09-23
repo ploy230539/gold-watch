@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-23T04:32:54.653Z",
-    "thb_sell": 68300,
-    "xau": 4346,
-    "note": "email alert: +150 THB move, still range-bound 4301-4400, wait call unchanged"
+    "ts_iso": "2026-09-23T06:02:07.427Z",
+    "thb_sell": 68100,
+    "xau": 4335.2,
+    "note": "เฟดแข็งกร้าวหนุนดอลลาร์ ทองลง 200 บาทจากรอบก่อน ยังอยู่กลางกรอบ รอ Core PCE ศุกร์นี้"
   },
   "history": [
     {
@@ -395,6 +395,12 @@
       "thb_sell": 68300,
       "xau": 4346,
       "note": "email alert: +150 THB move, still range-bound 4301-4400, wait call unchanged"
+    },
+    {
+      "ts_iso": "2026-09-23T06:02:07.427Z",
+      "thb_sell": 68100,
+      "xau": 4335.2,
+      "note": "เฟดแข็งกร้าวหนุนดอลลาร์ ทองลง 200 บาทจากรอบก่อน ยังอยู่กลางกรอบ รอ Core PCE ศุกร์นี้"
     }
   ]
 }
