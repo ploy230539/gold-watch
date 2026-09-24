@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-24T06:02:21.249Z",
-    "thb_sell": 67750,
-    "xau": 4279.4,
-    "note": "ดอลลาร์แข็ง + เฟด hawkish กดทองต่อ รอ Core PCE พรุ่งนี้"
+    "ts_iso": "2026-09-24T09:32:57.312Z",
+    "thb_sell": 67600,
+    "xau": 4258.700195,
+    "note": "Alert sent: Thai gold -150 THB, hawkish Fed comments + dollar strength, morning wait call held ahead of Core PCE"
   },
   "history": [
     {
@@ -413,6 +413,12 @@
       "thb_sell": 67750,
       "xau": 4279.4,
       "note": "ดอลลาร์แข็ง + เฟด hawkish กดทองต่อ รอ Core PCE พรุ่งนี้"
+    },
+    {
+      "ts_iso": "2026-09-24T09:32:57.312Z",
+      "thb_sell": 67600,
+      "xau": 4258.700195,
+      "note": "Alert sent: Thai gold -150 THB, hawkish Fed comments + dollar strength, morning wait call held ahead of Core PCE"
     }
   ]
 }
