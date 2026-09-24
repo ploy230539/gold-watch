@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-23T06:02:07.427Z",
-    "thb_sell": 68100,
-    "xau": 4335.2,
-    "note": "เฟดแข็งกร้าวหนุนดอลลาร์ ทองลง 200 บาทจากรอบก่อน ยังอยู่กลางกรอบ รอ Core PCE ศุกร์นี้"
+    "ts_iso": "2026-09-24T02:32:07.553Z",
+    "thb_sell": 67900,
+    "xau": 4286.9,
+    "note": "hawkish Fed remarks (Musalem, Goolsbee) lifted dollar, gold -1.11%, THB bar -200 to 67900"
   },
   "history": [
     {
@@ -401,6 +401,12 @@
       "thb_sell": 68100,
       "xau": 4335.2,
       "note": "เฟดแข็งกร้าวหนุนดอลลาร์ ทองลง 200 บาทจากรอบก่อน ยังอยู่กลางกรอบ รอ Core PCE ศุกร์นี้"
+    },
+    {
+      "ts_iso": "2026-09-24T02:32:07.553Z",
+      "thb_sell": 67900,
+      "xau": 4286.9,
+      "note": "hawkish Fed remarks (Musalem, Goolsbee) lifted dollar, gold -1.11%, THB bar -200 to 67900"
     }
   ]
 }
