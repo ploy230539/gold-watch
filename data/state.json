@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-24T02:32:07.553Z",
-    "thb_sell": 67900,
-    "xau": 4286.9,
-    "note": "hawkish Fed remarks (Musalem, Goolsbee) lifted dollar, gold -1.11%, THB bar -200 to 67900"
+    "ts_iso": "2026-09-24T06:02:21.249Z",
+    "thb_sell": 67750,
+    "xau": 4279.4,
+    "note": "ดอลลาร์แข็ง + เฟด hawkish กดทองต่อ รอ Core PCE พรุ่งนี้"
   },
   "history": [
     {
@@ -407,6 +407,12 @@
       "thb_sell": 67900,
       "xau": 4286.9,
       "note": "hawkish Fed remarks (Musalem, Goolsbee) lifted dollar, gold -1.11%, THB bar -200 to 67900"
+    },
+    {
+      "ts_iso": "2026-09-24T06:02:21.249Z",
+      "thb_sell": 67750,
+      "xau": 4279.4,
+      "note": "ดอลลาร์แข็ง + เฟด hawkish กดทองต่อ รอ Core PCE พรุ่งนี้"
     }
   ]
 }
