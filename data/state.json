@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-25T04:32:06.403Z",
-    "thb_sell": 67650,
-    "xau": 4272.299805,
-    "note": "ทองไทยลง 200 บาท ดอลลาร์แข็ง ท่าทีเฟด hawkish ก่อน Core PCE"
+    "ts_iso": "2026-09-25T09:33:02.386Z",
+    "thb_sell": 67800,
+    "xau": 4290.8,
+    "note": "alert: THB +150 vs ref, bounce within ,240-4,320 range, wait call unchanged"
   },
   "history": [
     {
@@ -431,6 +431,12 @@
       "thb_sell": 67650,
       "xau": 4272.299805,
       "note": "ทองไทยลง 200 บาท ดอลลาร์แข็ง ท่าทีเฟด hawkish ก่อน Core PCE"
+    },
+    {
+      "ts_iso": "2026-09-25T09:33:02.386Z",
+      "thb_sell": 67800,
+      "xau": 4290.8,
+      "note": "alert: THB +150 vs ref, bounce within $4,240-4,320 range, wait call unchanged"
     }
   ]
 }
