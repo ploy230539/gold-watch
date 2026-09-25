@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-24T09:32:57.312Z",
-    "thb_sell": 67600,
-    "xau": 4258.700195,
-    "note": "Alert sent: Thai gold -150 THB, hawkish Fed comments + dollar strength, morning wait call held ahead of Core PCE"
+    "ts_iso": "2026-09-25T03:02:34.125Z",
+    "thb_sell": 67850,
+    "xau": 4284.399902,
+    "note": "Thai gold +250 THB / XAU +0.6% bounce off Thursday's stronger-dollar dip, still inside $4,240-4,320 range awaiting Core PCE"
   },
   "history": [
     {
@@ -419,6 +419,12 @@
       "thb_sell": 67600,
       "xau": 4258.700195,
       "note": "Alert sent: Thai gold -150 THB, hawkish Fed comments + dollar strength, morning wait call held ahead of Core PCE"
+    },
+    {
+      "ts_iso": "2026-09-25T03:02:34.125Z",
+      "thb_sell": 67850,
+      "xau": 4284.399902,
+      "note": "Thai gold +250 THB / XAU +0.6% bounce off Thursday's stronger-dollar dip, still inside $4,240-4,320 range awaiting Core PCE"
     }
   ]
 }
