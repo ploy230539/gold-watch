@@ -341,6 +341,23 @@
       "actual_result": null,
       "actual_due_iso": "2026-09-30",
       "actual_due_display": "30 ก.ย. 69"
+    },
+    {
+      "date_display": "26 ก.ย. 69",
+      "date_iso": "2026-09-26",
+      "spot": 4286.2,
+      "thb_sell": 67900,
+      "call": "wait",
+      "call_reason": "ยังแกว่งกลาง $4,210–4,300 รอ Core PCE 30 ก.ย. ก่อนตัดสินใจ",
+      "resistance_usd": 4300,
+      "resistance_thb": 68100,
+      "support_usd_low": 4210,
+      "support_usd_high": 4230,
+      "support_thb": 66850,
+      "invalid_note": "มุมมองนี้ผิดถ้าทะลุ $4,300 ขึ้นไปแรงๆ และยืนได้ (ราว ฿68,100) = ตลาดเริ่มมองข้ามความเสี่ยงเฟด ไล่ซื้อได้ / หรือหลุด $4,210 ลงไปแรงๆ (ต่ำกว่า ฿66,850) = ดอลลาร์แข็งกดต่อเนื่อง รอราคาต่ำกว่านี้",
+      "actual_result": null,
+      "actual_due_iso": "2026-09-30",
+      "actual_due_display": "30 ก.ย. 69"
     }
   ]
 }
