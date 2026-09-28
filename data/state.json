@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-28T06:02:29.296Z",
-    "thb_sell": 66650,
-    "xau": 4182.2,
-    "note": "ทองไทยลง 200 บาท จาก 66,850 มาที่ 66,650 ตามทองโลกหลุดแนวรับ 4,200 เพราะดอลลาร์แข็งก่อน Fed hike/Core PCE"
+    "ts_iso": "2026-09-28T07:02:34.400Z",
+    "thb_sell": 66400,
+    "xau": 4165.299805,
+    "note": "Fed hawkish outlook + Hormuz tension, broke $4,200 support"
   },
   "history": [
     {
@@ -461,6 +461,12 @@
       "thb_sell": 66650,
       "xau": 4182.2,
       "note": "ทองไทยลง 200 บาท จาก 66,850 มาที่ 66,650 ตามทองโลกหลุดแนวรับ 4,200 เพราะดอลลาร์แข็งก่อน Fed hike/Core PCE"
+    },
+    {
+      "ts_iso": "2026-09-28T07:02:34.400Z",
+      "thb_sell": 66400,
+      "xau": 4165.299805,
+      "note": "Fed hawkish outlook + Hormuz tension, broke $4,200 support"
     }
   ]
 }
