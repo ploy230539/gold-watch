@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-25T09:33:02.386Z",
-    "thb_sell": 67800,
-    "xau": 4290.8,
-    "note": "alert: THB +150 vs ref, bounce within ,240-4,320 range, wait call unchanged"
+    "ts_iso": "2026-09-28T01:32:43.278Z",
+    "thb_sell": 67850,
+    "xau": 4219.700195,
+    "note": "alert: Spot -1.66% vs last alert (Fed hike odds up, dollar strong); Thai bar lagged, +50 only"
   },
   "history": [
     {
@@ -437,6 +437,12 @@
       "thb_sell": 67800,
       "xau": 4290.8,
       "note": "alert: THB +150 vs ref, bounce within $4,240-4,320 range, wait call unchanged"
+    },
+    {
+      "ts_iso": "2026-09-28T01:32:43.278Z",
+      "thb_sell": 67850,
+      "xau": 4219.700195,
+      "note": "alert: Spot -1.66% vs last alert (Fed hike odds up, dollar strong); Thai bar lagged, +50 only"
     }
   ]
 }
