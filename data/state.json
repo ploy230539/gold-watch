@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-28T02:33:23.670Z",
-    "thb_sell": 67000,
-    "xau": 4217.399902,
-    "note": "Fed hawkish + strong USD, gold broke $4,200 support overnight; Thai bar sell caught down 850 THB in round 1"
+    "ts_iso": "2026-09-28T03:02:38.286Z",
+    "thb_sell": 66850,
+    "xau": 4197.6,
+    "note": "ทองหลุดต่ำกว่าแนวรับ $4,200 ดอลลาร์แข็ง yield พุ่ง รอ Core PCE พุธนี้"
   },
   "history": [
     {
@@ -449,6 +449,12 @@
       "thb_sell": 67000,
       "xau": 4217.399902,
       "note": "Fed hawkish + strong USD, gold broke $4,200 support overnight; Thai bar sell caught down 850 THB in round 1"
+    },
+    {
+      "ts_iso": "2026-09-28T03:02:38.286Z",
+      "thb_sell": 66850,
+      "xau": 4197.6,
+      "note": "ทองหลุดต่ำกว่าแนวรับ $4,200 ดอลลาร์แข็ง yield พุ่ง รอ Core PCE พุธนี้"
     }
   ]
 }
