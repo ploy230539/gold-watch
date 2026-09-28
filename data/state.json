@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-28T07:02:34.400Z",
-    "thb_sell": 66400,
-    "xau": 4165.299805,
-    "note": "Fed hawkish outlook + Hormuz tension, broke $4,200 support"
+    "ts_iso": "2026-09-28T08:02:34.166Z",
+    "thb_sell": 66150,
+    "xau": 4155.7,
+    "note": "ทองหลุดแนวรับ 4200/67350 ตลาดกลัวเฟดขึ้นดอกเบี้ย"
   },
   "history": [
     {
@@ -467,6 +467,12 @@
       "thb_sell": 66400,
       "xau": 4165.299805,
       "note": "Fed hawkish outlook + Hormuz tension, broke $4,200 support"
+    },
+    {
+      "ts_iso": "2026-09-28T08:02:34.166Z",
+      "thb_sell": 66150,
+      "xau": 4155.7,
+      "note": "ทองหลุดแนวรับ 4200/67350 ตลาดกลัวเฟดขึ้นดอกเบี้ย"
     }
   ]
 }
