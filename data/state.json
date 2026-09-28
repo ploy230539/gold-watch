@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-28T01:32:43.278Z",
-    "thb_sell": 67850,
-    "xau": 4219.700195,
-    "note": "alert: Spot -1.66% vs last alert (Fed hike odds up, dollar strong); Thai bar lagged, +50 only"
+    "ts_iso": "2026-09-28T02:33:23.670Z",
+    "thb_sell": 67000,
+    "xau": 4217.399902,
+    "note": "Fed hawkish + strong USD, gold broke $4,200 support overnight; Thai bar sell caught down 850 THB in round 1"
   },
   "history": [
     {
@@ -443,6 +443,12 @@
       "thb_sell": 67850,
       "xau": 4219.700195,
       "note": "alert: Spot -1.66% vs last alert (Fed hike odds up, dollar strong); Thai bar lagged, +50 only"
+    },
+    {
+      "ts_iso": "2026-09-28T02:33:23.670Z",
+      "thb_sell": 67000,
+      "xau": 4217.399902,
+      "note": "Fed hawkish + strong USD, gold broke $4,200 support overnight; Thai bar sell caught down 850 THB in round 1"
     }
   ]
 }
