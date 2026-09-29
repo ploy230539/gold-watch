@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-29T02:32:56.382Z",
-    "thb_sell": 65850,
-    "xau": 4134.299805,
-    "note": "ทองไทยลง 300 บาท สอดคล้อง Gold Spot อ่อนตัวจากดอลลาร์แข็ง/คาดเฟดขึ้นดอกเบี้ย รอ Core PCE พุธนี้"
+    "ts_iso": "2026-09-29T10:32:50.319Z",
+    "thb_sell": 66000,
+    "xau": 4149.100098,
+    "note": "Fed hawkish + geopolitical bounce (Iran/Hormuz), rebound off ,123 7-week low, still waiting on Core PCE Wed"
   },
   "history": [
     {
@@ -491,6 +491,12 @@
       "thb_sell": 65850,
       "xau": 4134.299805,
       "note": "ทองไทยลง 300 บาท สอดคล้อง Gold Spot อ่อนตัวจากดอลลาร์แข็ง/คาดเฟดขึ้นดอกเบี้ย รอ Core PCE พุธนี้"
+    },
+    {
+      "ts_iso": "2026-09-29T10:32:50.319Z",
+      "thb_sell": 66000,
+      "xau": 4149.100098,
+      "note": "Fed hawkish + geopolitical bounce (Iran/Hormuz), rebound off ,123 7-week low, still waiting on Core PCE Wed"
     }
   ]
 }
