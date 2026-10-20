@@ -1,14 +1,14 @@
 {
-  "last_success_iso": "2026-10-20T07:16:52.999Z",
+  "last_success_iso": "2026-10-20T07:21:22.325Z",
   "last_failure_iso": "2026-10-19T10:30:01.468Z",
   "last_error": null,
   "consecutive_failures": 0,
   "last_notified_stale_iso": null,
   "send": {
-    "last_ok_iso": "2026-09-29T10:32:50.319Z",
+    "last_ok_iso": "2026-10-20T07:21:58.162Z",
     "last_fail_iso": "2026-10-20T07:09:35.334Z",
-    "consecutive_failures": 333,
-    "last_error": "morning exit=1 | Failed to authenticate: OAuth session expired and could not be refreshed",
+    "consecutive_failures": 0,
+    "last_error": null,
     "last_notified_iso": null
   }
 }

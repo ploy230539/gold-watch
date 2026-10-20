@@ -237,7 +237,7 @@ AddButton $g1 "Check alert thresholds" 444 72 175 {
 $g2 = AddGroup "Scheduled jobs" 16 238 710 95
 
 AddButton $g2 "Run morning brief now" 16 28 165 {
-  RunNeedsClaude "Morning brief (takes several minutes)" "tasks\run.cmd morning.md & type logs\morning.log"
+  RunNeedsClaude "Morning brief (takes several minutes)" "tasks\run.cmd morning.md & powershell -NoProfile -Command \"Get-Content logs\morning.log -Tail 60 -Encoding UTF8\""
 } | Out-Null
 
 AddButton $g2 "Run price scan now" 190 28 165 {

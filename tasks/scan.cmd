@@ -6,6 +6,19 @@ REM which is the rare case. Usage: scan.cmd
 setlocal
 cd /d "%~dp0.."
 if not exist "logs" mkdir logs
+REM Resolve claude by full path. A window opened before the PATH changed keeps the
+REM old one, so "claude" can be missing here while it works everywhere else - which
+REM looked exactly like a broken install.
+set "CLAUDE="
+for /f "delims=" %%I in ('where claude.cmd 2^>nul') do if not defined CLAUDE set "CLAUDE=%%I"
+if not defined CLAUDE if exist "%APPDATA%\npm\claude.cmd" set "CLAUDE=%APPDATA%\npm\claude.cmd"
+if not defined CLAUDE if exist "%LOCALAPPDATA%\Programs\claude\claude.exe" set "CLAUDE=%LOCALAPPDATA%\Programs\claude\claude.exe"
+if not defined CLAUDE (
+  echo Claude CLI not found. Press "1. Install Claude CLI" in the Gold Watch panel.
+  echo Claude CLI not found >> "logs\watch.log"
+  node gw.mjs health --record-send fail --detail "Claude CLI not found on PATH" >nul 2>&1
+  exit /b 9
+)
 echo. >> "logs\watch.log"
 echo [%DATE% %TIME%] scan start >> "logs\watch.log"
 
@@ -26,7 +39,7 @@ if not "%RC%"=="10" (
 
 echo [%DATE% %TIME%] threshold hit - handing over to the model >> "logs\watch.log"
 echo Threshold hit. Composing and sending the alert...
-type "tasks\watch.md" | claude -p --dangerously-skip-permissions >> "logs\watch.log" 2>&1
+type "tasks\watch.md" | "%CLAUDE%" -p --dangerously-skip-permissions >> "logs\watch.log" 2>&1
 set "RC=%ERRORLEVEL%"
 echo [%DATE% %TIME%] alert run exit=%RC% >> "logs\watch.log"
 
