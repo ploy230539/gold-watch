@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-20T07:16:50.851Z",
-    "thb_sell": 65750,
-    "xau": 4129.700195,
-    "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 150)"
+    "ts_iso": "2026-10-20T10:01:45.346Z",
+    "thb_sell": 65600,
+    "xau": 4114,
+    "note": "Thai bar -150 from last alert (65,750 -> 65,600), round 21 16:52; yields 5.14% + oil; call still wait"
   },
   "history": [
     {
@@ -515,6 +515,12 @@
       "thb_sell": 65750,
       "xau": 4129.700195,
       "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 150)"
+    },
+    {
+      "ts_iso": "2026-10-20T10:01:45.346Z",
+      "thb_sell": 65600,
+      "xau": 4114,
+      "note": "Thai bar -150 from last alert (65,750 -> 65,600), round 21 16:52; yields 5.14% + oil; call still wait"
     }
   ]
 }
