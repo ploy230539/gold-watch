@@ -129,8 +129,8 @@ function RunNeedsClaude([string]$title, [string]$command) {
   if (-not (HasClaude)) {
     [System.Windows.Forms.MessageBox]::Show(
       "Claude Code CLI is not installed, so this job cannot run.`n`n" +
-      "Press '1. Install Claude Code CLI' in the setup group below,`n" +
-      "then '2. Log in + connect' to sign in and add connectors,`n" +
+      "Press '1. Install Claude CLI' in the setup group below,`n" +
+      "then '2. Sign in',`n" +
       "then '3. Send test email' to confirm it actually works.",
       "Setup incomplete", "OK", "Warning") | Out-Null
     return
@@ -282,18 +282,22 @@ AddButton $g3 "1. Install Claude CLI" 16 28 160 {
   Run "Install Claude Code CLI" "npm install -g @anthropic-ai/claude-code"
 } | Out-Null
 
-AddButton $g3 "2. Log in + connect" 184 28 160 {
+AddButton $g3 "2. Sign in" 184 28 160 {
   if (-not (HasClaude)) {
     [System.Windows.Forms.MessageBox]::Show("Press button 1 and let the install finish first.", "Not ready", "OK", "Warning") | Out-Null
     return
   }
   [System.Windows.Forms.MessageBox]::Show(
-    "A claude window will open.`n`n" +
-    "Log in there, then type /mcp to connect the connectors the jobs need:`n" +
-    "Gmail (sending email) and push notifications.`n`n" +
-    "Close that window when done, then press button 3 to test.",
-    "Step 2", "OK", "Information") | Out-Null
-  Start-Process "cmd.exe" -ArgumentList "/k", "cd /d `"$Root`" && claude"
+    "A window will open and start the sign-in straight away.`n`n" +
+    "Follow the link it shows, approve in the browser, then come back.`n" +
+    "When it says you are signed in, close that window and press button 3.`n`n" +
+    "Just opening claude is not enough - the sign-in has to be run, which is`n" +
+    "what this button now does.",
+    "Step 2 - sign in", "OK", "Information") | Out-Null
+  # `claude auth login` runs the sign-in itself. Opening the REPL only shows a
+  # cached banner and leaves expired credentials in place, which is how a dead
+  # login went unnoticed for three weeks.
+  Start-Process "cmd.exe" -ArgumentList "/k", "cd /d `"$Root`" && claude auth login && echo. && echo Signed in. Close this window and press button 3. && claude auth status"
 } | Out-Null
 
 AddButton $g3 "3. Send test email" 352 28 160 {
