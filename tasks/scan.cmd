@@ -1,4 +1,5 @@
 @echo off
+setlocal
 REM Token-free price scan. Fetches live prices and applies the thresholds in pure
 REM code; the language model is invoked ONLY when an alert is actually warranted,
 REM which is the rare case. Usage: scan.cmd
@@ -28,4 +29,12 @@ echo Threshold hit. Composing and sending the alert...
 type "tasks\watch.md" | claude -p --dangerously-skip-permissions >> "logs\watch.log" 2>&1
 set "RC=%ERRORLEVEL%"
 echo [%DATE% %TIME%] alert run exit=%RC% >> "logs\watch.log"
+
+REM Record whether anything actually reached her. A scan that fetches prices
+REM perfectly and then fails to deliver is still a scan that told her nothing.
+if "%RC%"=="0" (
+  node gw.mjs health --record-send ok >nul 2>&1
+) else (
+  node gw.mjs health --record-send fail --from-log "logs\watch.log" --detail "alert run exit=%RC%" >nul 2>&1
+)
 exit /b %RC%

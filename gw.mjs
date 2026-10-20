@@ -13,6 +13,7 @@
 //   node gw.mjs state get|set --thb N --xau N [--note "..."]
 //   node gw.mjs log                                print the track-record log as JSON
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
+//   node gw.mjs health --record-send ok|fail      record whether a send actually worked
 //   node gw.mjs targets                            list the price targets being watched
 //   node gw.mjs email --in content.json            render an email from the fixed template
 //   node gw.mjs push-setup                         create / show the private ntfy topic
@@ -464,12 +465,40 @@ function cmdTargets() {
 // system says so out loud instead of looking calm.
 const STALE_HOURS = 24;
 
+const EMPTY_HEALTH = {
+  last_success_iso: null, last_failure_iso: null, last_error: null,
+  consecutive_failures: 0, last_notified_stale_iso: null,
+  // Delivery is tracked separately from the price feed. The feed is pure code and
+  // almost never breaks; the send path needs the model, which can lose its login
+  // and then fail every single run while the feed keeps reporting "OK".
+  send: { last_ok_iso: null, last_fail_iso: null, consecutive_failures: 0,
+          last_error: null, last_notified_iso: null },
+};
+
 function loadHealth() {
-  if (!fs.existsSync(P.health)) {
-    return { last_success_iso: null, last_failure_iso: null, last_error: null,
-             consecutive_failures: 0, last_notified_stale_iso: null };
+  if (!fs.existsSync(P.health)) return JSON.parse(JSON.stringify(EMPTY_HEALTH));
+  const h = readJson(P.health);
+  if (!h.send) h.send = JSON.parse(JSON.stringify(EMPTY_HEALTH.send));
+  return h;
+}
+
+// How many sends may fail before the system says so out loud.
+const SEND_FAILURES_BEFORE_ALARM = 3;
+
+function recordSend(ok, detail) {
+  const h = loadHealth();
+  const now = new Date().toISOString();
+  if (ok) {
+    h.send.last_ok_iso = now;
+    h.send.consecutive_failures = 0;
+    h.send.last_error = null;
+  } else {
+    h.send.last_fail_iso = now;
+    h.send.consecutive_failures = (h.send.consecutive_failures || 0) + 1;
+    h.send.last_error = String(detail || "").slice(0, 400);
   }
-  return readJson(P.health);
+  writeJson(P.health, h);
+  return h.send;
 }
 
 function recordHealth(ok, error) {
@@ -494,39 +523,106 @@ function healthReport() {
   const last = h.last_success_iso ? Date.parse(h.last_success_iso) : null;
   const hours = last === null ? null : (now - last) / 3600000;
   const stale = last === null || hours > STALE_HOURS;
+
+  const sendFails = h.send.consecutive_failures || 0;
+  const sendBroken = sendFails >= SEND_FAILURES_BEFORE_ALARM;
+  const sendHours = h.send.last_ok_iso
+    ? (now - Date.parse(h.send.last_ok_iso)) / 3600000 : null;
+
+  const verdicts = [];
+  if (stale) {
+    verdicts.push(last === null
+      ? "No scan has ever succeeded - the watcher is not actually watching."
+      : `No successful scan for ${Math.floor(hours)}h. Silence right now means the watcher is down, not that gold is quiet.`);
+  }
+  if (sendBroken) {
+    const since = sendHours === null ? "ever" : `${Math.floor(sendHours / 24)} days`;
+    verdicts.push(
+      `${sendFails} sends in a row have failed - nothing has reached you for ${since}. ` +
+      `Prices are still being watched, but every alert and morning brief is being thrown away. ` +
+      (/oauth|authenticate|login|expired/i.test(h.send.last_error || "")
+        ? "The Claude CLI login has expired: open a terminal and run `claude` to sign in again."
+        : `Last error: ${h.send.last_error}`));
+  }
+
   return {
-    ok: !stale,
+    ok: !stale && !sendBroken,
     stale,
+    send_broken: sendBroken,
+    send_consecutive_failures: sendFails,
+    send_last_ok_iso: h.send.last_ok_iso,
+    send_last_error: h.send.last_error,
+    hours_since_send_ok: sendHours === null ? null : Number(sendHours.toFixed(1)),
     hours_since_success: hours === null ? null : Number(hours.toFixed(1)),
     stale_after_hours: STALE_HOURS,
     consecutive_failures: h.consecutive_failures || 0,
     last_success_iso: h.last_success_iso,
     last_failure_iso: h.last_failure_iso,
     last_error: h.last_error,
-    verdict: stale
-      ? (last === null
-          ? "No scan has ever succeeded - the watcher is not actually watching."
-          : `No successful scan for ${Math.floor(hours)}h. Silence right now means the watcher is down, not that gold is quiet.`)
-      : `Watching normally - last successful scan ${hours < 1 ? Math.round(hours * 60) + " min" : hours.toFixed(1) + "h"} ago.`,
+    verdict: verdicts.length ? verdicts.join(" ")
+      : `Watching normally - last successful scan ${hours < 1 ? Math.round(hours * 60) + " min" : hours.toFixed(1) + "h"} ago, and sends are getting through.`,
   };
 }
 
-function cmdHealth(a) {
+async function cmdHealth(a) {
+  if (a["record-send"]) {
+    const ok = String(a["record-send"]) === "ok";
+    // Pulling the error line out of the log in Node, not in batch: cmd quoting around
+    // a nested PowerShell call is far too fragile to sit on the failure path.
+    let detail = a.detail;
+    if (!ok && a["from-log"]) {
+      try {
+        const tail = fs.readFileSync(path.resolve(a["from-log"]), "utf8")
+          .split(/\r?\n/).slice(-40)
+          .filter((l) => /error|expired|failed|denied/i.test(l));
+        if (tail.length) detail = [detail, tail[tail.length - 1].trim()].filter(Boolean).join(" | ");
+      } catch { /* the log is a nicety; never let reading it break the recording */ }
+    }
+    const st = recordSend(ok, detail);
+    console.log(JSON.stringify({ ok: true, send: st }, null, 2));
+    // Speak up the moment delivery breaks, rather than waiting for the daily check.
+    // The push is plain code, so it still works when the model is exactly what is broken.
+    if (!ok && st.consecutive_failures === SEND_FAILURES_BEFORE_ALARM) {
+      try {
+        await sendPush({
+          title: "⚠️ Gold Watch ส่งข้อความไม่ได้",
+          message: [
+            `ล้มเหลว ${st.consecutive_failures} ครั้งติด — อีเมลกับสรุปเช้าไม่ได้ส่งออกไปเลย`,
+            /oauth|authenticate|login|expired/i.test(st.last_error || "")
+              ? "สาเหตุ: Claude CLI หมดอายุล็อกอิน เปิด terminal แล้วพิมพ์ claude เพื่อเข้าสู่ระบบใหม่"
+              : `สาเหตุ: ${String(st.last_error || "").slice(0, 120)}`,
+            "ราคายังเฝ้าอยู่ตามปกติ แต่ไม่มีอะไรส่งถึงคุณ",
+          ].join("\n"),
+          priority: 5, tags: ["warning"],
+        });
+      } catch { /* the alarm failing must not break the run that raised it */ }
+    }
+    return;
+  }
   const r = healthReport();
   if (!a.pretty) { console.log(JSON.stringify(r, null, 2)); }
   else {
-    const pad = (l) => l.padEnd(22, " ");
+    const pad = (l) => l.padEnd(26, " ");
     const L = [];
     L.push("  WATCHER HEALTH");
     L.push("  " + "=".repeat(58));
     L.push("");
-    L.push("  " + pad("Status") + (r.ok ? "OK" : "STALE"));
+    L.push("  " + pad("Price feed") + (r.stale ? "STALE" : "OK"));
     L.push("  " + pad("Last successful scan") + (r.last_success_iso
       ? new Date(r.last_success_iso).toLocaleString("en-GB", { hour12: false }).replace(",", "")
       : "never"));
     L.push("  " + pad("Hours since") + (r.hours_since_success === null ? "-" : r.hours_since_success));
     L.push("  " + pad("Failures in a row") + r.consecutive_failures);
     if (r.last_error) L.push("  " + pad("Last error") + r.last_error);
+    L.push("");
+    L.push("  " + pad("Sending") + (r.send_broken ? "BROKEN" : "OK"));
+    L.push("  " + pad("Last successful send") + (r.send_last_ok_iso
+      ? new Date(r.send_last_ok_iso).toLocaleString("en-GB", { hour12: false }).replace(",", "")
+      : "never"));
+    if (r.send_consecutive_failures) {
+      L.push("  " + pad("Send failures in a row") + r.send_consecutive_failures);
+      L.push("  " + pad("Send error") + String(r.send_last_error || "").slice(0, 120));
+    }
     L.push("");
     L.push("  " + r.verdict);
     console.log(L.join("\n"));
@@ -1079,7 +1175,7 @@ switch (a._[0]) {
   case "check": cmdCheck(a); break;
   case "prices": await cmdPrices(a); break;
   case "scan": await cmdScan(a); break;
-  case "health": cmdHealth(a); break;
+  case "health": await cmdHealth(a); break;
   case "targets": cmdTargets(); break;
   case "email": cmdEmail(a); break;
   case "push-setup": cmdPushSetup(); break;

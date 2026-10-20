@@ -22,8 +22,14 @@ if not "%RC%"=="11" (
   exit /b %RC%
 )
 
-echo [%DATE% %TIME%] STALE - warning the owner >> "logs\health.log"
-echo Watcher is stale. Sending a warning...
+echo [%DATE% %TIME%] UNHEALTHY - warning the owner >> "logs\health.log"
+echo Watcher is unhealthy. Sending a warning...
+
+REM Push FIRST, with plain code. The usual failure is the model losing its login,
+REM and a warning that needs the model to say "the model is broken" never arrives.
+node gw.mjs notify --title "Gold Watch ต้องการให้ตรวจสอบ" --message "ระบบแจ้งเตือนมีปัญหา เปิด Gold Watch แล้วกด Is it still watching? เพื่อดูรายละเอียด" --priority 5 --tags warning >> "logs\health.log" 2>&1
+
+REM The detailed email is a bonus: nice when the model works, never relied upon.
 type "tasks\health-alert.md" | claude -p --dangerously-skip-permissions >> "logs\health.log" 2>&1
 echo [%DATE% %TIME%] warning run exit=%ERRORLEVEL% >> "logs\health.log"
 exit /b 0

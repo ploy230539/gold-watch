@@ -181,9 +181,22 @@ anyone who has the topic can read every push sent to it** — it must never be c
 
 ### Health — silence must not be ambiguous
 
-If no scan has succeeded for 24 hours, an empty inbox means the watcher is down, not that
-gold was quiet. `gw.mjs health` exits 11 in that case and `tasks/health.cmd` (12:07 daily)
-emails a warning. While everything is healthy it costs nothing.
+Two separate things have to be working, and they fail in different ways:
+
+- **The price feed** — pure code, almost never breaks. Stale after 24h without a
+  successful scan.
+- **Delivery** — needs the model, and that is what actually breaks. The Claude CLI login
+  expired on 29 Sep 2026 and every morning brief and alert failed for 20 days while the
+  feed kept reporting "OK", so the watchdog said everything was fine and nothing reached
+  Ploy. Each run now records whether its send succeeded; three failures in a row raises
+  the alarm.
+
+`gw.mjs health` exits 11 if either is broken. `tasks/health.cmd` (12:07 daily) warns, and
+`--record-send` raises it the moment delivery breaks rather than waiting for the next day.
+
+**The alarm goes out as an ntfy push first, before the email.** A warning that needs the
+model to announce that the model is broken never arrives — that is the whole reason the
+three-week outage went unnoticed. The push is plain code and does not care.
 
 ---
 
