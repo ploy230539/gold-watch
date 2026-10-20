@@ -175,6 +175,11 @@ quietly failed while the emails kept arriving. Pushes now go through
 - `node gw.mjs notify --title T --message M` sends one
 - `scan` sends the push itself, straight from code, the moment a push-level threshold
   trips — minutes before the model has finished writing the email
+- a delivered push advances the reference price immediately, in code. Waiting for the
+  email to advance it meant that while the send path was broken the same move was
+  re-pushed on every scan: about 27 near-identical pushes a day for days at a time,
+  then total silence whenever the price drifted back. A push is the alert, so it owns
+  the reference.
 
 The topic lives in `local/ntfy-topic.txt`, which is gitignored. **This repo is public, and
 anyone who has the topic can read every push sent to it** — it must never be committed.

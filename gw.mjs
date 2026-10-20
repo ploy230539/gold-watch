@@ -750,6 +750,20 @@ function cmdCheck(a) {
   console.log(a.pretty ? prettyDecision(d, "ALERT CHECK") : JSON.stringify(d, null, 2));
 }
 
+function setState(thb, xau, note) {
+  const st = loadState();
+  const entry = {
+    ts_iso: new Date().toISOString(),
+    thb_sell: Math.round(thb),
+    xau: Number(xau),
+    note: note ? String(note) : "",
+  };
+  st.last_alert = entry;
+  st.history = [...(st.history || []), entry].slice(-100);
+  writeJson(P.state, st);
+  return entry;
+}
+
 function cmdState(a) {
   const sub = a._[1];
   if (sub === "get" || !sub) {
@@ -759,16 +773,7 @@ function cmdState(a) {
   if (sub !== "set") die("usage: state get | state set --thb N --xau N");
   const thb = Number(a.thb), xau = Number(a.xau);
   if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("state set requires --thb and --xau");
-  const st = loadState();
-  const entry = {
-    ts_iso: new Date().toISOString(),
-    thb_sell: Math.round(thb),
-    xau: Number(xau),
-    note: a.note ? String(a.note) : "",
-  };
-  st.last_alert = entry;
-  st.history = [...(st.history || []), entry].slice(-100);
-  writeJson(P.state, st);
+  const entry = setState(thb, xau, a.note);
   console.log(JSON.stringify({ ok: true, last_alert: entry, subject_code: subjectCode(thb, xau) }, null, 2));
 }
 
@@ -901,8 +906,15 @@ async function cmdScan(a) {
     // show what would be pushed without sending it
     d.push_preview = pushFromDecision(d, p);
   } else if (d.push && !a.nopush) {
-    try { d.push_sent = await sendPush(pushFromDecision(d, p)); }
-    catch (e) { d.push_sent = false; d.push_error = e.message; }
+    try {
+      d.push_sent = await sendPush(pushFromDecision(d, p));
+      // A delivered push IS the alert. Advancing the reference here, rather than
+      // waiting for the email, is what stops the same move being re-pushed every
+      // 30 minutes: the next push now needs a genuinely new move. When the email
+      // path was broken this fired ~27 near-identical pushes a day for days on end.
+      d.state_advanced = setState(p.thai.bar_sell, p.spot.value,
+        `push sent: ${d.reason}`.slice(0, 200));
+    } catch (e) { d.push_sent = false; d.push_error = e.message; }
   }
 
   if (a.pretty) {

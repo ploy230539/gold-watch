@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-09-29T10:32:50.319Z",
-    "thb_sell": 66000,
-    "xau": 4149.100098,
-    "note": "Fed hawkish + geopolitical bounce (Iran/Hormuz), rebound off ,123 7-week low, still waiting on Core PCE Wed"
+    "ts_iso": "2026-10-20T07:16:50.851Z",
+    "thb_sell": 65750,
+    "xau": 4129.700195,
+    "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 150)"
   },
   "history": [
     {
@@ -497,6 +497,24 @@
       "thb_sell": 66000,
       "xau": 4149.100098,
       "note": "Fed hawkish + geopolitical bounce (Iran/Hormuz), rebound off ,123 7-week low, still waiting on Core PCE Wed"
+    },
+    {
+      "ts_iso": "2026-10-20T07:16:33.789Z",
+      "thb_sell": 66000,
+      "xau": 4149,
+      "note": "test baseline"
+    },
+    {
+      "ts_iso": "2026-10-20T07:16:49.202Z",
+      "thb_sell": 66100,
+      "xau": 4149,
+      "note": "test baseline"
+    },
+    {
+      "ts_iso": "2026-10-20T07:16:50.851Z",
+      "thb_sell": 65750,
+      "xau": 4129.700195,
+      "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 150)"
     }
   ]
 }
