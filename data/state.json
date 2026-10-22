@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-20T10:01:45.346Z",
-    "thb_sell": 65600,
-    "xau": 4114,
-    "note": "Thai bar -150 from last alert (65,750 -> 65,600), round 21 16:52; yields 5.14% + oil; call still wait"
+    "ts_iso": "2026-10-22T03:32:16.772Z",
+    "thb_sell": 65350,
+    "xau": 4097.8,
+    "note": "Thai bar -250 from last alert (65600->65350), round 4 10:27; call still wait"
   },
   "history": [
     {
@@ -521,6 +521,12 @@
       "thb_sell": 65600,
       "xau": 4114,
       "note": "Thai bar -150 from last alert (65,750 -> 65,600), round 21 16:52; yields 5.14% + oil; call still wait"
+    },
+    {
+      "ts_iso": "2026-10-22T03:32:16.772Z",
+      "thb_sell": 65350,
+      "xau": 4097.8,
+      "note": "Thai bar -250 from last alert (65600->65350), round 4 10:27; call still wait"
     }
   ]
 }
