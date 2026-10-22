@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-22T06:01:38.971Z",
-    "thb_sell": 65150,
-    "xau": 4085.4,
-    "note": "Thai bar -200 from last alert (round 9, 12:57); Fed Dec hike bets; call stays wait"
+    "ts_iso": "2026-10-22T07:02:39.166Z",
+    "thb_sell": 65450,
+    "xau": 4095.1,
+    "note": "Thai bar +300 from last alert (round 14, 13:20); technical bounce off 4085 support, no fresh driver; call stays wait"
   },
   "history": [
     {
@@ -533,6 +533,18 @@
       "thb_sell": 65150,
       "xau": 4085.4,
       "note": "Thai bar -200 from last alert (round 9, 12:57); Fed Dec hike bets; call stays wait"
+    },
+    {
+      "ts_iso": "2026-10-22T07:00:05.589Z",
+      "thb_sell": 65450,
+      "xau": 4095.100098,
+      "note": "push sent: Thai gold moved +300 THB from the last alert (threshold 150)"
+    },
+    {
+      "ts_iso": "2026-10-22T07:02:39.166Z",
+      "thb_sell": 65450,
+      "xau": 4095.1,
+      "note": "Thai bar +300 from last alert (round 14, 13:20); technical bounce off 4085 support, no fresh driver; call stays wait"
     }
   ]
 }
