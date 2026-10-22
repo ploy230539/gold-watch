@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-22T03:32:16.772Z",
-    "thb_sell": 65350,
-    "xau": 4097.8,
-    "note": "Thai bar -250 from last alert (65600->65350), round 4 10:27; call still wait"
+    "ts_iso": "2026-10-22T06:01:38.971Z",
+    "thb_sell": 65150,
+    "xau": 4085.4,
+    "note": "Thai bar -200 from last alert (round 9, 12:57); Fed Dec hike bets; call stays wait"
   },
   "history": [
     {
@@ -527,6 +527,12 @@
       "thb_sell": 65350,
       "xau": 4097.8,
       "note": "Thai bar -250 from last alert (65600->65350), round 4 10:27; call still wait"
+    },
+    {
+      "ts_iso": "2026-10-22T06:01:38.971Z",
+      "thb_sell": 65150,
+      "xau": 4085.4,
+      "note": "Thai bar -200 from last alert (round 9, 12:57); Fed Dec hike bets; call stays wait"
     }
   ]
 }
