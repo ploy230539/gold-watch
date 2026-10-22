@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-22T07:02:39.166Z",
-    "thb_sell": 65450,
-    "xau": 4095.1,
-    "note": "Thai bar +300 from last alert (round 14, 13:20); technical bounce off 4085 support, no fresh driver; call stays wait"
+    "ts_iso": "2026-10-22T08:01:45.377Z",
+    "thb_sell": 65250,
+    "xau": 4086.9,
+    "note": "Thai bar -200 from last alert (65,450→65,250, round 19 14:50); oil >$110 on Houthi strike near Shaybah, Fed hike fears; call still wait"
   },
   "history": [
     {
@@ -545,6 +545,12 @@
       "thb_sell": 65450,
       "xau": 4095.1,
       "note": "Thai bar +300 from last alert (round 14, 13:20); technical bounce off 4085 support, no fresh driver; call stays wait"
+    },
+    {
+      "ts_iso": "2026-10-22T08:01:45.377Z",
+      "thb_sell": 65250,
+      "xau": 4086.9,
+      "note": "Thai bar -200 from last alert (65,450→65,250, round 19 14:50); oil >$110 on Houthi strike near Shaybah, Fed hike fears; call still wait"
     }
   ]
 }
