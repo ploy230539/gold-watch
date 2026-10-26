@@ -65,11 +65,23 @@ foreach ($j in $jobs) {
   $ErrorActionPreference = $prev
 
   if ($rc -ne 0) { Write-Error "Failed to register $($j.Name) (schtasks exit $rc)" }
+
+  # schtasks cannot express these, and its defaults are wrong for a laptop:
+  # it refuses to start on battery and kills a running task the moment the plug
+  # comes out, which silently skipped runs whenever the machine was unplugged.
+  # StartWhenAvailable also catches up a run missed while the machine was off.
+  Set-ScheduledTask -TaskName $j.Name -Settings (New-ScheduledTaskSettingsSet `
+    -AllowStartIfOnBatteries `
+    -DontStopIfGoingOnBatteries `
+    -StartWhenAvailable `
+    -ExecutionTimeLimit (New-TimeSpan -Minutes 30)) | Out-Null
+
   Write-Host "Registered: $($j.Name) -- $($j.Desc)"
 }
 
 Write-Host ""
-Write-Host "Jobs only fire while the machine is on. A missed slot is skipped, not caught up."
+Write-Host "Jobs run on battery as well as mains, and a run missed while the machine was"
+Write-Host "off is picked up once it is back on."
 Write-Host "Per-run logs are written to logs\ in the project folder."
 Write-Host ""
 Write-Host "List a job:  schtasks /Query /TN GoldWatch-Scan"

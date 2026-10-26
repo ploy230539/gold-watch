@@ -189,7 +189,8 @@ anyone who has the topic can read every push sent to it** — it must never be c
 Two separate things have to be working, and they fail in different ways:
 
 - **The price feed** — pure code, almost never breaks. Stale after 24h without a
-  successful scan.
+  successful scan. A gap here usually means the machine was off or asleep, not that
+  anything is wrong with the system.
 - **Delivery** — needs the model, and that is what actually breaks. The Claude CLI login
   expired on 29 Sep 2026 and every morning brief and alert failed for 20 days while the
   feed kept reporting "OK", so the watchdog said everything was fine and nothing reached
@@ -249,5 +250,11 @@ Health check 12:07 daily · Self review 09:00 on the 1st of each month.
 The scan went from three times a day to every half hour because it no longer costs
 anything to run: the association re-announces 10–20 times a day, and three checks left
 hours unwatched.
+
+The jobs are registered with `AllowStartIfOnBatteries`, `DontStopIfGoingOnBatteries` and
+`StartWhenAvailable`. schtasks defaults to the opposite of the first two, which quietly
+refused every run while the laptop was unplugged — the task log showed 0x800710E0 and
+nothing else. The third means a run missed while the machine was off is picked up when
+it comes back, instead of being skipped.
 
 They run on Ploy's machine via Windows Task Scheduler — see [PROMPTS.md](PROMPTS.md) to install.

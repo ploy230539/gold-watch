@@ -5,7 +5,7 @@
   "consecutive_failures": 0,
   "last_notified_stale_iso": null,
   "send": {
-    "last_ok_iso": "2026-10-22T08:02:15.442Z",
+    "last_ok_iso": "2026-10-26T07:13:37.687Z",
     "last_fail_iso": "2026-10-20T07:09:35.334Z",
     "consecutive_failures": 0,
     "last_error": null,
