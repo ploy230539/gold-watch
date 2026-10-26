@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-22T08:01:45.377Z",
-    "thb_sell": 65250,
-    "xau": 4086.9,
-    "note": "Thai bar -200 from last alert (65,450→65,250, round 19 14:50); oil >$110 on Houthi strike near Shaybah, Fed hike fears; call still wait"
+    "ts_iso": "2026-10-26T07:13:00.600Z",
+    "thb_sell": 64150,
+    "xau": 4008.5,
+    "note": "alert email sent: Thai -1,100 THB, spot -1.92% from 22 Oct alert; broke $4,070 support, at $4,000"
   },
   "history": [
     {
@@ -551,6 +551,18 @@
       "thb_sell": 65250,
       "xau": 4086.9,
       "note": "Thai bar -200 from last alert (65,450→65,250, round 19 14:50); oil >$110 on Houthi strike near Shaybah, Fed hike fears; call still wait"
+    },
+    {
+      "ts_iso": "2026-10-26T07:11:05.809Z",
+      "thb_sell": 64150,
+      "xau": 4008.5,
+      "note": "push sent: Thai gold moved -1,100 THB from the last alert (threshold 150) · Spot moved -1.92% from the last alert (threshold 1.5%)"
+    },
+    {
+      "ts_iso": "2026-10-26T07:13:00.600Z",
+      "thb_sell": 64150,
+      "xau": 4008.5,
+      "note": "alert email sent: Thai -1,100 THB, spot -1.92% from 22 Oct alert; broke $4,070 support, at $4,000"
     }
   ]
 }
