@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-27T05:29:18.665Z",
-    "thb_sell": 64050,
-    "xau": 4008.3,
-    "note": "Thai bar -200 THB from last alert (64250); call wait ahead of Fed"
+    "ts_iso": "2026-10-27T08:59:35.263Z",
+    "thb_sell": 63900,
+    "xau": 3994,
+    "note": "Thai bar -150 from last alert (64050->63900), spot below $4,000 ahead of Fed decision"
   },
   "history": [
     {
@@ -587,6 +587,12 @@
       "thb_sell": 64050,
       "xau": 4008.3,
       "note": "Thai bar -200 THB from last alert (64250); call wait ahead of Fed"
+    },
+    {
+      "ts_iso": "2026-10-27T08:59:35.263Z",
+      "thb_sell": 63900,
+      "xau": 3994,
+      "note": "Thai bar -150 from last alert (64050->63900), spot below $4,000 ahead of Fed decision"
     }
   ]
 }
