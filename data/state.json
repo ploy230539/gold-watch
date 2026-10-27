@@ -1,9 +1,9 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-26T09:01:40.984Z",
-    "thb_sell": 64300,
-    "xau": 4018.6,
-    "note": "Thai bar +150 from last alert (64,150 -> 64,300); call still wait ahead of Fed 28 Oct"
+    "ts_iso": "2026-10-27T02:59:11.624Z",
+    "thb_sell": 64100,
+    "xau": 4010.2,
+    "note": "Thai bar -200 from last alert (64300->64100), dollar firm ahead of Fed"
   },
   "history": [
     {
@@ -569,6 +569,12 @@
       "thb_sell": 64300,
       "xau": 4018.6,
       "note": "Thai bar +150 from last alert (64,150 -> 64,300); call still wait ahead of Fed 28 Oct"
+    },
+    {
+      "ts_iso": "2026-10-27T02:59:11.624Z",
+      "thb_sell": 64100,
+      "xau": 4010.2,
+      "note": "Thai bar -200 from last alert (64300->64100), dollar firm ahead of Fed"
     }
   ]
 }
