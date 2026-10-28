@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-27T15:29:42.429Z",
-    "thb_sell": 64000,
-    "xau": 4058.4,
-    "note": "email sent: Spot +1.61% from last alert (3994 -> 4058), call wait ahead of Fed"
+    "ts_iso": "2026-10-28T02:31:37.438Z",
+    "thb_sell": 64850,
+    "xau": 4046.8,
+    "note": "Thai bar +850 THB catch-up to spot rebound; call still wait ahead of Fed"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-02T03:46:42.090Z",
-      "thb_sell": 67750,
-      "xau": 4291.11,
-      "note": "แจ้งเตือนพร้อมสรุปเช้า 2 ก.ย. 69 — ทองร่วงสะสม -3,600 บาท / Spot -6.8% จากจุดแจ้งเตือนล่าสุด (28 ส.ค. 69)"
-    },
-    {
-      "ts_iso": "2026-09-02T08:02:28.002Z",
-      "thb_sell": 68200,
-      "xau": 4324.600098,
-      "note": "Fed hawkish-bet unwind + Middle East safe-haven demand; +450 THB / +0.78% XAU"
-    },
     {
       "ts_iso": "2026-09-02T10:31:40.573Z",
       "thb_sell": 68000,
@@ -605,6 +593,18 @@
       "thb_sell": 64000,
       "xau": 4058.4,
       "note": "email sent: Spot +1.61% from last alert (3994 -> 4058), call wait ahead of Fed"
+    },
+    {
+      "ts_iso": "2026-10-28T02:30:03.430Z",
+      "thb_sell": 64850,
+      "xau": 4046.800049,
+      "note": "push sent: Thai gold moved +850 THB from the last alert (threshold 150)"
+    },
+    {
+      "ts_iso": "2026-10-28T02:31:37.438Z",
+      "thb_sell": 64850,
+      "xau": 4046.8,
+      "note": "Thai bar +850 THB catch-up to spot rebound; call still wait ahead of Fed"
     }
   ]
 }
