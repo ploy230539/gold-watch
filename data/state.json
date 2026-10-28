@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-28T02:31:37.438Z",
-    "thb_sell": 64850,
-    "xau": 4046.8,
-    "note": "Thai bar +850 THB catch-up to spot rebound; call still wait ahead of Fed"
+    "ts_iso": "2026-10-28T05:32:01.305Z",
+    "thb_sell": 64700,
+    "xau": 4035,
+    "note": "Thai bar -150 from 64850 (round 5, 12:01); USD 2-wk high + 10y ~5% ahead of FOMC; call stays wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-02T10:31:40.573Z",
-      "thb_sell": 68000,
-      "xau": 4312,
-      "note": "Fed hawkish (Warsh) hike odds ~70%, higher yields/USD, Mideast tension"
-    },
     {
       "ts_iso": "2026-09-02T14:02:51.680Z",
       "thb_sell": 68050,
@@ -605,6 +599,12 @@
       "thb_sell": 64850,
       "xau": 4046.8,
       "note": "Thai bar +850 THB catch-up to spot rebound; call still wait ahead of Fed"
+    },
+    {
+      "ts_iso": "2026-10-28T05:32:01.305Z",
+      "thb_sell": 64700,
+      "xau": 4035,
+      "note": "Thai bar -150 from 64850 (round 5, 12:01); USD 2-wk high + 10y ~5% ahead of FOMC; call stays wait"
     }
   ]
 }
