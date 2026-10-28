@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-28T05:32:01.305Z",
-    "thb_sell": 64700,
-    "xau": 4035,
-    "note": "Thai bar -150 from 64850 (round 5, 12:01); USD 2-wk high + 10y ~5% ahead of FOMC; call stays wait"
+    "ts_iso": "2026-10-28T07:01:41.841Z",
+    "thb_sell": 64550,
+    "xau": 4031.6,
+    "note": "Thai bar -150 from 64700 alert (round 7, 13:55); oil/dollar/yields before Fed; call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-02T14:02:51.680Z",
-      "thb_sell": 68050,
-      "xau": 4382.1,
-      "note": "Spot +1.63% vs last alert (4312->4382); Fed hawkish repricing vs ME geopolitical/safe-haven tug-of-war, no single fresh headline"
-    },
     {
       "ts_iso": "2026-09-03T02:31:59.582Z",
       "thb_sell": 69150,
@@ -605,6 +599,12 @@
       "thb_sell": 64700,
       "xau": 4035,
       "note": "Thai bar -150 from 64850 (round 5, 12:01); USD 2-wk high + 10y ~5% ahead of FOMC; call stays wait"
+    },
+    {
+      "ts_iso": "2026-10-28T07:01:41.841Z",
+      "thb_sell": 64550,
+      "xau": 4031.6,
+      "note": "Thai bar -150 from 64700 alert (round 7, 13:55); oil/dollar/yields before Fed; call still wait"
     }
   ]
 }
