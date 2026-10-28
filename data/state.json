@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-28T07:01:41.841Z",
-    "thb_sell": 64550,
-    "xau": 4031.6,
-    "note": "Thai bar -150 from 64700 alert (round 7, 13:55); oil/dollar/yields before Fed; call still wait"
+    "ts_iso": "2026-10-28T08:31:23.798Z",
+    "thb_sell": 64700,
+    "xau": 4051.1,
+    "note": "+150 THB from last alert; oil eased before Fed, call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-03T02:31:59.582Z",
-      "thb_sell": 69150,
-      "xau": 4411.299805,
-      "note": "Rebound after Warsh-driven rate-hike bets selloff; USD/yields pulled back ahead of Friday payrolls"
-    },
     {
       "ts_iso": "2026-09-03T04:31:44.795Z",
       "thb_sell": 69300,
@@ -605,6 +599,12 @@
       "thb_sell": 64550,
       "xau": 4031.6,
       "note": "Thai bar -150 from 64700 alert (round 7, 13:55); oil/dollar/yields before Fed; call still wait"
+    },
+    {
+      "ts_iso": "2026-10-28T08:31:23.798Z",
+      "thb_sell": 64700,
+      "xau": 4051.1,
+      "note": "+150 THB from last alert; oil eased before Fed, call still wait"
     }
   ]
 }
