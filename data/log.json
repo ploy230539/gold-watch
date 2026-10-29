@@ -460,6 +460,23 @@
       "actual_result": null,
       "actual_due_iso": "2026-11-02",
       "actual_due_display": "2 พ.ย. 69"
+    },
+    {
+      "date_display": "29 ต.ค. 69",
+      "date_iso": "2026-10-29",
+      "spot": 4038.8,
+      "thb_sell": 64800,
+      "call": "wait",
+      "call_reason": "เฟดไม่ปิดประตูขึ้นดอกเบี้ย ทองย่อมา $4,039 รอ PCE คืนนี้ 1 ทุ่มครึ่งก่อน ยืน $4,000 ได้ค่อยเข้า",
+      "resistance_usd": 4125,
+      "resistance_thb": 65900,
+      "support_usd_low": 3975,
+      "support_usd_high": 4015,
+      "support_thb": 63500,
+      "invalid_note": "มุมมองนี้ผิดถ้า Spot ขึ้นไปยืนเหนือ $4,125 ได้ (ทองแท่งราว ฿65,900) = แรงซื้อกลับมาเร็ว รอต่อจะพลาดรอบขึ้น / ถ้าหลุด $3,975 (ราว ฿63,500) = ขาลงรอบใหม่ ยังรอต่อได้ แนวถัดไป $3,940",
+      "actual_result": null,
+      "actual_due_iso": "2026-11-03",
+      "actual_due_display": "3 พ.ย. 69"
     }
   ]
 }
