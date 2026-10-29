@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-28T08:31:23.798Z",
-    "thb_sell": 64700,
-    "xau": 4051.1,
-    "note": "+150 THB from last alert; oil eased before Fed, call still wait"
+    "ts_iso": "2026-10-29T06:01:52.908Z",
+    "thb_sell": 64500,
+    "xau": 4025.4,
+    "note": "Thai bar -200 from last alert (round 3, 12:47); Fed hawkish hold, PCE tonight; call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-03T04:31:44.795Z",
-      "thb_sell": 69300,
-      "xau": 4436.100098,
-      "note": "email+chat alert: +150 THB move, no clear single news driver, likely short technical bounce amid Fed rate/dollar volatility"
-    },
     {
       "ts_iso": "2026-09-03T06:32:12.200Z",
       "thb_sell": 69150,
@@ -605,6 +599,12 @@
       "thb_sell": 64700,
       "xau": 4051.1,
       "note": "+150 THB from last alert; oil eased before Fed, call still wait"
+    },
+    {
+      "ts_iso": "2026-10-29T06:01:52.908Z",
+      "thb_sell": 64500,
+      "xau": 4025.4,
+      "note": "Thai bar -200 from last alert (round 3, 12:47); Fed hawkish hold, PCE tonight; call still wait"
     }
   ]
 }
