@@ -1,11 +1,11 @@
 {
-  "last_success_iso": "2026-10-29T06:00:03.815Z",
-  "last_failure_iso": "2026-10-28T11:30:16.492Z",
+  "last_success_iso": "2026-10-30T01:00:17.216Z",
+  "last_failure_iso": "2026-10-29T15:00:16.423Z",
   "last_error": null,
   "consecutive_failures": 0,
   "last_notified_stale_iso": null,
   "send": {
-    "last_ok_iso": "2026-10-29T01:04:11.709Z",
+    "last_ok_iso": "2026-10-29T06:02:12.150Z",
     "last_fail_iso": "2026-10-20T07:09:35.334Z",
     "consecutive_failures": 0,
     "last_error": null,

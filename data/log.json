@@ -477,6 +477,23 @@
       "actual_result": null,
       "actual_due_iso": "2026-11-03",
       "actual_due_display": "3 พ.ย. 69"
+    },
+    {
+      "date_display": "30 ต.ค. 69",
+      "date_iso": "2026-10-30",
+      "spot": 4006,
+      "thb_sell": 64400,
+      "call": "wait",
+      "call_reason": "ทองยืนเส้น $4,000 แบบหมิ่นๆ เฟดส่อขึ้นดอกเบี้ย ธ.ค. รอก่อน ยังไม่รีบเข้า",
+      "resistance_usd": 4110,
+      "resistance_thb": 66050,
+      "support_usd_low": 3975,
+      "support_usd_high": 4000,
+      "support_thb": 63900,
+      "invalid_note": "มุมมองนี้ผิดถ้า Spot กลับขึ้นไปยืนเหนือ $4,110 ได้ (ทองแท่งราว ฿66,050) = ตลาดซึมซับข่าวเฟดไปแล้ว รอต่อจะพลาดรอบขึ้น / ถ้าหลุด $3,975 (ราว ฿63,900) = ขาลงต่อ ยังรอได้ แนวถัดไป $3,940",
+      "actual_result": null,
+      "actual_due_iso": "2026-11-04",
+      "actual_due_display": "4 พ.ย. 69"
     }
   ]
 }
