@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-30T04:01:42.768Z",
-    "thb_sell": 63800,
-    "xau": 3995.3,
-    "note": "Thai bar -200 from last alert, broke morning support 63,900; Fed hike bets"
+    "ts_iso": "2026-10-30T07:01:58.100Z",
+    "thb_sell": 63650,
+    "xau": 3983.1,
+    "note": "Thai bar -150 from last alert (63800->63650); spot $3983 at bottom of support zone, Fed Dec hike bets"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-04T02:36:58.936Z",
-      "thb_sell": 69800,
-      "xau": 4473.600098,
-      "note": "Thai gold +650 THB in ~30min within round 1 (09:00) as world gold rally from Iran re-escalation fears / soft USD carries through"
-    },
     {
       "ts_iso": "2026-09-04T09:32:35.138Z",
       "thb_sell": 69650,
@@ -605,6 +599,12 @@
       "thb_sell": 63800,
       "xau": 3995.3,
       "note": "Thai bar -200 from last alert, broke morning support 63,900; Fed hike bets"
+    },
+    {
+      "ts_iso": "2026-10-30T07:01:58.100Z",
+      "thb_sell": 63650,
+      "xau": 3983.1,
+      "note": "Thai bar -150 from last alert (63800->63650); spot $3983 at bottom of support zone, Fed Dec hike bets"
     }
   ]
 }
