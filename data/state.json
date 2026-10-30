@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-30T08:31:27.747Z",
-    "thb_sell": 63550,
-    "xau": 3987.4,
-    "note": "bounce +150 off $3,975 support, round 24 15:14; call still wait"
+    "ts_iso": "2026-10-30T09:01:30.059Z",
+    "thb_sell": 63750,
+    "xau": 3999.1,
+    "note": "+200 THB from last alert, spot back near $4,000, call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-08T02:34:56.093Z",
-      "thb_sell": 68800,
-      "xau": 4426.299805,
-      "note": "Thai gold +250 THB (announcement round 2, 09:13) vs last alert; global spot roughly flat/-0.18%, move mostly domestic catch-up to fair value; gold week pressured by strong US NFP raising Fed hike odds"
-    },
     {
       "ts_iso": "2026-09-08T05:02:48.008Z",
       "thb_sell": 69050,
@@ -607,6 +601,13 @@
       "xau": 3987.4,
       "note": "bounce +150 off $3,975 support, round 24 15:14; call still wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-10-30T09:01:30.059Z",
+      "thb_sell": 63750,
+      "xau": 3999.1,
+      "note": "+200 THB from last alert, spot back near $4,000, call still wait",
+      "pushed": false
     }
   ],
   "last_push": {
