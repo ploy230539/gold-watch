@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-30T08:01:42.572Z",
-    "thb_sell": 63400,
-    "xau": 3973.9,
-    "note": "Thai bar -250 from last alert (63,650->63,400), spot broke $3,975 support on Fed Dec hike bets"
+    "ts_iso": "2026-10-30T08:31:27.747Z",
+    "thb_sell": 63550,
+    "xau": 3987.4,
+    "note": "bounce +150 off $3,975 support, round 24 15:14; call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-07T02:44:44.347Z",
-      "thb_sell": 68750,
-      "xau": 4414.3,
-      "note": "morning brief: NFP เดือน ส.ค. แรงเกินคาด (+162k) หนุนโอกาสเฟดขึ้นดอกเบี้ยเป็น ~65%; ทองร่วง -900 บาท / -1.15% จากจุดแจ้งเตือนล่าสุด"
-    },
-    {
-      "ts_iso": "2026-09-08T01:33:39.339Z",
-      "thb_sell": 68550,
-      "xau": 4434.3,
-      "note": "ทองไทยลด 200 บาท สวนทาง Spot โลกที่ขึ้น 0.45% (แรงหนุนจากตะวันออกกลาง/จีนซื้อทอง vs แรงกดจาก NFP สหรัฐฯ; ราคาไทยยังไม่มีรอบประกาศใหม่)"
-    },
     {
       "ts_iso": "2026-09-08T02:34:56.093Z",
       "thb_sell": 68800,
@@ -605,12 +593,26 @@
       "thb_sell": 63400,
       "xau": 3973.9,
       "note": "Thai bar -250 from last alert (63,650->63,400), spot broke $3,975 support on Fed Dec hike bets"
+    },
+    {
+      "ts_iso": "2026-10-30T08:30:04.975Z",
+      "thb_sell": 63550,
+      "xau": 3987.399902,
+      "note": "push sent: Thai gold moved +150 THB from the last alert (threshold 150) · Cumulative -450 THB since the last push (threshold 300)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-10-30T08:31:27.747Z",
+      "thb_sell": 63550,
+      "xau": 3987.4,
+      "note": "bounce +150 off $3,975 support, round 24 15:14; call still wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-10-30T02:30:03.654Z",
-    "thb_sell": 64000,
-    "xau": 4006.199951,
-    "note": "push sent: Thai gold moved -500 THB from the last alert (threshold 150)"
+    "ts_iso": "2026-10-30T08:31:27.747Z",
+    "thb_sell": 63550,
+    "xau": 3987.4,
+    "note": "bounce +150 off $3,975 support, round 24 15:14; call still wait"
   }
 }
