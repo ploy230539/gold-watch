@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-30T09:01:30.059Z",
+    "ts_iso": "2026-10-30T14:01:43.021Z",
     "thb_sell": 63750,
-    "xau": 3999.1,
-    "note": "+200 THB from last alert, spot back near $4,000, call still wait"
+    "xau": 3924.9,
+    "note": "email sent: Spot -1.86% (3999->3925) broke $3,940 on hot PCE / Fed Dec hike bets; Thai 63,750 lagging (round 27 15:49); call stays wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-08T05:02:48.008Z",
-      "thb_sell": 69050,
-      "xau": 4440.600098,
-      "note": "Gulf/Iran tension safe-haven bid outweighed hawkish Fed odds from strong Aug jobs data"
-    },
-    {
-      "ts_iso": "2026-09-08T06:02:17.002Z",
-      "thb_sell": 68850,
-      "xau": 4421.200195,
-      "note": "US jobs data (NFP +162k) still weighing on gold, dollar strength"
-    },
     {
       "ts_iso": "2026-09-08T06:31:53.840Z",
       "thb_sell": 68650,
@@ -608,12 +596,26 @@
       "xau": 3999.1,
       "note": "+200 THB from last alert, spot back near $4,000, call still wait",
       "pushed": false
+    },
+    {
+      "ts_iso": "2026-10-30T14:00:04.476Z",
+      "thb_sell": 63750,
+      "xau": 3924.899902,
+      "note": "push sent: Spot moved -1.86% from the last alert (threshold 1.5%) · Cumulative +200 THB since the last push (threshold 300)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-10-30T14:01:43.021Z",
+      "thb_sell": 63750,
+      "xau": 3924.9,
+      "note": "email sent: Spot -1.86% (3999->3925) broke $3,940 on hot PCE / Fed Dec hike bets; Thai 63,750 lagging (round 27 15:49); call stays wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-10-30T08:31:27.747Z",
-    "thb_sell": 63550,
-    "xau": 3987.4,
-    "note": "bounce +150 off $3,975 support, round 24 15:14; call still wait"
+    "ts_iso": "2026-10-30T14:01:43.021Z",
+    "thb_sell": 63750,
+    "xau": 3924.9,
+    "note": "email sent: Spot -1.86% (3999->3925) broke $3,940 on hot PCE / Fed Dec hike bets; Thai 63,750 lagging (round 27 15:49); call stays wait"
   }
 }
