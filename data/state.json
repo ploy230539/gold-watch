@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-29T06:01:52.908Z",
-    "thb_sell": 64500,
-    "xau": 4025.4,
-    "note": "Thai bar -200 from last alert (round 3, 12:47); Fed hawkish hold, PCE tonight; call still wait"
+    "ts_iso": "2026-10-30T02:32:19.620Z",
+    "thb_sell": 64000,
+    "xau": 4006.2,
+    "note": "email alert: Thai bar -500 THB to 64,000 (Fed Dec hike bets, strong US GDP); call wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-03T06:32:12.200Z",
-      "thb_sell": 69150,
-      "xau": 4421.799805,
-      "note": "Gold spot -0.32% on Fed rate-hike expectations (Warsh comments) and Middle East escalation; THB bar sell -150"
-    },
-    {
-      "ts_iso": "2026-09-03T09:03:40.022Z",
-      "thb_sell": 69300,
-      "xau": 4437.5,
-      "note": "alert: +150 THB from last alert, gold rebound on US yield pullback"
-    },
     {
       "ts_iso": "2026-09-04T02:04:02.097Z",
       "thb_sell": 69150,
@@ -605,6 +593,18 @@
       "thb_sell": 64500,
       "xau": 4025.4,
       "note": "Thai bar -200 from last alert (round 3, 12:47); Fed hawkish hold, PCE tonight; call still wait"
+    },
+    {
+      "ts_iso": "2026-10-30T02:30:03.654Z",
+      "thb_sell": 64000,
+      "xau": 4006.199951,
+      "note": "push sent: Thai gold moved -500 THB from the last alert (threshold 150)"
+    },
+    {
+      "ts_iso": "2026-10-30T02:32:19.620Z",
+      "thb_sell": 64000,
+      "xau": 4006.2,
+      "note": "email alert: Thai bar -500 THB to 64,000 (Fed Dec hike bets, strong US GDP); call wait"
     }
   ]
 }
