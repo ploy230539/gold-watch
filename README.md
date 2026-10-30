@@ -213,11 +213,17 @@ three-week outage went unnoticed. The push is plain code and does not care.
 | `ALERT_THB = 150` | Thai gold moved ≥ 150 THB from the last alerted price (cumulative) → alert |
 | `ALERT_XAU_PCT = 1.5` | Spot moved ≥ 1.5% → alert |
 | `--news` | Market-moving news → alert (a human decides this, not the script) |
-| `PUSH_THB = 300` | Thai gold ≥ 300 THB → also send a phone push (150–300 is email only) |
+| `PUSH_THB = 300` | Thai gold ≥ 300 THB **since the last push** → also send a phone push |
 | `PUSH_XAU_PCT = 1.5` | Spot ≥ 1.5% → also send a phone push |
 | `MIN_ROWS_FOR_STATS = 30` | Below this, never quote an accuracy percentage |
 
 Below threshold means total silence — nothing is sent at all.
+
+The two thresholds measure from **different baselines**, which matters: `last_alert` resets
+on every email, `last_push` only when the phone actually buzzed. Sharing one baseline made
+the push threshold unreachable during a steady slide — each 150 THB email reset the
+reference before the gap could ever reach 300. On 30 Oct gold fell 1,100 THB across four
+alerts and the phone buzzed once.
 
 The fair Thai gold price lives in `fairThb()` and in the calculator on the page:
 

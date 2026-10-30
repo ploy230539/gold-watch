@@ -10,7 +10,7 @@
 //   node gw.mjs prices [--pretty]                  fetch live prices from free APIs (no model)
 //   node gw.mjs scan    [--news] [--dry]           prices + threshold check; exit 10 = alert needed
 //                                                  (--dry: preview the push, do not send it)
-//   node gw.mjs state get|set --thb N --xau N [--note "..."]
+//   node gw.mjs state get|set --thb N --xau N [--note "..."] [--pushed]
 //   node gw.mjs log                                print the track-record log as JSON
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
 //   node gw.mjs health --record-send ok|fail      record whether a send actually worked
@@ -662,6 +662,8 @@ const subjectCode = (thb, xau) => `[TH ${Math.round(thb)} | XAU ${Math.round(xau
 function decide(thb, xau, news) {
   const st = loadState();
   const ref = st.last_alert;
+  // Before this existed, fall back to the alert baseline so nothing breaks.
+  const refPush = st.last_push || st.last_alert;
 
   if (!ref) {
     return {
@@ -677,10 +679,14 @@ function decide(thb, xau, news) {
   const xauPct = ((xau - ref.xau) / ref.xau) * 100;
   const hitThb = Math.abs(thbMove) >= ALERT_THB;
   const hitXau = Math.abs(xauPct) >= ALERT_XAU_PCT;
+
+  const pushThbMove = thb - refPush.thb_sell;
+  const pushXauPct = ((xau - refPush.xau) / refPush.xau) * 100;
   const tg = checkTargets(thb, xau);
   const alert = hitThb || hitXau || news || tg.hit.length > 0;
-  // A level you asked to be told about is always worth the interruption.
-  const push = Math.abs(thbMove) >= PUSH_THB || Math.abs(xauPct) >= PUSH_XAU_PCT ||
+  // Measured from the last push, not the last email, so a run of small moves
+  // still buzzes the phone once it adds up to a real one.
+  const push = Math.abs(pushThbMove) >= PUSH_THB || Math.abs(pushXauPct) >= PUSH_XAU_PCT ||
     news || tg.hit.length > 0;
 
   const reasons = [];
@@ -689,6 +695,9 @@ function decide(thb, xau, news) {
   if (news) reasons.push("Market-moving news flagged by the operator");
   for (const h of tg.hit) reasons.push("Target hit: " + h.text);
   for (const b of tg.bad) reasons.push(`targets.txt line ${b.line} unreadable: "${b.raw}"`);
+  if (push && !(Math.abs(thbMove) >= PUSH_THB)) {
+    reasons.push(`Cumulative ${signed(pushThbMove)} THB since the last push (threshold ${PUSH_THB})`);
+  }
   if (!alert) reasons.push(`Below threshold - Thai gold ${signed(thbMove)} THB / Spot ${pct(xauPct)} -> stay silent, send nothing`);
 
   return {
@@ -699,6 +708,9 @@ function decide(thb, xau, news) {
     now: { thb_sell: thb, xau },
     thb_move: Math.round(thbMove),
     xau_pct: Number(xauPct.toFixed(3)),
+    push_ref: { thb_sell: refPush.thb_sell, xau: refPush.xau, ts_iso: refPush.ts_iso },
+    push_thb_move: Math.round(pushThbMove),
+    push_xau_pct: Number(pushXauPct.toFixed(3)),
     targets_hit: tg.hit,
     targets_unreadable: tg.bad,
     subject_code: subjectCode(thb, xau),
@@ -706,7 +718,7 @@ function decide(thb, xau, news) {
 }
 
 function prettyDecision(d, title) {
-  const pad = (l) => l.padEnd(20, " ");
+  const pad = (l) => l.padEnd(30, " ");
   const money = (n, dp = 0) => num(n, dp).padStart(10, " ");
   const when = new Date().toLocaleString("en-GB", { hour12: false }).replace(",", "");
   const L = [];
@@ -720,11 +732,19 @@ function prettyDecision(d, title) {
   } else {
     L.push("  " + pad("Last alerted at") + "    (never - first reference point)");
   }
+  if (d.push_ref && d.push_ref.thb_sell !== (d.ref && d.ref.thb_sell)) {
+    L.push("  " + pad("Last pushed at") + "THB " + money(d.push_ref.thb_sell) +
+           "     XAU " + num(d.push_ref.xau, 2));
+  }
   L.push("  " + pad("Now") + "THB " + money(d.now.thb_sell) + "     XAU " + num(d.now.xau, 2));
   L.push("");
   if (d.thb_move !== null && d.thb_move !== undefined) {
-    L.push("  " + pad("Moved") + "THB " + signed(d.thb_move).padStart(10, " ") +
+    L.push("  " + pad("Moved since last email") + "THB " + signed(d.thb_move).padStart(10, " ") +
            "     Spot " + pct(d.xau_pct));
+    if (d.push_thb_move !== undefined && d.push_thb_move !== d.thb_move) {
+      L.push("  " + pad("Moved since last push") + "THB " + signed(d.push_thb_move).padStart(10, " ") +
+             "     Spot " + pct(d.push_xau_pct));
+    }
   }
   L.push("");
   const verdict = !d.alert ? "SILENT - nothing sent, no model used"
@@ -750,7 +770,13 @@ function cmdCheck(a) {
   console.log(a.pretty ? prettyDecision(d, "ALERT CHECK") : JSON.stringify(d, null, 2));
 }
 
-function setState(thb, xau, note) {
+// Two baselines, because they answer different questions.
+//   last_alert - reset by every email, drives the 150 THB email threshold
+//   last_push  - reset only by a push, drives the 300 THB push threshold
+// With one shared baseline a slow grind never pushes: each 150 THB email resets
+// the reference, so the gap can never reach 300. On 30 Oct gold fell 1,100 THB
+// across four alerts and the phone buzzed once.
+function setState(thb, xau, note, { pushed = false } = {}) {
   const st = loadState();
   const entry = {
     ts_iso: new Date().toISOString(),
@@ -759,7 +785,8 @@ function setState(thb, xau, note) {
     note: note ? String(note) : "",
   };
   st.last_alert = entry;
-  st.history = [...(st.history || []), entry].slice(-100);
+  if (pushed) st.last_push = entry;
+  st.history = [...(st.history || []), { ...entry, pushed }].slice(-100);
   writeJson(P.state, st);
   return entry;
 }
@@ -773,7 +800,7 @@ function cmdState(a) {
   if (sub !== "set") die("usage: state get | state set --thb N --xau N");
   const thb = Number(a.thb), xau = Number(a.xau);
   if (!Number.isFinite(thb) || !Number.isFinite(xau)) die("state set requires --thb and --xau");
-  const entry = setState(thb, xau, a.note);
+  const entry = setState(thb, xau, a.note, { pushed: !!a.pushed });
   console.log(JSON.stringify({ ok: true, last_alert: entry, subject_code: subjectCode(thb, xau) }, null, 2));
 }
 
@@ -913,7 +940,7 @@ async function cmdScan(a) {
       // 30 minutes: the next push now needs a genuinely new move. When the email
       // path was broken this fired ~27 near-identical pushes a day for days on end.
       d.state_advanced = setState(p.thai.bar_sell, p.spot.value,
-        `push sent: ${d.reason}`.slice(0, 200));
+        `push sent: ${d.reason}`.slice(0, 200), { pushed: true });
     } catch (e) { d.push_sent = false; d.push_error = e.message; }
   }
 

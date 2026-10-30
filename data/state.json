@@ -606,5 +606,11 @@
       "xau": 3973.9,
       "note": "Thai bar -250 from last alert (63,650->63,400), spot broke $3,975 support on Fed Dec hike bets"
     }
-  ]
+  ],
+  "last_push": {
+    "ts_iso": "2026-10-30T02:30:03.654Z",
+    "thb_sell": 64000,
+    "xau": 4006.199951,
+    "note": "push sent: Thai gold moved -500 THB from the last alert (threshold 150)"
+  }
 }

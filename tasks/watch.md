@@ -104,6 +104,11 @@ caught up with world gold yet.
 **4. Only after sending**, record the price just alerted on and push it:
 
     node gw.mjs state set --thb <alerted bar sell> --xau <alerted spot> --note "<why it was sent>"
+
+If `push_sent` in the scan was truthy, add `--pushed` to that command. The push and the
+email are measured from separate baselines - the email one resets on every alert, the
+push one only when the phone actually buzzed - so marking it wrongly either silences the
+phone or makes it buzz twice for the same move.
     node gw.mjs publish -m "state: alert sent <time>"
 
 **If for any reason you did not send, do not touch the state** — the cumulative
