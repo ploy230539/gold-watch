@@ -494,6 +494,23 @@
       "actual_result": null,
       "actual_due_iso": "2026-11-04",
       "actual_due_display": "4 พ.ย. 69"
+    },
+    {
+      "date_display": "31 ต.ค. 69",
+      "date_iso": "2026-10-31",
+      "spot": 3876.4,
+      "thb_sell": 63750,
+      "call": "wait",
+      "call_reason": "ทองโลกหลุด $3,900 ราคาไทยยังไม่ปรับตาม รอรอบใหม่ลงก่อน อย่าเพิ่งซื้อ",
+      "resistance_usd": 3942,
+      "resistance_thb": 62900,
+      "support_usd_low": 3789,
+      "support_usd_high": 3870,
+      "support_thb": 60450,
+      "invalid_note": "มุมมองนี้ผิดถ้า Spot ดีดกลับขึ้นไปยืนเหนือ $3,942 ได้ (ทองแท่งราว ฿62,900) = การหลุดเมื่อวานเป็นแค่การสะบัดลง รอต่อจะพลาดรอบเด้ง / ถ้าหลุด $3,789 (ราว ฿60,450) = ขาลงยังไม่จบ รอได้ต่อ แนวถัดไป $3,650–3,700",
+      "actual_result": null,
+      "actual_due_iso": "2026-11-04",
+      "actual_due_display": "4 พ.ย. 69"
     }
   ]
 }
