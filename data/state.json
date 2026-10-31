@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-30T14:01:43.021Z",
-    "thb_sell": 63750,
-    "xau": 3924.9,
-    "note": "email sent: Spot -1.86% (3999->3925) broke $3,940 on hot PCE / Fed Dec hike bets; Thai 63,750 lagging (round 27 15:49); call stays wait"
+    "ts_iso": "2026-10-31T02:31:30.900Z",
+    "thb_sell": 62200,
+    "xau": 3876.399902,
+    "note": "email+push: Thai gold -1,550 THB from last alert (63,750 -> 62,200), round 1 09:12"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-08T06:31:53.840Z",
-      "thb_sell": 68650,
-      "xau": 4402,
-      "note": "Fed rate-hike bets after strong US jobs data pushed dollar up, gold down -0.43%/-200 THB"
-    },
-    {
-      "ts_iso": "2026-09-09T02:32:43.504Z",
-      "thb_sell": 68150,
-      "xau": 4373.5,
-      "note": "Real yields up pre-Fed outweighed ME safe-haven bid + profit-taking after Aug rally"
-    },
     {
       "ts_iso": "2026-09-09T06:02:09.158Z",
       "thb_sell": 68400,
@@ -610,12 +598,26 @@
       "xau": 3924.9,
       "note": "email sent: Spot -1.86% (3999->3925) broke $3,940 on hot PCE / Fed Dec hike bets; Thai 63,750 lagging (round 27 15:49); call stays wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-10-31T02:30:02.734Z",
+      "thb_sell": 62200,
+      "xau": 3876.399902,
+      "note": "push sent: Thai gold moved -1,550 THB from the last alert (threshold 150)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-10-31T02:31:30.900Z",
+      "thb_sell": 62200,
+      "xau": 3876.399902,
+      "note": "email+push: Thai gold -1,550 THB from last alert (63,750 -> 62,200), round 1 09:12",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-10-30T14:01:43.021Z",
-    "thb_sell": 63750,
-    "xau": 3924.9,
-    "note": "email sent: Spot -1.86% (3999->3925) broke $3,940 on hot PCE / Fed Dec hike bets; Thai 63,750 lagging (round 27 15:49); call stays wait"
+    "ts_iso": "2026-10-31T02:31:30.900Z",
+    "thb_sell": 62200,
+    "xau": 3876.399902,
+    "note": "email+push: Thai gold -1,550 THB from last alert (63,750 -> 62,200), round 1 09:12"
   }
 }
