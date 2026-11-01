@@ -51,7 +51,10 @@ export function fairThb(spot, usdthb) {
 }
 
 // Price-watch alert thresholds
-const ALERT_THB = 150;   // Thai gold moved >= 150 THB from the last alerted price (cumulative)
+// 150 was too sensitive in practice: on 30 Oct gold slid 1,100 THB and sent four
+// emails in six hours, which read as noise rather than news. 250 keeps the same
+// rule but only for moves worth opening an inbox for.
+const ALERT_THB = 250;   // Thai gold moved >= 250 THB from the last alerted price (cumulative)
 const ALERT_XAU_PCT = 1.5;
 const PUSH_THB = 300;    // below this, email only - no phone push
 const PUSH_XAU_PCT = 1.5;
@@ -398,7 +401,7 @@ function fillActuals(rows, today) {
 }
 
 // ── Price targets: absolute levels, the way a trader actually thinks ─────
-// Relative thresholds ("moved 150 THB") answer "did something happen".
+// Relative thresholds ("moved 250 THB") answer "did something happen".
 // Targets answer "did the level I care about get hit", which is a different
 // question and the one people actually set alarms for.
 //
@@ -771,9 +774,9 @@ function cmdCheck(a) {
 }
 
 // Two baselines, because they answer different questions.
-//   last_alert - reset by every email, drives the 150 THB email threshold
+//   last_alert - reset by every email, drives the 250 THB email threshold
 //   last_push  - reset only by a push, drives the 300 THB push threshold
-// With one shared baseline a slow grind never pushes: each 150 THB email resets
+// With one shared baseline a slow grind never pushes: each email resets
 // the reference, so the gap can never reach 300. On 30 Oct gold fell 1,100 THB
 // across four alerts and the phone buzzed once.
 function setState(thb, xau, note, { pushed = false } = {}) {

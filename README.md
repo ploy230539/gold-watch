@@ -210,7 +210,7 @@ three-week outage went unnoticed. The push is plain code and does not care.
 
 | Constant | Rule |
 |---|---|
-| `ALERT_THB = 150` | Thai gold moved ≥ 150 THB from the last alerted price (cumulative) → alert |
+| `ALERT_THB = 250` | Thai gold moved ≥ 250 THB from the last alerted price (cumulative) → alert |
 | `ALERT_XAU_PCT = 1.5` | Spot moved ≥ 1.5% → alert |
 | `--news` | Market-moving news → alert (a human decides this, not the script) |
 | `PUSH_THB = 300` | Thai gold ≥ 300 THB **since the last push** → also send a phone push |
@@ -221,9 +221,13 @@ Below threshold means total silence — nothing is sent at all.
 
 The two thresholds measure from **different baselines**, which matters: `last_alert` resets
 on every email, `last_push` only when the phone actually buzzed. Sharing one baseline made
-the push threshold unreachable during a steady slide — each 150 THB email reset the
-reference before the gap could ever reach 300. On 30 Oct gold fell 1,100 THB across four
-alerts and the phone buzzed once.
+the push threshold unreachable during a steady slide — each email reset the reference
+before the gap could ever reach 300. On 30 Oct gold fell 1,100 THB across four alerts and
+the phone buzzed once.
+
+`ALERT_THB` was 150 until 1 Nov 2026. That same 1,100 THB day sent four emails in six
+hours, which reads as noise; at 250 it would have sent two. The push threshold is
+unchanged — pushes are the urgent channel and now measure from their own baseline.
 
 The fair Thai gold price lives in `fairThb()` and in the calculator on the page:
 
