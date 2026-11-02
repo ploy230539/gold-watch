@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-10-31T02:31:30.900Z",
-    "thb_sell": 62200,
-    "xau": 3876.399902,
-    "note": "email+push: Thai gold -1,550 THB from last alert (63,750 -> 62,200), round 1 09:12"
+    "ts_iso": "2026-11-02T02:32:18.172Z",
+    "thb_sell": 62600,
+    "xau": 3912.600098,
+    "note": "email: Thai gold +400 THB from last alert (threshold 250); call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-09T06:02:09.158Z",
-      "thb_sell": 68400,
-      "xau": 4400.600098,
-      "note": "Mideast tensions lifting oil/safe-haven demand vs firmer Fed rate-hike odds (~60%)"
-    },
-    {
-      "ts_iso": "2026-09-09T08:02:23.968Z",
-      "thb_sell": 68550,
-      "xau": 4409.700195,
-      "note": "Iran/Strait of Hormuz safe-haven demand vs Fed hike bets from strong jobs data; +150 THB alert"
-    },
     {
       "ts_iso": "2026-09-10T02:32:35.154Z",
       "thb_sell": 68700,
@@ -612,12 +600,26 @@
       "xau": 3876.399902,
       "note": "email+push: Thai gold -1,550 THB from last alert (63,750 -> 62,200), round 1 09:12",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-02T02:30:07.357Z",
+      "thb_sell": 62600,
+      "xau": 3912.600098,
+      "note": "push sent: Thai gold moved +400 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-02T02:32:18.172Z",
+      "thb_sell": 62600,
+      "xau": 3912.600098,
+      "note": "email: Thai gold +400 THB from last alert (threshold 250); call still wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-10-31T02:31:30.900Z",
-    "thb_sell": 62200,
-    "xau": 3876.399902,
-    "note": "email+push: Thai gold -1,550 THB from last alert (63,750 -> 62,200), round 1 09:12"
+    "ts_iso": "2026-11-02T02:32:18.172Z",
+    "thb_sell": 62600,
+    "xau": 3912.600098,
+    "note": "email: Thai gold +400 THB from last alert (threshold 250); call still wait"
   }
 }
