@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-03T04:01:49.606Z",
-    "thb_sell": 62750,
-    "xau": 3927.399902,
-    "note": "email: Thai bar -300 THB (63,050->62,750) round 8 10:42, pullback after Mon bounce on US-Iran deal hopes; call still wait"
+    "ts_iso": "2026-11-03T09:32:05.006Z",
+    "thb_sell": 62450,
+    "xau": 3905.5,
+    "note": "email+push: Thai gold -300 THB from last alert (threshold 250); Fed Dec hike bets + midterm caution"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-10T08:02:03.387Z",
-      "thb_sell": 68650,
-      "xau": 4412.5,
-      "note": "gold -150 THB from 68800, small pullback, US yields ~4.75% + Iran tanker strike volatility, no push"
-    },
-    {
-      "ts_iso": "2026-09-10T09:33:00.727Z",
-      "thb_sell": 68500,
-      "xau": 4394.399902,
-      "note": "Alerted: -150 THB pullback after Iran tanker-strike spike; Fed rate-hike bets (~70%) pressuring gold"
-    },
     {
       "ts_iso": "2026-09-11T02:03:14.776Z",
       "thb_sell": 68550,
@@ -618,12 +606,26 @@
       "xau": 3927.399902,
       "note": "email: Thai bar -300 THB (63,050->62,750) round 8 10:42, pullback after Mon bounce on US-Iran deal hopes; call still wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T09:30:08.024Z",
+      "thb_sell": 62450,
+      "xau": 3905.5,
+      "note": "push sent: Thai gold moved -300 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T09:32:05.006Z",
+      "thb_sell": 62450,
+      "xau": 3905.5,
+      "note": "email+push: Thai gold -300 THB from last alert (threshold 250); Fed Dec hike bets + midterm caution",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-03T04:01:49.606Z",
-    "thb_sell": 62750,
-    "xau": 3927.399902,
-    "note": "email: Thai bar -300 THB (63,050->62,750) round 8 10:42, pullback after Mon bounce on US-Iran deal hopes; call still wait"
+    "ts_iso": "2026-11-03T09:32:05.006Z",
+    "thb_sell": 62450,
+    "xau": 3905.5,
+    "note": "email+push: Thai gold -300 THB from last alert (threshold 250); Fed Dec hike bets + midterm caution"
   }
 }
