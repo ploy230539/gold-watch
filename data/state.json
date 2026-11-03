@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-02T02:32:18.172Z",
-    "thb_sell": 62600,
-    "xau": 3912.600098,
-    "note": "email: Thai gold +400 THB from last alert (threshold 250); call still wait"
+    "ts_iso": "2026-11-03T02:31:34.598Z",
+    "thb_sell": 63050,
+    "xau": 3947.7,
+    "note": "email: Thai bar +450 THB (62,600->63,050) round 1 09:02, catch-up to oil-driven overnight bounce; call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-10T02:32:35.154Z",
-      "thb_sell": 68700,
-      "xau": 4417,
-      "note": "แจ้งเตือน +150 บาท จากประกาศรอบที่ 1 (10 ก.ย. 69) ดอลลาร์อ่อน รอ CPI/เฟด"
-    },
-    {
-      "ts_iso": "2026-09-10T05:33:09.633Z",
-      "thb_sell": 68850,
-      "xau": 4419.700195,
-      "note": "Thai gold +150 THB from last alert; spot flat +0.06%, mostly routine round update, market awaiting US PPI/CPI and Sept 16 Fed decision"
-    },
     {
       "ts_iso": "2026-09-10T06:02:52.438Z",
       "thb_sell": 69000,
@@ -614,12 +602,26 @@
       "xau": 3912.600098,
       "note": "email: Thai gold +400 THB from last alert (threshold 250); call still wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T02:30:03.260Z",
+      "thb_sell": 63050,
+      "xau": 3947.699951,
+      "note": "push sent: Thai gold moved +450 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T02:31:34.598Z",
+      "thb_sell": 63050,
+      "xau": 3947.7,
+      "note": "email: Thai bar +450 THB (62,600->63,050) round 1 09:02, catch-up to oil-driven overnight bounce; call still wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-02T02:32:18.172Z",
-    "thb_sell": 62600,
-    "xau": 3912.600098,
-    "note": "email: Thai gold +400 THB from last alert (threshold 250); call still wait"
+    "ts_iso": "2026-11-03T02:31:34.598Z",
+    "thb_sell": 63050,
+    "xau": 3947.7,
+    "note": "email: Thai bar +450 THB (62,600->63,050) round 1 09:02, catch-up to oil-driven overnight bounce; call still wait"
   }
 }
