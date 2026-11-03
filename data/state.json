@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-03T09:32:05.006Z",
-    "thb_sell": 62450,
-    "xau": 3905.5,
-    "note": "email+push: Thai gold -300 THB from last alert (threshold 250); Fed Dec hike bets + midterm caution"
+    "ts_iso": "2026-11-03T14:02:13.202Z",
+    "thb_sell": 62500,
+    "xau": 3965.1,
+    "note": "email: Spot +1.53% (3905->3965) bounce off $3,900, no clear fresh driver; Thai 62,500 lagging (round 22 16:39, premium -1.28%); call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-11T02:03:14.776Z",
-      "thb_sell": 68550,
-      "xau": 4327.399902,
-      "note": "Spot -1.52% vs last alert; Fed hawkish (Warsh)/hot PPI/oil pushed gold down, Thai bar barely moved (+50 THB)"
-    },
-    {
-      "ts_iso": "2026-09-11T02:33:38.556Z",
-      "thb_sell": 68000,
-      "xau": 4328.1,
-      "note": "Thai gold announcement round 1 (09:10) reset -550 THB catching up to overnight global drop; spot flat"
-    },
     {
       "ts_iso": "2026-09-11T03:32:57.701Z",
       "thb_sell": 67850,
@@ -620,12 +608,26 @@
       "xau": 3905.5,
       "note": "email+push: Thai gold -300 THB from last alert (threshold 250); Fed Dec hike bets + midterm caution",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T14:00:08.997Z",
+      "thb_sell": 62500,
+      "xau": 3965.100098,
+      "note": "push sent: Spot moved +1.53% from the last alert (threshold 1.5%) · Cumulative +50 THB since the last push (threshold 300)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T14:02:13.202Z",
+      "thb_sell": 62500,
+      "xau": 3965.1,
+      "note": "email: Spot +1.53% (3905->3965) bounce off $3,900, no clear fresh driver; Thai 62,500 lagging (round 22 16:39, premium -1.28%); call still wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-03T09:32:05.006Z",
-    "thb_sell": 62450,
-    "xau": 3905.5,
-    "note": "email+push: Thai gold -300 THB from last alert (threshold 250); Fed Dec hike bets + midterm caution"
+    "ts_iso": "2026-11-03T14:02:13.202Z",
+    "thb_sell": 62500,
+    "xau": 3965.1,
+    "note": "email: Spot +1.53% (3905->3965) bounce off $3,900, no clear fresh driver; Thai 62,500 lagging (round 22 16:39, premium -1.28%); call still wait"
   }
 }
