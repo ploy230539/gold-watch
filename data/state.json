@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-03T02:31:34.598Z",
-    "thb_sell": 63050,
-    "xau": 3947.7,
-    "note": "email: Thai bar +450 THB (62,600->63,050) round 1 09:02, catch-up to oil-driven overnight bounce; call still wait"
+    "ts_iso": "2026-11-03T04:01:49.606Z",
+    "thb_sell": 62750,
+    "xau": 3927.399902,
+    "note": "email: Thai bar -300 THB (63,050->62,750) round 8 10:42, pullback after Mon bounce on US-Iran deal hopes; call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-10T06:02:52.438Z",
-      "thb_sell": 69000,
-      "xau": 4430.200195,
-      "note": "Thai gold +150 THB from last alert; USD weak (4-mo low) ahead of PPI/CPI, Middle East tensions"
-    },
-    {
-      "ts_iso": "2026-09-10T06:34:21.591Z",
-      "thb_sell": 68800,
-      "xau": 4418,
-      "note": "Thai gold -200 THB from last alert; spot -0.28%, no single clear driver, likely short-term profit-taking ahead of US PPI/CPI and Sept 16 Fed decision"
-    },
     {
       "ts_iso": "2026-09-10T08:02:03.387Z",
       "thb_sell": 68650,
@@ -616,12 +604,26 @@
       "xau": 3947.7,
       "note": "email: Thai bar +450 THB (62,600->63,050) round 1 09:02, catch-up to oil-driven overnight bounce; call still wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T04:00:03.785Z",
+      "thb_sell": 62750,
+      "xau": 3927.399902,
+      "note": "push sent: Thai gold moved -300 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-03T04:01:49.606Z",
+      "thb_sell": 62750,
+      "xau": 3927.399902,
+      "note": "email: Thai bar -300 THB (63,050->62,750) round 8 10:42, pullback after Mon bounce on US-Iran deal hopes; call still wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-03T02:31:34.598Z",
-    "thb_sell": 63050,
-    "xau": 3947.7,
-    "note": "email: Thai bar +450 THB (62,600->63,050) round 1 09:02, catch-up to oil-driven overnight bounce; call still wait"
+    "ts_iso": "2026-11-03T04:01:49.606Z",
+    "thb_sell": 62750,
+    "xau": 3927.399902,
+    "note": "email: Thai bar -300 THB (63,050->62,750) round 8 10:42, pullback after Mon bounce on US-Iran deal hopes; call still wait"
   }
 }
