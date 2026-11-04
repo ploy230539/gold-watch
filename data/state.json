@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-04T05:32:13.084Z",
-    "thb_sell": 63200,
-    "xau": 3958.899902,
-    "note": "Thai bar +250 THB to 63,200 at round 14 (12:21); spot at $3,960 resistance; call still wait"
+    "ts_iso": "2026-11-04T06:02:31.707Z",
+    "thb_sell": 63900,
+    "xau": 4002.399902,
+    "note": "email: Thai bar +700 THB (63,200->63,900) round 25 12:55, spot tagged $4,002 on weaker USD/yields + Dem midterm gains; call stays wait, buy above $4,030"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-11T10:02:03.123Z",
-      "thb_sell": 68000,
-      "xau": 4347.799805,
-      "note": "Hot US PPI raised Fed hike odds; oil surged on Iran tensions lifting yields"
-    },
-    {
-      "ts_iso": "2026-09-12T02:33:32.905Z",
-      "thb_sell": 68250,
-      "xau": 4349.700195,
-      "note": "Hot Aug CPI keeps Fed hike odds ~90% for Sept 16, gold near 1-month low; Thai round 1 (09:03) tracked modest late-week rebound, +250 THB from last alert"
-    },
     {
       "ts_iso": "2026-09-14T03:02:13.178Z",
       "thb_sell": 68050,
@@ -625,12 +613,26 @@
       "xau": 3958.899902,
       "note": "Thai bar +250 THB to 63,200 at round 14 (12:21); spot at $3,960 resistance; call still wait",
       "pushed": false
+    },
+    {
+      "ts_iso": "2026-11-04T06:00:04.142Z",
+      "thb_sell": 63900,
+      "xau": 4002.399902,
+      "note": "push sent: Thai gold moved +700 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-04T06:02:31.707Z",
+      "thb_sell": 63900,
+      "xau": 4002.399902,
+      "note": "email: Thai bar +700 THB (63,200->63,900) round 25 12:55, spot tagged $4,002 on weaker USD/yields + Dem midterm gains; call stays wait, buy above $4,030",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-04T02:31:41.880Z",
-    "thb_sell": 62950,
-    "xau": 3939.199951,
-    "note": "Thai gold moved +450 THB from the last alert (threshold 250); email sent"
+    "ts_iso": "2026-11-04T06:02:31.707Z",
+    "thb_sell": 63900,
+    "xau": 4002.399902,
+    "note": "email: Thai bar +700 THB (63,200->63,900) round 25 12:55, spot tagged $4,002 on weaker USD/yields + Dem midterm gains; call stays wait, buy above $4,030"
   }
 }
