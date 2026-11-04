@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-04T02:31:41.880Z",
-    "thb_sell": 62950,
-    "xau": 3939.199951,
-    "note": "Thai gold moved +450 THB from the last alert (threshold 250); email sent"
+    "ts_iso": "2026-11-04T05:32:13.084Z",
+    "thb_sell": 63200,
+    "xau": 3958.899902,
+    "note": "Thai bar +250 THB to 63,200 at round 14 (12:21); spot at $3,960 resistance; call still wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-11T06:31:42.636Z",
-      "thb_sell": 68200,
-      "xau": 4352.9,
-      "note": "Fed 25bp cut weakened USD + Middle East safe-haven demand, +200 THB from last alert"
-    },
     {
       "ts_iso": "2026-09-11T10:02:03.123Z",
       "thb_sell": 68000,
@@ -624,6 +618,13 @@
       "xau": 3939.199951,
       "note": "Thai gold moved +450 THB from the last alert (threshold 250); email sent",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-04T05:32:13.084Z",
+      "thb_sell": 63200,
+      "xau": 3958.899902,
+      "note": "Thai bar +250 THB to 63,200 at round 14 (12:21); spot at $3,960 resistance; call still wait",
+      "pushed": false
     }
   ],
   "last_push": {
