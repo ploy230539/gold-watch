@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-04T07:01:47.508Z",
-    "thb_sell": 64150,
-    "xau": 4027.800049,
-    "note": "email: Thai bar +250 THB (63,900->64,150) round 36 13:55, spot $4,028 holding above $4,000 on weak USD/yields after Dem midterm wins; call stays wait, buy above $4,030"
+    "ts_iso": "2026-11-04T08:30:03.932Z",
+    "thb_sell": 64200,
+    "xau": 4032.399902,
+    "note": "push sent: Cumulative +300 THB since the last push (threshold 300) · Below threshold - Thai gold +50 THB / Spot +0.11% -> stay silent, send nothing"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-14T09:31:55.730Z",
-      "thb_sell": 67750,
-      "xau": 4285.700195,
-      "note": "Fed CPI hot, rate-hike odds up, gold down 1.07%"
-    },
     {
       "ts_iso": "2026-09-14T10:32:15.207Z",
       "thb_sell": 67600,
@@ -628,12 +622,19 @@
       "xau": 4027.800049,
       "note": "email: Thai bar +250 THB (63,900->64,150) round 36 13:55, spot $4,028 holding above $4,000 on weak USD/yields after Dem midterm wins; call stays wait, buy above $4,030",
       "pushed": false
+    },
+    {
+      "ts_iso": "2026-11-04T08:30:03.932Z",
+      "thb_sell": 64200,
+      "xau": 4032.399902,
+      "note": "push sent: Cumulative +300 THB since the last push (threshold 300) · Below threshold - Thai gold +50 THB / Spot +0.11% -> stay silent, send nothing",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-04T06:02:31.707Z",
-    "thb_sell": 63900,
-    "xau": 4002.399902,
-    "note": "email: Thai bar +700 THB (63,200->63,900) round 25 12:55, spot tagged $4,002 on weaker USD/yields + Dem midterm gains; call stays wait, buy above $4,030"
+    "ts_iso": "2026-11-04T08:30:03.932Z",
+    "thb_sell": 64200,
+    "xau": 4032.399902,
+    "note": "push sent: Cumulative +300 THB since the last push (threshold 300) · Below threshold - Thai gold +50 THB / Spot +0.11% -> stay silent, send nothing"
   }
 }
