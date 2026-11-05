@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-05T01:32:03.663Z",
-    "thb_sell": 64400,
-    "xau": 4105.399902,
-    "note": "email: Spot +1.81% (4032->4105) on Dem midterm sweep / weak USD+yields; Thai 64,400 lagging (round 46 yesterday, premium -1.4%); call stays wait"
+    "ts_iso": "2026-11-05T02:31:52.510Z",
+    "thb_sell": 65350,
+    "xau": 4127.600098,
+    "note": "email: Thai bar +950 THB (64,400->65,350) round 4 09:21, catch-up to overnight spot rally on Dem midterm sweep / weak USD+yields; call stays wait, wrong above $4,150"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-15T03:02:32.642Z",
-      "thb_sell": 67900,
-      "xau": 4314,
-      "note": "150 THB move alert - pre-FOMC drift, Middle East safe-haven bid vs Fed hike bets"
-    },
-    {
-      "ts_iso": "2026-09-15T05:32:38.897Z",
-      "thb_sell": 67750,
-      "xau": 4299,
-      "note": "moved -150 THB before FOMC (Sept 15-16); hot PPI raised hike odds to ~60%, stronger USD pressured gold"
-    },
     {
       "ts_iso": "2026-09-15T08:04:20.247Z",
       "thb_sell": 67450,
@@ -631,12 +619,26 @@
       "xau": 4105.399902,
       "note": "email: Spot +1.81% (4032->4105) on Dem midterm sweep / weak USD+yields; Thai 64,400 lagging (round 46 yesterday, premium -1.4%); call stays wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-05T02:30:07.079Z",
+      "thb_sell": 65350,
+      "xau": 4127.600098,
+      "note": "push sent: Thai gold moved +950 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-05T02:31:52.510Z",
+      "thb_sell": 65350,
+      "xau": 4127.600098,
+      "note": "email: Thai bar +950 THB (64,400->65,350) round 4 09:21, catch-up to overnight spot rally on Dem midterm sweep / weak USD+yields; call stays wait, wrong above $4,150",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-05T01:32:03.663Z",
-    "thb_sell": 64400,
-    "xau": 4105.399902,
-    "note": "email: Spot +1.81% (4032->4105) on Dem midterm sweep / weak USD+yields; Thai 64,400 lagging (round 46 yesterday, premium -1.4%); call stays wait"
+    "ts_iso": "2026-11-05T02:31:52.510Z",
+    "thb_sell": 65350,
+    "xau": 4127.600098,
+    "note": "email: Thai bar +950 THB (64,400->65,350) round 4 09:21, catch-up to overnight spot rally on Dem midterm sweep / weak USD+yields; call stays wait, wrong above $4,150"
   }
 }
