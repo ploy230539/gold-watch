@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-05T02:31:52.510Z",
-    "thb_sell": 65350,
-    "xau": 4127.600098,
-    "note": "email: Thai bar +950 THB (64,400->65,350) round 4 09:21, catch-up to overnight spot rally on Dem midterm sweep / weak USD+yields; call stays wait, wrong above $4,150"
+    "ts_iso": "2026-11-06T03:02:15.455Z",
+    "thb_sell": 64450,
+    "xau": 4065.199951,
+    "note": "alert: Thai -900 THB, spot -1.51% from last alert; pullback from $4,148 ahead of NFP"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-15T08:04:20.247Z",
-      "thb_sell": 67450,
-      "xau": 4281.1,
-      "note": "Fed rate-hike bets ahead of Sept 15-16 FOMC; oil rally on Saudi pipeline attack reports"
-    },
-    {
-      "ts_iso": "2026-09-16T03:03:21.805Z",
-      "thb_sell": 67900,
-      "xau": 4321.100098,
-      "note": "moved +450 THB / +0.93% Spot - Saudi pipeline drone attack risk + Fed FOMC uncertainty"
-    },
     {
       "ts_iso": "2026-09-16T03:33:07.687Z",
       "thb_sell": 68250,
@@ -633,12 +621,26 @@
       "xau": 4127.600098,
       "note": "email: Thai bar +950 THB (64,400->65,350) round 4 09:21, catch-up to overnight spot rally on Dem midterm sweep / weak USD+yields; call stays wait, wrong above $4,150",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-06T03:00:08.658Z",
+      "thb_sell": 64450,
+      "xau": 4065.199951,
+      "note": "push sent: Thai gold moved -900 THB from the last alert (threshold 250) · Spot moved -1.51% from the last alert (threshold 1.5%)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-06T03:02:15.455Z",
+      "thb_sell": 64450,
+      "xau": 4065.199951,
+      "note": "alert: Thai -900 THB, spot -1.51% from last alert; pullback from $4,148 ahead of NFP",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-05T02:31:52.510Z",
-    "thb_sell": 65350,
-    "xau": 4127.600098,
-    "note": "email: Thai bar +950 THB (64,400->65,350) round 4 09:21, catch-up to overnight spot rally on Dem midterm sweep / weak USD+yields; call stays wait, wrong above $4,150"
+    "ts_iso": "2026-11-06T03:02:15.455Z",
+    "thb_sell": 64450,
+    "xau": 4065.199951,
+    "note": "alert: Thai -900 THB, spot -1.51% from last alert; pullback from $4,148 ahead of NFP"
   }
 }
