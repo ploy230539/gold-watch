@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-06T04:01:51.826Z",
-    "thb_sell": 64150,
-    "xau": 4045.100098,
-    "note": "Thai gold -300 THB from last alert (64,450 -> 64,150), spot ~$4,045; call still wait ahead of NFP"
+    "ts_iso": "2026-11-06T08:32:18.993Z",
+    "thb_sell": 64500,
+    "xau": 4065.699951,
+    "note": "email alert: Thai gold +350 THB from last alert (threshold 250), round 26 15:22"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-16T07:32:12.323Z",
-      "thb_sell": 68250,
-      "xau": 4336.700195,
-      "note": "pre-FOMC positioning ahead of tonight's Fed decision, hot Aug PPI keeps hike odds elevated"
-    },
-    {
-      "ts_iso": "2026-09-16T10:33:09.142Z",
-      "thb_sell": 68400,
-      "xau": 4348,
-      "note": "150 THB move, pre-FOMC positioning, no single clear driver"
-    },
     {
       "ts_iso": "2026-09-17T02:32:57.446Z",
       "thb_sell": 67900,
@@ -637,12 +625,26 @@
       "xau": 4045.100098,
       "note": "Thai gold -300 THB from last alert (64,450 -> 64,150), spot ~$4,045; call still wait ahead of NFP",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-06T08:30:07.992Z",
+      "thb_sell": 64500,
+      "xau": 4065.699951,
+      "note": "push sent: Thai gold moved +350 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-06T08:32:18.993Z",
+      "thb_sell": 64500,
+      "xau": 4065.699951,
+      "note": "email alert: Thai gold +350 THB from last alert (threshold 250), round 26 15:22",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-06T04:01:51.826Z",
-    "thb_sell": 64150,
-    "xau": 4045.100098,
-    "note": "Thai gold -300 THB from last alert (64,450 -> 64,150), spot ~$4,045; call still wait ahead of NFP"
+    "ts_iso": "2026-11-06T08:32:18.993Z",
+    "thb_sell": 64500,
+    "xau": 4065.699951,
+    "note": "email alert: Thai gold +350 THB from last alert (threshold 250), round 26 15:22"
   }
 }
