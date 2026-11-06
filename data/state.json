@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-06T08:32:18.993Z",
-    "thb_sell": 64500,
-    "xau": 4065.699951,
-    "note": "email alert: Thai gold +350 THB from last alert (threshold 250), round 26 15:22"
+    "ts_iso": "2026-11-06T09:32:05.656Z",
+    "thb_sell": 64750,
+    "xau": 4078.600098,
+    "note": "Thai bar +250 from last alert (64500->64750); spot bounced off support pre-NFP"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-17T02:32:57.446Z",
-      "thb_sell": 67900,
-      "xau": 4291.6,
-      "note": "Fed hiked rates first time in 3 years, gold fell >1%"
-    },
     {
       "ts_iso": "2026-09-17T07:03:21.475Z",
       "thb_sell": 68050,
@@ -639,6 +633,13 @@
       "xau": 4065.699951,
       "note": "email alert: Thai gold +350 THB from last alert (threshold 250), round 26 15:22",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-06T09:32:05.656Z",
+      "thb_sell": 64750,
+      "xau": 4078.600098,
+      "note": "Thai bar +250 from last alert (64500->64750); spot bounced off support pre-NFP",
+      "pushed": false
     }
   ],
   "last_push": {
