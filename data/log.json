@@ -596,6 +596,23 @@
       "actual_result": null,
       "actual_due_iso": "2026-11-11",
       "actual_due_display": "11 พ.ย. 69"
+    },
+    {
+      "date_display": "7 พ.ย. 69",
+      "date_iso": "2026-11-07",
+      "spot": 4072.1,
+      "thb_sell": 64650,
+      "call": "wait",
+      "call_reason": "จ้างงานสหรัฐฯ แรง Fed จ่อขึ้นดอกเบี้ย แต่ทองยังยืน $4,000 ได้ รอผล CPI อังคารนี้ก่อนเข้า",
+      "resistance_usd": 4150,
+      "resistance_thb": 65900,
+      "support_usd_low": 4000,
+      "support_usd_high": 4046,
+      "support_thb": 64200,
+      "invalid_note": "มุมมองนี้ผิดถ้า Spot กลับขึ้นไปยืนเหนือ $4,150 ได้ก่อน CPI (ทองแท่งราว ฿65,900) = ตลาดไม่สนเรื่อง Fed ขึ้นดอกเบี้ยแล้ว รอแล้วพลาดซ้ำ แนวถัดไป $4,200 / ถ้าหลุด $4,000 (ราว ฿63,500) = แรงซื้อสัปดาห์นี้หมด ยังรอได้ แนวถัดไป $3,870 (ราว ฿61,400)",
+      "actual_result": null,
+      "actual_due_iso": "2026-11-11",
+      "actual_due_display": "11 พ.ย. 69"
     }
   ]
 }
