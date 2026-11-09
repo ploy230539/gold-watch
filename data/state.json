@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-09T02:31:49.395Z",
-    "thb_sell": 65500,
-    "xau": 4129.899902,
-    "note": "Thai gold +700 THB from last alert (64,800 -> 65,500), XAU +1.42%; call still wait"
+    "ts_iso": "2026-11-09T07:02:46.076Z",
+    "thb_sell": 65150,
+    "xau": 4109,
+    "note": "Thai gold -350 THB from last alert (65,500 -> 65,150), round 14 at 13:55"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-17T12:33:36.885Z",
-      "thb_sell": 68050,
-      "xau": 4380.399902,
-      "note": "Spot +1.71% post-Fed-hike rally, THB flat (round 33)"
-    },
-    {
-      "ts_iso": "2026-09-18T02:32:12.020Z",
-      "thb_sell": 68500,
-      "xau": 4353.5,
-      "note": "Fed hiked 25bp to 3.75-4%, first hike in 3 years; XAU -0.6% but baht weakened to ~33.40 keeping THB gold up +450"
-    },
     {
       "ts_iso": "2026-09-18T04:02:46.402Z",
       "thb_sell": 68650,
@@ -643,12 +631,26 @@
       "xau": 4129.899902,
       "note": "Thai gold +700 THB from last alert (64,800 -> 65,500), XAU +1.42%; call still wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-09T07:00:04.469Z",
+      "thb_sell": 65150,
+      "xau": 4109,
+      "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-09T07:02:46.076Z",
+      "thb_sell": 65150,
+      "xau": 4109,
+      "note": "Thai gold -350 THB from last alert (65,500 -> 65,150), round 14 at 13:55",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-09T02:31:49.395Z",
-    "thb_sell": 65500,
-    "xau": 4129.899902,
-    "note": "Thai gold +700 THB from last alert (64,800 -> 65,500), XAU +1.42%; call still wait"
+    "ts_iso": "2026-11-09T07:02:46.076Z",
+    "thb_sell": 65150,
+    "xau": 4109,
+    "note": "Thai gold -350 THB from last alert (65,500 -> 65,150), round 14 at 13:55"
   }
 }
