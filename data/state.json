@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-09T07:02:46.076Z",
-    "thb_sell": 65150,
-    "xau": 4109,
-    "note": "Thai gold -350 THB from last alert (65,500 -> 65,150), round 14 at 13:55"
+    "ts_iso": "2026-11-12T05:32:04.213Z",
+    "thb_sell": 63600,
+    "xau": 3971.7,
+    "note": "email: Thai bar -1,550 THB (65,150->63,600) round 7 12:21, spot -3.34% to $3,972 on hot Oct CPI / Dec Fed hike bets / USD YTD high; at top of $3,920-3,970 support; call stays wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-18T04:02:46.402Z",
-      "thb_sell": 68650,
-      "xau": 4359,
-      "note": "Fed hawkish hold digestion, 150 THB threshold crossed"
-    },
-    {
-      "ts_iso": "2026-09-18T05:32:46.999Z",
-      "thb_sell": 68800,
-      "xau": 4365,
-      "note": "alert: +150 THB from ref, Fed hike backdrop + softer oil, no distinct fresh driver"
-    },
     {
       "ts_iso": "2026-09-18T07:33:16.943Z",
       "thb_sell": 69150,
@@ -645,12 +633,26 @@
       "xau": 4109,
       "note": "Thai gold -350 THB from last alert (65,500 -> 65,150), round 14 at 13:55",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-12T05:30:02.861Z",
+      "thb_sell": 63600,
+      "xau": 3971.699951,
+      "note": "push sent: Thai gold moved -1,550 THB from the last alert (threshold 250) · Spot moved -3.34% from the last alert (threshold 1.5%)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-12T05:32:04.213Z",
+      "thb_sell": 63600,
+      "xau": 3971.7,
+      "note": "email: Thai bar -1,550 THB (65,150->63,600) round 7 12:21, spot -3.34% to $3,972 on hot Oct CPI / Dec Fed hike bets / USD YTD high; at top of $3,920-3,970 support; call stays wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-09T07:02:46.076Z",
-    "thb_sell": 65150,
-    "xau": 4109,
-    "note": "Thai gold -350 THB from last alert (65,500 -> 65,150), round 14 at 13:55"
+    "ts_iso": "2026-11-12T05:32:04.213Z",
+    "thb_sell": 63600,
+    "xau": 3971.7,
+    "note": "email: Thai bar -1,550 THB (65,150->63,600) round 7 12:21, spot -3.34% to $3,972 on hot Oct CPI / Dec Fed hike bets / USD YTD high; at top of $3,920-3,970 support; call stays wait"
   }
 }
