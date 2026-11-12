@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-12T05:32:04.213Z",
-    "thb_sell": 63600,
-    "xau": 3971.7,
-    "note": "email: Thai bar -1,550 THB (65,150->63,600) round 7 12:21, spot -3.34% to $3,972 on hot Oct CPI / Dec Fed hike bets / USD YTD high; at top of $3,920-3,970 support; call stays wait"
+    "ts_iso": "2026-11-12T08:32:37.170Z",
+    "thb_sell": 63250,
+    "xau": 3947.2,
+    "note": "Thai gold -350 THB from last alert (threshold 250); bar at morning support 63,250"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-18T07:33:16.943Z",
-      "thb_sell": 69150,
-      "xau": 4394.700195,
-      "note": "Fed hiked 25bp to 3.75-4.00% (16-17 Sep); gold rebounded on softer real yields/oil after 6-week low, THB flat"
-    },
-    {
-      "ts_iso": "2026-09-21T02:33:13.349Z",
-      "thb_sell": 68850,
-      "xau": 4369.200195,
-      "note": "Fed hawkish 25bp hike + dollar strength, gold retreated from Friday's ,380 high"
-    },
     {
       "ts_iso": "2026-09-21T06:02:42.517Z",
       "thb_sell": 68700,
@@ -647,12 +635,26 @@
       "xau": 3971.7,
       "note": "email: Thai bar -1,550 THB (65,150->63,600) round 7 12:21, spot -3.34% to $3,972 on hot Oct CPI / Dec Fed hike bets / USD YTD high; at top of $3,920-3,970 support; call stays wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-12T08:30:07.630Z",
+      "thb_sell": 63250,
+      "xau": 3947.199951,
+      "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-12T08:32:37.170Z",
+      "thb_sell": 63250,
+      "xau": 3947.2,
+      "note": "Thai gold -350 THB from last alert (threshold 250); bar at morning support 63,250",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-12T05:32:04.213Z",
-    "thb_sell": 63600,
-    "xau": 3971.7,
-    "note": "email: Thai bar -1,550 THB (65,150->63,600) round 7 12:21, spot -3.34% to $3,972 on hot Oct CPI / Dec Fed hike bets / USD YTD high; at top of $3,920-3,970 support; call stays wait"
+    "ts_iso": "2026-11-12T08:32:37.170Z",
+    "thb_sell": 63250,
+    "xau": 3947.2,
+    "note": "Thai gold -350 THB from last alert (threshold 250); bar at morning support 63,250"
   }
 }
