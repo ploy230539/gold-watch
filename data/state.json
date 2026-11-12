@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-12T08:32:37.170Z",
-    "thb_sell": 63250,
-    "xau": 3947.2,
-    "note": "Thai gold -350 THB from last alert (threshold 250); bar at morning support 63,250"
+    "ts_iso": "2026-11-12T09:02:28.433Z",
+    "thb_sell": 63000,
+    "xau": 3931.6,
+    "note": "Thai gold -250 THB from last alert (threshold 250); bar broke morning support 63,250, CPI-driven Fed hike bets ahead of Friday PPI"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-21T06:02:42.517Z",
-      "thb_sell": 68700,
-      "xau": 4354.8,
-      "note": "alert: -150 thb from ref, Fed hawkish drag continues"
-    },
     {
       "ts_iso": "2026-09-21T10:02:15.498Z",
       "thb_sell": 68550,
@@ -649,6 +643,13 @@
       "xau": 3947.2,
       "note": "Thai gold -350 THB from last alert (threshold 250); bar at morning support 63,250",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-12T09:02:28.433Z",
+      "thb_sell": 63000,
+      "xau": 3931.6,
+      "note": "Thai gold -250 THB from last alert (threshold 250); bar broke morning support 63,250, CPI-driven Fed hike bets ahead of Friday PPI",
+      "pushed": false
     }
   ],
   "last_push": {
