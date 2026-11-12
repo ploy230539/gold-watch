@@ -40,7 +40,9 @@ echo Watcher is unhealthy. Sending a warning...
 
 REM Push FIRST, with plain code. The usual failure is the model losing its login,
 REM and a warning that needs the model to say "the model is broken" never arrives.
-node gw.mjs notify --title "Gold Watch ต้องการให้ตรวจสอบ" --message "ระบบแจ้งเตือนมีปัญหา เปิด Gold Watch แล้วกด Is it still watching? เพื่อดูรายละเอียด" --priority 5 --tags warning >> "logs\health.log" 2>&1
+REM The Thai text lives in gw.mjs: cmd.exe reads this file as code page 874, so any
+REM Thai written here reaches the phone garbled. Keep this file ASCII.
+node gw.mjs notify --preset health >> "logs\health.log" 2>&1
 
 REM The detailed email is a bonus: nice when the model works, never relied upon.
 type "tasks\health-alert.md" | "%CLAUDE%" -p --dangerously-skip-permissions >> "logs\health.log" 2>&1

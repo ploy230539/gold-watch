@@ -812,9 +812,55 @@ function cmdState(a) {
 // rather than reporting a partial picture that could trigger a wrong alert.
 const SOURCES = {
   spot: "https://api.gold-api.com/price/XAU",
-  thai: "https://api.chnwt.dev/thai-gold-api/latest",
   fx: "https://api.frankfurter.dev/v1/latest?base=USD&symbols=THB",
 };
+
+// Thai gold is tried in order, first answer wins. The association's own feed comes
+// first: it is the primary source, and the community mirror behind it went down on
+// 10 Nov 2026 (Cloudflare 522) and took every scan with it for two days. The mirror
+// stays as the fallback. Both are normalised to the same shape, with `announced` in
+// the mirror's Thai format because the push and pretty-printer parse that string.
+const toNum = (v) => Number(String(v).replace(/,/g, ""));
+
+const THAI_SOURCES = [
+  {
+    url: "https://www.goldtraders.or.th/api/GoldPrices/Latest?readjson=false",
+    parse(r) {
+      const [d, t] = String(r.asTime).split("T");
+      const [y, mo, day] = d.split("-");
+      return {
+        bar_sell: toNum(r.bL_SellPrice), bar_buy: toNum(r.bL_BuyPrice),
+        orn_sell: toNum(r.oM965_SellPrice), orn_buy: Math.round(toNum(r.oM965_BuyPrice)),
+        announced: `${day}/${mo}/${Number(y) + 543} เวลา ${t.slice(0, 5)} น. (ครั้งที่ ${r.seq})`,
+      };
+    },
+  },
+  {
+    url: "https://api.chnwt.dev/thai-gold-api/latest",
+    parse(r) {
+      const t = r.response.price;
+      return {
+        bar_sell: toNum(t.gold_bar.sell), bar_buy: toNum(t.gold_bar.buy),
+        orn_sell: toNum(t.gold.sell), orn_buy: toNum(t.gold.buy),
+        announced: `${r.response.update_date} ${r.response.update_time}`,
+      };
+    },
+  },
+];
+
+async function getThai() {
+  const errors = [];
+  for (const s of THAI_SOURCES) {
+    try {
+      const v = s.parse(await getJson(s.url));
+      if (!(v.bar_sell > 0)) throw new Error(`bad bar sell ${v.bar_sell}`);
+      return { ...v, source: s.url };
+    } catch (e) {
+      errors.push(`${new URL(s.url).hostname} ${e.message}`);
+    }
+  }
+  throw new Error(errors.join(", "));
+}
 
 async function getJson(url, ms = 15000) {
   const ctl = new AbortController();
@@ -826,15 +872,14 @@ async function getJson(url, ms = 15000) {
   } finally { clearTimeout(t); }
 }
 
-const toNum = (v) => Number(String(v).replace(/,/g, ""));
-
 async function fetchPrices() {
   const errors = [];
-  const [spotRes, thaiRes, fxRes] = await Promise.all(
-    ["spot", "thai", "fx"].map((k) =>
-      getJson(SOURCES[k]).catch((e) => { errors.push(`${k}: ${e.message}`); return null; })
-    )
-  );
+  const fail = (k) => (e) => { errors.push(`${k}: ${e.message}`); return null; };
+  const [spotRes, thai, fxRes] = await Promise.all([
+    getJson(SOURCES.spot).catch(fail("spot")),
+    getThai().catch(fail("thai")),
+    getJson(SOURCES.fx).catch(fail("fx")),
+  ]);
   if (errors.length) {
     const err = new Error("could not fetch prices — " + errors.join(" · "));
     err.partial = true;
@@ -843,11 +888,7 @@ async function fetchPrices() {
 
   const spot = Number(spotRes.price);
   const fx = Number(fxRes.rates.THB);
-  const t = thaiRes.response.price;
-  const barSell = toNum(t.gold_bar.sell);
-  const barBuy = toNum(t.gold_bar.buy);
-  const ornSell = toNum(t.gold.sell);
-  const ornBuy = toNum(t.gold.buy);
+  const barSell = thai.bar_sell;
 
   for (const [name, v] of [["spot", spot], ["fx", fx], ["bar sell", barSell]]) {
     if (!Number.isFinite(v) || v <= 0) throw new Error(`bad ${name} value from source: ${v}`);
@@ -857,11 +898,7 @@ async function fetchPrices() {
   return {
     fetched_at_iso: new Date().toISOString(),
     spot: { value: spot, source: SOURCES.spot, as_of: spotRes.updatedAt || null },
-    thai: {
-      bar_sell: barSell, bar_buy: barBuy, orn_sell: ornSell, orn_buy: ornBuy,
-      announced: `${thaiRes.response.update_date} ${thaiRes.response.update_time}`,
-      source: SOURCES.thai,
-    },
+    thai,
     fx: { value: fx, as_of: fxRes.date, source: SOURCES.fx },
     fair_thb: Math.round(fair),
     premium_pct: Number((((barSell - fair) / fair) * 100).toFixed(2)),
@@ -1078,8 +1115,31 @@ async function sendPush({ title, message, priority = 4, tags = [], click }) {
   } finally { clearTimeout(timer); }
 }
 
+// Canned pushes for the .cmd runners. cmd.exe reads a batch file in the console
+// code page (874 on a Thai Windows), so Thai typed into a .cmd reaches node as
+// mojibake - the 12 Nov health alarm arrived on the phone as "เธ•เนเธญเธ...".
+// Keep the .cmd files ASCII and let them name a preset; the Thai lives here.
+function presetPush(name) {
+  if (name === "health") {
+    const r = healthReport();
+    const lines = [];
+    if (r.stale) {
+      const since = r.last_success_iso ? new Date(r.last_success_iso).toLocaleString("th-TH",
+        { timeZone: "Asia/Bangkok", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "-";
+      lines.push(`ดึงราคาไม่ได้ตั้งแต่ ${since} (~${Math.round(r.hours_since_success ?? 0)} ชม.)`);
+      lines.push("ไม่มีเตือน ≠ ทองนิ่ง — ตอนนี้ไม่มีใครเฝ้าอยู่");
+    }
+    if (r.send_broken) lines.push(`ส่งอีเมลไม่สำเร็จ ${r.send_consecutive_failures} ครั้งติด`);
+    lines.push("เปิด Gold Watch แล้วกด Is it still watching? เพื่อดูรายละเอียด");
+    return { title: "⚠️ Gold Watch ต้องการให้ตรวจสอบ", message: lines.join("\n"), priority: 5, tags: "warning" };
+  }
+  die(`unknown preset: ${name}`);
+}
+
 async function cmdNotify(a) {
-  if (!a.title || !a.message) die("notify requires --title and --message");
+  if (a.preset) a = { ...presetPush(String(a.preset)), ...a };
+  if (!a.title || !a.message) die("notify requires --title and --message (or --preset)");
+  if (a.dry) return console.log(JSON.stringify({ ok: true, dry: true, title: a.title, message: a.message }, null, 2));
   try {
     const r = await sendPush({
       title: String(a.title), message: String(a.message),

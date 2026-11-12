@@ -104,8 +104,11 @@ threshold drifts.
 ### `prices` / `scan` — the model-free path
 
 `prices` pulls live figures from three free, keyless APIs: Gold Spot (api.gold-api.com),
-Thai bar and ornament gold with the association's announcement round
-(api.chnwt.dev/thai-gold-api), and USD/THB (frankfurter.dev). It also returns `fair_thb`
+Thai bar and ornament gold with the association's announcement round, and USD/THB
+(frankfurter.dev). Thai gold comes from the association's own feed
+(goldtraders.or.th/api/GoldPrices/Latest), with the community mirror api.chnwt.dev as a
+fallback. Until 12 Nov 2026 the mirror was the only source; it went down on 10 Nov and
+every scan failed for two days. It also returns `fair_thb`
 and `premium_pct` already computed. If any source fails, the whole fetch fails loudly
 rather than reporting a partial picture that could drive a wrong alert.
 
@@ -172,7 +175,10 @@ quietly failed while the emails kept arriving. Pushes now go through
 [ntfy](https://ntfy.sh): a plain HTTP POST, no account, no model.
 
 - `node gw.mjs push-setup` creates a private topic and prints how to subscribe to it
-- `node gw.mjs notify --title T --message M` sends one
+- `node gw.mjs notify --title T --message M` sends one; `--preset health` sends the
+  watchdog alarm and `--dry` prints instead of sending. **Never type Thai into a `.cmd`
+  file** — cmd.exe reads it as code page 874 and the phone receives mojibake. Put the text
+  in a preset in `gw.mjs` and call it by name.
 - `scan` sends the push itself, straight from code, the moment a push-level threshold
   trips — minutes before the model has finished writing the email
 - a delivered push advances the reference price immediately, in code. Waiting for the
