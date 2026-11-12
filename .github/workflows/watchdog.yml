@@ -1,0 +1,43 @@
+name: watchdog
+
+# A watchdog that lives OFF the machine it is watching. Every good scan on Ploy's
+# PC leaves a silent heartbeat on ntfy; this reads it hourly during scan hours and
+# pushes to her phone if it has gone quiet for more than two hours - the case no
+# check on the PC itself can report, because it is off too.
+#
+# Needs one repository secret, NTFY_TOPIC (Settings > Secrets and variables >
+# Actions). This repo and its Actions logs are public: the topic must only ever
+# come from the secret, and gw.mjs never prints it.
+on:
+  schedule:
+    # 10:17-22:17 Bangkok (UTC+7), Mon-Sat - the hours the scans run
+    - cron: "17 3-15 * * 1-6"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Check even outside scan hours"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: watchdog
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check the heartbeat
+        env:
+          GW_NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: node gw.mjs watchdog ${{ inputs.force && '--force' || '' }}

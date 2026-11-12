@@ -832,6 +832,9 @@ const THAI_SOURCES = [
         bar_sell: toNum(r.bL_SellPrice), bar_buy: toNum(r.bL_BuyPrice),
         orn_sell: toNum(r.oM965_SellPrice), orn_buy: Math.round(toNum(r.oM965_BuyPrice)),
         announced: `${day}/${mo}/${Number(y) + 543} เวลา ${t.slice(0, 5)} น. (ครั้งที่ ${r.seq})`,
+        // The association quotes the Spot and baht rate it priced against. Kept as a
+        // stand-in for when the Spot or FX source is down; stripped before output.
+        _spot: toNum(r.goldSpot), _fx: toNum(r.bahtPerUSD),
       };
     },
   },
@@ -848,19 +851,22 @@ const THAI_SOURCES = [
   },
 ];
 
-// Each source gets a second try: the association's feed answers a stray 502 about
-// one call in fifty, and one blip should not cost a whole half-hour scan.
+// Each source gets three tries, 2s then 5s apart: the association's feed answers a
+// stray 502 about one call in fifty, sometimes two in a row, and a blip should not
+// cost a whole half-hour scan.
+const RETRY_WAIT_MS = [2000, 5000];
+
 async function getThai() {
   const errors = [];
   for (const s of THAI_SOURCES) {
-    for (let attempt = 1; attempt <= 2; attempt++) {
+    for (let attempt = 0; attempt <= RETRY_WAIT_MS.length; attempt++) {
       try {
         const v = s.parse(await getJson(s.url));
         if (!(v.bar_sell > 0)) throw new Error(`bad bar sell ${v.bar_sell}`);
         return { ...v, source: s.url };
       } catch (e) {
-        if (attempt === 2) errors.push(`${new URL(s.url).hostname} ${e.message}`);
-        else await new Promise((r) => setTimeout(r, 2000));
+        if (attempt === RETRY_WAIT_MS.length) errors.push(`${new URL(s.url).hostname} ${e.message}`);
+        else await new Promise((r) => setTimeout(r, RETRY_WAIT_MS[attempt]));
       }
     }
   }
@@ -877,22 +883,40 @@ async function getJson(url, ms = 15000) {
   } finally { clearTimeout(t); }
 }
 
+async function getJsonRetry(url) {
+  try { return await getJson(url); }
+  catch { await new Promise((r) => setTimeout(r, 2000)); return getJson(url); }
+}
+
 async function fetchPrices() {
   const errors = [];
   const fail = (k) => (e) => { errors.push(`${k}: ${e.message}`); return null; };
-  const [spotRes, thai, fxRes] = await Promise.all([
-    getJson(SOURCES.spot).catch(fail("spot")),
+  const [spotRes, thaiRes, fxRes] = await Promise.all([
+    getJsonRetry(SOURCES.spot).catch(fail("spot")),
     getThai().catch(fail("thai")),
-    getJson(SOURCES.fx).catch(fail("fx")),
+    getJsonRetry(SOURCES.fx).catch(fail("fx")),
   ]);
+
+  // No single source going down should stop the scan. When Spot or FX fails, fall
+  // back to the figures the association priced against - only if its feed answered.
+  const assoc = "https://www.goldtraders.or.th (fallback)";
+  let spot = spotRes ? Number(spotRes.price) : null, spotSrc = SOURCES.spot, spotAsOf = spotRes?.updatedAt || null;
+  let fx = fxRes ? Number(fxRes.rates.THB) : null, fxSrc = SOURCES.fx, fxAsOf = fxRes?.date || null;
+  if (spot === null && thaiRes?._spot > 0) {
+    spot = thaiRes._spot; spotSrc = assoc; spotAsOf = null;
+    errors.splice(errors.findIndex((e) => e.startsWith("spot:")), 1);
+  }
+  if (fx === null && thaiRes?._fx > 0) {
+    fx = thaiRes._fx; fxSrc = assoc; fxAsOf = null;
+    errors.splice(errors.findIndex((e) => e.startsWith("fx:")), 1);
+  }
   if (errors.length) {
     const err = new Error("could not fetch prices — " + errors.join(" · "));
     err.partial = true;
     throw err;
   }
 
-  const spot = Number(spotRes.price);
-  const fx = Number(fxRes.rates.THB);
+  const { _spot, _fx, ...thai } = thaiRes;
   const barSell = thai.bar_sell;
 
   for (const [name, v] of [["spot", spot], ["fx", fx], ["bar sell", barSell]]) {
@@ -902,9 +926,9 @@ async function fetchPrices() {
   const fair = fairThb(spot, fx);
   return {
     fetched_at_iso: new Date().toISOString(),
-    spot: { value: spot, source: SOURCES.spot, as_of: spotRes.updatedAt || null },
+    spot: { value: spot, source: spotSrc, as_of: spotAsOf },
     thai,
-    fx: { value: fx, as_of: fxRes.date, source: SOURCES.fx },
+    fx: { value: fx, as_of: fxAsOf || "association", source: fxSrc },
     fair_thb: Math.round(fair),
     premium_pct: Number((((barSell - fair) / fair) * 100).toFixed(2)),
   };
@@ -970,6 +994,8 @@ async function cmdScan(a) {
   }
   recordHealth(true);
   appendHistory(p);
+  // A missed heartbeat only means the watchdog may speak up; it must never cost the scan.
+  if (!a.dry) await sendHeartbeat(p).catch((e) => console.error("gw: " + e.message));
   const d = decide(p.thai.bar_sell, p.spot.value, !!a.news);
 
   // Push straight from code, before any model starts. A failed push must never
@@ -1069,9 +1095,43 @@ function cmdEmail(a) {
 // failed. ntfy is a plain HTTP POST: no account, no model, no Remote Control.
 // The scan sends it directly the moment a threshold trips, before any model starts.
 function ntfyTopic() {
+  // The cloud watchdog has no local/ folder; it gets the topic from a GitHub secret.
+  if (process.env.GW_NTFY_TOPIC) return process.env.GW_NTFY_TOPIC.trim();
   if (!fs.existsSync(P.ntfy)) return null;
   const t = fs.readFileSync(P.ntfy, "utf8").trim();
   return t || null;
+}
+
+// A second, silent topic nobody subscribes to. Every good scan leaves a heartbeat
+// there, and the watchdog in GitHub Actions reads it from outside. A watchdog on
+// this machine cannot report this machine being off: on 1 Nov the PC was shut for
+// 90 hours and nothing said a word until it came back.
+const heartbeatTopic = () => { const t = ntfyTopic(); return t ? t + "-hb" : null; };
+
+async function ntfyPoll(topic, since = "12h") {
+  const r = await fetchWithTimeout(`https://ntfy.sh/${topic}/json?poll=1&since=${since}`);
+  if (!r.ok) throw new Error(`ntfy poll HTTP ${r.status}`);
+  return (await r.text()).split("\n").filter(Boolean).map((l) => JSON.parse(l))
+    .filter((m) => m.event === "message");
+}
+
+async function fetchWithTimeout(url, opts = {}, ms = 15000) {
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), ms);
+  try { return await fetch(url, { ...opts, signal: ctl.signal }); }
+  finally { clearTimeout(timer); }
+}
+
+async function sendHeartbeat(p) {
+  const topic = heartbeatTopic();
+  if (!topic) return;
+  const r = await fetchWithTimeout("https://ntfy.sh/", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ topic, priority: 1,
+      message: JSON.stringify({ thb: p.thai.bar_sell, xau: p.spot.value, at: p.fetched_at_iso }) }),
+  });
+  if (!r.ok) throw new Error(`heartbeat HTTP ${r.status}`);
 }
 
 function cmdPushSetup() {
@@ -1104,27 +1164,80 @@ function cmdPushSetup() {
 async function sendPush({ title, message, priority = 4, tags = [], click }) {
   const topic = ntfyTopic();
   if (!topic) throw new Error("no push topic set - run: node gw.mjs push-setup");
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 15000);
-  try {
-    // JSON publishing, not headers: headers cannot carry Thai text without encoding.
-    const r = await fetch("https://ntfy.sh/", {
-      method: "POST",
-      signal: ctl.signal,
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ topic, title, message, priority, tags, click }),
+  // JSON publishing, not headers: headers cannot carry Thai text without encoding.
+  const r = await fetchWithTimeout("https://ntfy.sh/", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ topic, title, message, priority, tags, click }),
+  });
+  if (!r.ok) throw new Error(`ntfy HTTP ${r.status}: ${(await r.text()).slice(0, 200)}`);
+  const j = await r.json();
+  return { id: j.id, time: j.time };
+}
+
+// ── Watchdog, run from GitHub Actions ────────────────────────────────────
+// Reads the heartbeat topic from outside this machine and pushes when it goes
+// quiet during scan hours. Only alarms once per outage, and says so when the
+// heartbeat comes back, so silence from the watchdog means "still fine".
+// Never print the topic: the repo is public and so are its Actions logs.
+const WATCHDOG_GAP_HOURS = 2;
+const WATCHDOG_REPEAT_HOURS = 6;
+
+async function cmdWatchdog(a) {
+  const topic = ntfyTopic();
+  if (!topic) die("no topic - set the NTFY_TOPIC secret in GitHub");
+
+  // Scans run Mon-Sat 08:30-22:00 Bangkok. Check from 10:00, so a machine switched
+  // on a little late is not reported, until 23:00 to catch the last hour.
+  const bkk = new Date(Date.now() + 7 * 3600000);
+  const day = bkk.getUTCDay(), mins = bkk.getUTCHours() * 60 + bkk.getUTCMinutes();
+  if (!a.force && (day === 0 || mins < 10 * 60 || mins >= 23 * 60)) {
+    return console.log("Outside scan hours - nothing to check.");
+  }
+
+  const beats = await ntfyPoll(heartbeatTopic());
+  const lastBeat = beats.length ? beats[beats.length - 1].time * 1000 : null;
+  const gapH = lastBeat === null ? Infinity : (Date.now() - lastBeat) / 3600000;
+
+  const mine = (await ntfyPoll(topic)).filter((m) => (m.tags || []).includes("watchdog"));
+  const last = mine[mine.length - 1];
+  const lastIsDown = last && (last.tags || []).includes("rotating_light");
+
+  const when = (ms) => new Date(ms).toLocaleString("th-TH", { timeZone: "Asia/Bangkok",
+    day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+
+  if (gapH > WATCHDOG_GAP_HOURS) {
+    const alreadyTold = lastIsDown && (lastBeat === null || last.time * 1000 > lastBeat) &&
+      (Date.now() - last.time * 1000) / 3600000 < WATCHDOG_REPEAT_HOURS;
+    console.log(`Heartbeat gap ${gapH === Infinity ? ">12" : gapH.toFixed(1)}h - ` +
+                (alreadyTold ? "already reported, staying quiet" : "reporting"));
+    if (alreadyTold || a.dry) return;
+    await sendPush({
+      title: "Gold Watch เงียบไป — คอมอาจปิดอยู่",
+      message: [
+        lastBeat === null ? "ไม่ได้รับสัญญาณจากคอมเลยเกิน 12 ชม."
+          : `สแกนสำเร็จครั้งล่าสุด ${when(lastBeat)} (${Math.floor(gapH)} ชม.ที่แล้ว)`,
+        "คอมอาจปิด / sleep / เน็ตหลุด — ระหว่างนี้ไม่มีใครเฝ้าราคา",
+        "ไม่มีเตือน ≠ ทองนิ่ง",
+      ].join("\n"),
+      priority: 5, tags: ["watchdog", "rotating_light"],
     });
-    if (!r.ok) throw new Error(`ntfy HTTP ${r.status}: ${(await r.text()).slice(0, 200)}`);
-    const j = await r.json();
-    return { id: j.id, time: j.time };
-  } finally { clearTimeout(timer); }
+  } else {
+    console.log(`Heartbeat ${Math.round(gapH * 60)} min ago - fine` + (lastIsDown ? ", reporting recovery" : ""));
+    if (!lastIsDown || a.dry) return;
+    await sendPush({
+      title: "Gold Watch กลับมาเฝ้าราคาแล้ว",
+      message: `สแกนล่าสุด ${when(lastBeat)} ทุกอย่างปกติ`,
+      priority: 3, tags: ["watchdog", "white_check_mark"],
+    });
+  }
 }
 
 // Canned pushes for the .cmd runners. cmd.exe reads a batch file in the console
 // code page (874 on a Thai Windows), so Thai typed into a .cmd reaches node as
 // mojibake - the 12 Nov health alarm arrived on the phone as "เธ•เนเธญเธ...".
 // Keep the .cmd files ASCII and let them name a preset; the Thai lives here.
-function presetPush(name) {
+async function presetPush(name) {
   if (name === "health") {
     const r = healthReport();
     const lines = [];
@@ -1138,11 +1251,43 @@ function presetPush(name) {
     lines.push("เปิด Gold Watch แล้วกด Is it still watching? เพื่อดูรายละเอียด");
     return { title: "⚠️ Gold Watch ต้องการให้ตรวจสอบ", message: lines.join("\n"), priority: 5, tags: "warning" };
   }
+
+  // The model could not write the morning brief (usually an expired Claude login).
+  // Send what code alone knows, so the morning is never simply silent.
+  if (name === "morning-fallback") {
+    const lines = [];
+    let title = "ทองเช้านี้ · สรุปส่งไม่ได้";
+    try {
+      const p = await fetchPrices();
+      title = `ทองแท่ง ${num(p.thai.bar_sell)} · สรุปส่งไม่ได้`;
+      lines.push(`ขาย ${num(p.thai.bar_sell)} / รับซื้อ ${num(p.thai.bar_buy)} · Spot $${num(p.spot.value, 0)}`);
+      const m = String(p.thai.announced).match(/(\d{1,2}:\d{2}).*?(\d+)\)?\s*$/);
+      if (m) lines.push(`ประกาศครั้งที่ ${m[2]} เวลา ${m[1]} น.`);
+    } catch { lines.push("ดึงราคาไม่ได้ด้วย — เช็คราคาเองก่อนตัดสินใจ"); }
+    const v = latestView();
+    if (v) lines.push(`มุมมองล่าสุด (${v.date}): ${v.label}` + (v.reason ? ` — ${v.reason}` : ""));
+    lines.push("⚠️ Claude เขียนสรุปเช้าไม่ได้ อาจหลุด login — เปิด Gold Watch แล้วกด Sign in");
+    return { title, message: lines.join("\n"), priority: 4, tags: "warning" };
+  }
+
+  // A threshold tripped but the model could not send the email. If the scan already
+  // pushed, she has the move; otherwise this push is the only thing that reaches her.
+  if (name === "alert-fallback") {
+    let d;
+    try { d = readJson(path.join(ROOT, "logs", "scan.json")); } catch { return null; }
+    if (!d || !d.alert || d.push_sent) return null;
+    const msg = pushFromDecision(d, d.prices);
+    return { ...msg, message: msg.message + "\n⚠️ อีเมลเตือนส่งไม่ได้ — Claude มีปัญหา", tags: "warning" };
+  }
   die(`unknown preset: ${name}`);
 }
 
 async function cmdNotify(a) {
-  if (a.preset) a = { ...presetPush(String(a.preset)), ...a };
+  if (a.preset) {
+    const pr = await presetPush(String(a.preset));
+    if (!pr) return console.log(JSON.stringify({ ok: true, skipped: "nothing to send" }));
+    a = { ...pr, ...a };
+  }
   if (!a.title || !a.message) die("notify requires --title and --message (or --preset)");
   if (a.dry) return console.log(JSON.stringify({ ok: true, dry: true, title: a.title, message: a.message }, null, 2));
   try {
@@ -1287,6 +1432,7 @@ switch (a._[0]) {
   case "email": cmdEmail(a); break;
   case "push-setup": cmdPushSetup(); break;
   case "notify": await cmdNotify(a); break;
+  case "watchdog": await cmdWatchdog(a); break;
   case "state": cmdState(a); break;
   case "log": {
     const lf = readJson(P.log);

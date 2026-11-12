@@ -65,6 +65,8 @@ node gw.mjs check --thb N --xau N --pretty     # readable instead of JSON
 node gw.mjs scan                         # prices + thresholds; exit 10 = alert needed
 node gw.mjs health --pretty              # is the watcher still watching? exit 11 = stale
 node gw.mjs targets                      # list the price levels being watched
+node gw.mjs watchdog [--force] [--dry]   # cloud check: has the heartbeat gone quiet?
+node gw.mjs notify --preset health|morning-fallback|alert-fallback [--dry]
 ```
 
 ### `morning` / `build`
@@ -209,6 +211,34 @@ Two separate things have to be working, and they fail in different ways:
 **The alarm goes out as an ntfy push first, before the email.** A warning that needs the
 model to announce that the model is broken never arrives — that is the whole reason the
 three-week outage went unnoticed. The push is plain code and does not care.
+
+### Self-repair — what fixes itself, and what tells you
+
+Every way this has broken so far, and what happens now:
+
+| Failure | What happens |
+|---|---|
+| Thai price source down (10 Nov 2026) | Falls back to the mirror. Each source gets 3 tries |
+| Spot or USD/THB source down | Uses the Spot and baht rate the association priced against |
+| Claude login expired / CLI missing | The scan, heartbeat and push still run; a code-only push replaces the email or morning brief |
+| PC off, asleep, or offline | **GitHub Actions watchdog** pushes within ~2h |
+
+The last row is the one nothing on the PC can report, because it is off too. Every
+good scan leaves a silent heartbeat on `<topic>-hb` (nobody subscribes to it), and
+`.github/workflows/watchdog.yml` reads it hourly, 10:17–22:17 Mon–Sat Bangkok time. A gap
+over 2h pushes once per outage (repeated at most every 6h), and a "back to normal" push
+follows when the heartbeat returns, so a quiet watchdog means "still fine".
+
+It needs one repository secret, `NTFY_TOPIC`. Set it from the file, without the value
+ever passing through a terminal or chat:
+
+```bash
+gh secret set NTFY_TOPIC --repo ploy230539/gold-watch < local/ntfy-topic.txt
+```
+
+The repo and its Actions logs are public: the topic only ever comes from the secret,
+and `gw.mjs watchdog` never prints it. Run it by hand from the Actions tab
+(`force` checks outside scan hours too).
 
 ---
 
