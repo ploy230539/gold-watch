@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-12T09:02:28.433Z",
-    "thb_sell": 63000,
-    "xau": 3931.6,
-    "note": "Thai gold -250 THB from last alert (threshold 250); bar broke morning support 63,250, CPI-driven Fed hike bets ahead of Friday PPI"
+    "ts_iso": "2026-11-12T15:02:41.346Z",
+    "thb_sell": 63200,
+    "xau": 3872.199951,
+    "note": "email: Spot -1.51% (3932->3872) broke $3,920 support on Trump 'no Iran deal' + Fed hike bets; Thai 63,200 lagging (round 30 17:21, premium +2.43%); call stays wait"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-21T10:02:15.498Z",
-      "thb_sell": 68550,
-      "xau": 4346.4,
-      "note": "US Treasury yields up, Fed hawkish expectations pressuring gold; -150 THB from last alert"
-    },
-    {
-      "ts_iso": "2026-09-22T03:32:03.560Z",
-      "thb_sell": 68400,
-      "xau": 4346.6,
-      "note": "alert: THB -150 from last alert, XAU roughly flat, morning wait call still holds within 4313-4376 range"
-    },
     {
       "ts_iso": "2026-09-22T05:32:51.431Z",
       "thb_sell": 68250,
@@ -650,12 +638,26 @@
       "xau": 3931.6,
       "note": "Thai gold -250 THB from last alert (threshold 250); bar broke morning support 63,250, CPI-driven Fed hike bets ahead of Friday PPI",
       "pushed": false
+    },
+    {
+      "ts_iso": "2026-11-12T15:00:04.737Z",
+      "thb_sell": 63200,
+      "xau": 3872.199951,
+      "note": "push sent: Spot moved -1.51% from the last alert (threshold 1.5%) · Cumulative -50 THB since the last push (threshold 300)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-12T15:02:41.346Z",
+      "thb_sell": 63200,
+      "xau": 3872.199951,
+      "note": "email: Spot -1.51% (3932->3872) broke $3,920 support on Trump 'no Iran deal' + Fed hike bets; Thai 63,200 lagging (round 30 17:21, premium +2.43%); call stays wait",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-12T08:32:37.170Z",
-    "thb_sell": 63250,
-    "xau": 3947.2,
-    "note": "Thai gold -350 THB from last alert (threshold 250); bar at morning support 63,250"
+    "ts_iso": "2026-11-12T15:02:41.346Z",
+    "thb_sell": 63200,
+    "xau": 3872.199951,
+    "note": "email: Spot -1.51% (3932->3872) broke $3,920 support on Trump 'no Iran deal' + Fed hike bets; Thai 63,200 lagging (round 30 17:21, premium +2.43%); call stays wait"
   }
 }
