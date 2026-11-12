@@ -848,15 +848,20 @@ const THAI_SOURCES = [
   },
 ];
 
+// Each source gets a second try: the association's feed answers a stray 502 about
+// one call in fifty, and one blip should not cost a whole half-hour scan.
 async function getThai() {
   const errors = [];
   for (const s of THAI_SOURCES) {
-    try {
-      const v = s.parse(await getJson(s.url));
-      if (!(v.bar_sell > 0)) throw new Error(`bad bar sell ${v.bar_sell}`);
-      return { ...v, source: s.url };
-    } catch (e) {
-      errors.push(`${new URL(s.url).hostname} ${e.message}`);
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const v = s.parse(await getJson(s.url));
+        if (!(v.bar_sell > 0)) throw new Error(`bad bar sell ${v.bar_sell}`);
+        return { ...v, source: s.url };
+      } catch (e) {
+        if (attempt === 2) errors.push(`${new URL(s.url).hostname} ${e.message}`);
+        else await new Promise((r) => setTimeout(r, 2000));
+      }
     }
   }
   throw new Error(errors.join(", "));
