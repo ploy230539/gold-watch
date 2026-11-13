@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-13T02:32:32.494Z",
-    "thb_sell": 62800,
-    "xau": 3907.600098,
-    "note": "email: Thai bar -400 THB (63,200->62,800) round 1 09:03, catch-down after last night's +2.4% premium; spot +0.9% to $3,908 on USD pullback before PPI; call stays wait"
+    "ts_iso": "2026-11-13T06:02:06.874Z",
+    "thb_sell": 62550,
+    "xau": 3900.300049,
+    "note": "Thai bar -250 from last alert (62800->62550), round 16 12:48; premium deflated, spot flat"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-22T08:02:13.253Z",
-      "thb_sell": 67900,
-      "xau": 4301.5,
-      "note": "ทองแท่งลง 200 บาทจากรอบก่อน ทดสอบแนวรับ 4296/67550 จากแรงกดดันเฟดเหยี่ยว (Warsh)"
-    },
     {
       "ts_iso": "2026-09-22T09:02:22.913Z",
       "thb_sell": 68150,
@@ -654,6 +648,13 @@
       "xau": 3907.600098,
       "note": "email: Thai bar -400 THB (63,200->62,800) round 1 09:03, catch-down after last night's +2.4% premium; spot +0.9% to $3,908 on USD pullback before PPI; call stays wait",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-13T06:02:06.874Z",
+      "thb_sell": 62550,
+      "xau": 3900.300049,
+      "note": "Thai bar -250 from last alert (62800->62550), round 16 12:48; premium deflated, spot flat",
+      "pushed": false
     }
   ],
   "last_push": {
