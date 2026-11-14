@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-13T06:02:06.874Z",
-    "thb_sell": 62550,
-    "xau": 3900.300049,
-    "note": "Thai bar -250 from last alert (62800->62550), round 16 12:48; premium deflated, spot flat"
+    "ts_iso": "2026-11-13T07:00:11.944Z",
+    "thb_sell": 62500,
+    "xau": 3900.469971,
+    "note": "push sent: Cumulative -300 THB since the last push (threshold 300) · Below threshold - Thai gold -50 THB / Spot +0.00% -> stay silent, send nothing"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-22T09:02:22.913Z",
-      "thb_sell": 68150,
-      "xau": 4328.899902,
-      "note": "Fed hawkish (Collins, Musalem) vs dollar strength, bounce off Fibonacci 4321 support"
-    },
     {
       "ts_iso": "2026-09-22T09:32:18.790Z",
       "thb_sell": 68000,
@@ -655,12 +649,19 @@
       "xau": 3900.300049,
       "note": "Thai bar -250 from last alert (62800->62550), round 16 12:48; premium deflated, spot flat",
       "pushed": false
+    },
+    {
+      "ts_iso": "2026-11-13T07:00:11.944Z",
+      "thb_sell": 62500,
+      "xau": 3900.469971,
+      "note": "push sent: Cumulative -300 THB since the last push (threshold 300) · Below threshold - Thai gold -50 THB / Spot +0.00% -> stay silent, send nothing",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-13T02:32:32.494Z",
-    "thb_sell": 62800,
-    "xau": 3907.600098,
-    "note": "email: Thai bar -400 THB (63,200->62,800) round 1 09:03, catch-down after last night's +2.4% premium; spot +0.9% to $3,908 on USD pullback before PPI; call stays wait"
+    "ts_iso": "2026-11-13T07:00:11.944Z",
+    "thb_sell": 62500,
+    "xau": 3900.469971,
+    "note": "push sent: Cumulative -300 THB since the last push (threshold 300) · Below threshold - Thai gold -50 THB / Spot +0.00% -> stay silent, send nothing"
   }
 }
