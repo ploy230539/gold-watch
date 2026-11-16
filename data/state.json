@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-16T03:01:53.430Z",
-    "thb_sell": 62150,
-    "xau": 3875.449951,
-    "note": "Thai gold -350 THB from last alert (62,500→62,150), XAU -0.64%; Fed Dec hike bets"
+    "ts_iso": "2026-11-16T06:02:14.087Z",
+    "thb_sell": 61700,
+    "xau": 3838.120117,
+    "note": "email: Thai bar -450 THB (62,150->61,700) round 22 12:57, spot $3,838 broke $3,852 invalidation on Dec Fed hike bets + 19-month USD high; call flipped buy -> sell, wrong above $3,870"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-23T04:32:54.653Z",
-      "thb_sell": 68300,
-      "xau": 4346,
-      "note": "email alert: +150 THB move, still range-bound 4301-4400, wait call unchanged"
-    },
-    {
-      "ts_iso": "2026-09-23T06:02:07.427Z",
-      "thb_sell": 68100,
-      "xau": 4335.2,
-      "note": "เฟดแข็งกร้าวหนุนดอลลาร์ ทองลง 200 บาทจากรอบก่อน ยังอยู่กลางกรอบ รอ Core PCE ศุกร์นี้"
-    },
     {
       "ts_iso": "2026-09-24T02:32:07.553Z",
       "thb_sell": 67900,
@@ -658,12 +646,26 @@
       "xau": 3875.449951,
       "note": "Thai gold -350 THB from last alert (62,500→62,150), XAU -0.64%; Fed Dec hike bets",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-16T06:00:08.576Z",
+      "thb_sell": 61700,
+      "xau": 3838.120117,
+      "note": "push sent: Thai gold moved -450 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-16T06:02:14.087Z",
+      "thb_sell": 61700,
+      "xau": 3838.120117,
+      "note": "email: Thai bar -450 THB (62,150->61,700) round 22 12:57, spot $3,838 broke $3,852 invalidation on Dec Fed hike bets + 19-month USD high; call flipped buy -> sell, wrong above $3,870",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-16T03:01:53.430Z",
-    "thb_sell": 62150,
-    "xau": 3875.449951,
-    "note": "Thai gold -350 THB from last alert (62,500→62,150), XAU -0.64%; Fed Dec hike bets"
+    "ts_iso": "2026-11-16T06:02:14.087Z",
+    "thb_sell": 61700,
+    "xau": 3838.120117,
+    "note": "email: Thai bar -450 THB (62,150->61,700) round 22 12:57, spot $3,838 broke $3,852 invalidation on Dec Fed hike bets + 19-month USD high; call flipped buy -> sell, wrong above $3,870"
   }
 }
