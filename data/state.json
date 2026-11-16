@@ -1,23 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-13T07:00:11.944Z",
-    "thb_sell": 62500,
-    "xau": 3900.469971,
-    "note": "push sent: Cumulative -300 THB since the last push (threshold 300) · Below threshold - Thai gold -50 THB / Spot +0.00% -> stay silent, send nothing"
+    "ts_iso": "2026-11-16T03:01:53.430Z",
+    "thb_sell": 62150,
+    "xau": 3875.449951,
+    "note": "Thai gold -350 THB from last alert (62,500→62,150), XAU -0.64%; Fed Dec hike bets"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-22T09:32:18.790Z",
-      "thb_sell": 68000,
-      "xau": 4315.799805,
-      "note": "Fed hawkish talk (Goolsbee, Musalem) pushed spot toward support band, wait call held"
-    },
-    {
-      "ts_iso": "2026-09-23T02:32:06.599Z",
-      "thb_sell": 68150,
-      "xau": 4340.100098,
-      "note": "ทองดีดจากแรงหนุนน้ำมันร่วง/การทูตตะวันออกกลาง แต่เฟดยังฮอว์กิช กดไว้ใต้แนวต้าน 4400"
-    },
     {
       "ts_iso": "2026-09-23T04:32:54.653Z",
       "thb_sell": 68300,
@@ -656,12 +644,26 @@
       "xau": 3900.469971,
       "note": "push sent: Cumulative -300 THB since the last push (threshold 300) · Below threshold - Thai gold -50 THB / Spot +0.00% -> stay silent, send nothing",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-16T03:00:04.471Z",
+      "thb_sell": 62150,
+      "xau": 3875.449951,
+      "note": "push sent: Thai gold moved -350 THB from the last alert (threshold 250)",
+      "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-16T03:01:53.430Z",
+      "thb_sell": 62150,
+      "xau": 3875.449951,
+      "note": "Thai gold -350 THB from last alert (62,500→62,150), XAU -0.64%; Fed Dec hike bets",
+      "pushed": true
     }
   ],
   "last_push": {
-    "ts_iso": "2026-11-13T07:00:11.944Z",
-    "thb_sell": 62500,
-    "xau": 3900.469971,
-    "note": "push sent: Cumulative -300 THB since the last push (threshold 300) · Below threshold - Thai gold -50 THB / Spot +0.00% -> stay silent, send nothing"
+    "ts_iso": "2026-11-16T03:01:53.430Z",
+    "thb_sell": 62150,
+    "xau": 3875.449951,
+    "note": "Thai gold -350 THB from last alert (62,500→62,150), XAU -0.64%; Fed Dec hike bets"
   }
 }
