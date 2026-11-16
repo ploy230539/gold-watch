@@ -1,17 +1,11 @@
 {
   "last_alert": {
-    "ts_iso": "2026-11-16T06:02:14.087Z",
-    "thb_sell": 61700,
-    "xau": 3838.120117,
-    "note": "email: Thai bar -450 THB (62,150->61,700) round 22 12:57, spot $3,838 broke $3,852 invalidation on Dec Fed hike bets + 19-month USD high; call flipped buy -> sell, wrong above $3,870"
+    "ts_iso": "2026-11-16T08:02:18.416Z",
+    "thb_sell": 61950,
+    "xau": 3859.149902,
+    "note": "Thai gold +250 THB from last alert (61,700 -> 61,950), spot bounced 3838 -> 3859 off year low"
   },
   "history": [
-    {
-      "ts_iso": "2026-09-24T02:32:07.553Z",
-      "thb_sell": 67900,
-      "xau": 4286.9,
-      "note": "hawkish Fed remarks (Musalem, Goolsbee) lifted dollar, gold -1.11%, THB bar -200 to 67900"
-    },
     {
       "ts_iso": "2026-09-24T06:02:21.249Z",
       "thb_sell": 67750,
@@ -660,6 +654,13 @@
       "xau": 3838.120117,
       "note": "email: Thai bar -450 THB (62,150->61,700) round 22 12:57, spot $3,838 broke $3,852 invalidation on Dec Fed hike bets + 19-month USD high; call flipped buy -> sell, wrong above $3,870",
       "pushed": true
+    },
+    {
+      "ts_iso": "2026-11-16T08:02:18.416Z",
+      "thb_sell": 61950,
+      "xau": 3859.149902,
+      "note": "Thai gold +250 THB from last alert (61,700 -> 61,950), spot bounced 3838 -> 3859 off year low",
+      "pushed": false
     }
   ],
   "last_push": {
