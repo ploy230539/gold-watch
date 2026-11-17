@@ -1,6 +1,6 @@
 # Scheduled jobs — now running on Ploy's machine
 
-The URL that replaces the old Artifact everywhere (email, CTA buttons, chat, push):
+The URL that replaces the old Artifact everywhere (chat, push):
 
 ```
 https://ploy230539.github.io/gold-watch/
@@ -12,22 +12,23 @@ The old Artifact `751af5ad-2435-4077-8879-2bd35a1ccaa8` is **retired**.
 
 ## Schedule
 
-| Job | When | Prompt |
+| Job | When | What runs |
 |---|---|---|
-| Morning brief | 08:00, Mon–Sat | `tasks/morning.md` |
-| Price scan | **10:00 / 15:00 / 20:00**, Mon–Fri | `tasks/scan.cmd` → `tasks/watch.md` only if an alert is due |
-| Monthly self review | 09:00 on the 1st | `tasks/review.md` |
+| Morning brief | 08:00, Mon–Sat | `tasks/run.cmd morning.md` (model) |
+| Price scan | every 30 min, 08:30–22:00, Mon–Sat | `tasks/scan.cmd` (code only) |
+| Health check | 12:07 daily | `tasks/health.cmd` (code only) |
+| Monthly self review | 09:00 on the 1st | `tasks/run.cmd review.md` (model) |
+| Watchdog | hourly 10:17–22:17, Mon–Sat | GitHub Actions, `.github/workflows/watchdog.yml` |
 
-The scan times changed from the old 4 slots (09:00 / 12:00 / 15:00 / 18:00) to 3 slots
-at 10:00 / 15:00 / 20:00, matching what section 10 of the `gold-watch` skill already said.
+Everything reaches Ploy as a push in the ntfy app. Email was switched off on 17 Nov 2026.
 
 ---
 
 ## Cost
 
-The price scans decide in pure code and start a model only when a threshold is actually
-crossed, so on a quiet day all three cost nothing. The morning brief always uses the model,
-but takes its prices from the free feed and searches only for the news behind them.
+The scans, the alerts and the health check are pure code and cost nothing. The morning
+brief and the monthly review are the only jobs that use the model; the brief takes its
+prices from the free feed and searches only for the news behind them.
 
 ---
 
@@ -58,17 +59,12 @@ The machine only has the Claude Code desktop app, which Task Scheduler cannot in
 npm install -g @anthropic-ai/claude-code
 ```
 
-### 2. Log in and connect the connectors, once
+### 2. Sign in, once
 
-Open `claude` interactively in `D:\Claude_AI\Ploy\Gold`, log in, then connect the
-connectors the jobs need — **Gmail** (sending mail) and **push notifications**. This step
-needs a human; it cannot be automated. Skip it and the jobs will run but fail to send email.
-
-Confirm it actually works before going further:
-
-```bash
-claude -p "Send a test email with subject 'Gold Watch system test' to iminiwindy@gmail.com"
-```
+Press **2. Sign in** in the Gold Watch panel (it runs `claude auth login`). This needs a
+human; it cannot be automated. Then press **3. Test Claude** to confirm it answers, and
+**4. Phone push** to subscribe the phone to the ntfy topic and send a test push.
+No connectors are needed — nothing is emailed, and pushes go through ntfy, not Claude.
 
 ### 3. Register the jobs
 
@@ -88,12 +84,12 @@ Per-run logs land in `logs\`.
 
 ## Trade-offs worth knowing
 
-- **The machine must be awake at the scheduled time.** A missed slot is skipped, never
-  caught up (`/SC WEEKLY` in schtasks does no catch-up).
-  This does not break the price watch: the 150 THB threshold accumulates from the last
-  price an alert was **actually sent** for, so the next run still compares correctly.
+- **The machine must be on.** A run missed while it was off is caught up once when it
+  comes back (`StartWhenAvailable`), and the GitHub watchdog pushes if the scans go quiet
+  for more than two hours. The 250 THB threshold accumulates from the last price actually
+  alerted on, so a gap never breaks the comparison.
 - The runner (`tasks/run.cmd`) passes `--dangerously-skip-permissions` because nobody is
-  at the keyboard to approve prompts. All three prompts are fixed local files that take no
+  at the keyboard to approve prompts. Both prompts are fixed local files that take no
   external input. **Edit prompts only in `tasks/`.**
 - Remove a job: `schtasks /Delete /TN GoldWatch-Morning /F` (one name at a time).
 
@@ -114,8 +110,10 @@ re-validated in CI.
 
 ## The prompts themselves
 
-Live in `tasks/morning.md`, `tasks/watch.md`, `tasks/review.md`.
+Live in `tasks/morning.md` and `tasks/review.md`. The alert and health-alarm prompts
+(`watch.md`, `health-alert.md`) were removed with email on 17 Nov 2026; both jobs are code
+now.
 
-Everything carried over intact: the fair-price formula · the 150/300 THB and 1.5%
-thresholds · the strong-push rule · the 30-row rule · polite Thai email tone with no
-มึง/กู · both recipients.
+Still intact: the fair-price formula · 1.5% Spot threshold · the 30-row rule · polite
+neutral Thai (no มึง/กู) on the public dashboard. The Thai gold threshold is 250 THB
+since 1 Nov 2026 (was 150).

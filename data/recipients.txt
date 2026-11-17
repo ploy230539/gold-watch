@@ -1,4 +1,8 @@
 # Gold Watch email recipients
+#
+# NOT IN USE: email was switched off on 17 Nov 2026 - everything goes to the ntfy
+# app instead. Kept so turning email back on does not mean rebuilding the list.
+#
 # One address per line. Lines starting with # are ignored, blank lines too.
 # Every morning brief and every price alert goes to everyone listed here.
 # Save the file and the next scheduled run picks it up -- nothing to restart.

@@ -20,14 +20,14 @@ page said on any given day. The old setup simply overwrote itself each run.
 | Path | What it is |
 |---|---|
 | `template.html` | Dashboard template with `{{...}}` placeholders |
-| `email.mjs` | Email layout — the model supplies content, this owns every pixel |
+| `email.mjs` | Email layout — unused since email was switched off on 17 Nov 2026 |
 | `gw.mjs` | The whole tool, one file, no dependencies |
 | `data/log.json` | Track record — the call given each day, plus the actual outcome |
 | `data/state.json` | Price-watch memory — the last price an alert was sent for |
 | `data/history.json` | One price sample per scan; the Thai gold chart is drawn from it |
 | `data/health.json` | When a scan last succeeded, so silence is never ambiguous |
 | `data/targets.txt` | Price levels to be alerted on, one per line |
-| `data/recipients.txt` | Who gets the emails, one address per line |
+| `data/recipients.txt` | The old email list — not in use, kept for switching email back on |
 | `payload.example.json` | Fully commented example payload |
 | `tasks/` | The three job prompts, the runner, and the Task Scheduler installer |
 | `Gold Watch.cmd` | Control panel window (double-click to open) |
@@ -114,14 +114,12 @@ every scan failed for two days. It also returns `fair_thb`
 and `premium_pct` already computed. If any source fails, the whole fetch fails loudly
 rather than reporting a partial picture that could drive a wrong alert.
 
-`scan` runs `prices`, applies the thresholds, prints the decision, and exits **0 when
-nothing crossed the line, 10 when an alert is warranted**. `tasks/scan.cmd` uses that exit
-code: below threshold it stops there and no model ever starts. The three daily price scans
-therefore cost nothing on most days — the model is spent only on the runs that actually
-produce an alert, where judgement is genuinely needed to explain the move.
+`scan` runs `prices`, applies the thresholds, sends the phone push itself when one trips,
+and exits **0 when nothing crossed the line, 10 when it alerted**. No model is involved at
+any point, so the scans cost nothing at all.
 
-The morning brief still needs the model for the analysis, but it takes its raw numbers
-from `gw.mjs prices` and searches only for the news behind them.
+The morning brief is the only job that still needs the model — for the analysis — and it
+takes its raw numbers from `gw.mjs prices` and searches only for the news behind them.
 
 ### Price targets
 
@@ -134,36 +132,37 @@ spot >= 4400    world gold breaking out
 
 Relative thresholds answer "did something happen"; targets answer "did the level I care
 about get reached", which is the question people actually set alarms for. A target hit
-always sends both an email and a push — you asked to be told. Unparseable lines are
+always pushes at high priority — you asked to be told. Unparseable lines are
 reported in the alert rather than silently ignored, so a typo cannot sit there never firing.
 
-### Emails
+### Email is off
 
-`node gw.mjs email --in content.json` renders the message from a fixed layout in
-`email.mjs` and writes two files, each named after the Gmail parameter it belongs in:
-`logs/email.htmlBody.html` and `logs/email.body.txt`.
+Since 17 Nov 2026 nothing is emailed — Ploy asked for the ntfy app only. Everything that
+used to be an email is now a push, or is gone:
 
-The names are deliberate. A run once sent the HTML in `body`, and the recipients opened
-the mail to a wall of raw markup, so the filenames now say where each one goes.
+| Was | Now |
+|---|---|
+| Morning email | Morning push only (it was already the message she read) |
+| Alert email (≥ 250 THB) | Every alert is a push, sent from code; the model no longer runs on alerts |
+| Health-alarm email | Push only — it was always sent first anyway |
 
-The look used to drift every run because the model rebuilt the layout from scratch each
-time. It does not any more: content is the model's job, layout is the template's. Inline
-styles and table layout throughout, because Gmail strips `<style>` blocks in several of
-its clients.
+What was lost: the alert email's "why it moved" from a news search, and the second
+recipient, who no longer receives anything. The email code (`email.mjs`, `gw.mjs email`)
+and `data/recipients.txt` are kept; the prompts that sent mail (`tasks/watch.md`,
+`tasks/health-alert.md`) are in git history. Switching back means restoring those, the
+email step in `tasks/morning.md`, and the model call in `tasks/scan.cmd` / `health.cmd`.
 
-### What gets sent, and to whom
+### What gets sent
 
 Ploy follows the price moving and what to do about it; she does not read tables or
 charts. So everything sent to her leads with a **call** — ซื้อ (`buy`), ถือ (`hold`),
 ขาย (`sell`), รอ (`wait`) — a one-line reason, and the price that would prove it wrong.
 
 - **Morning push** — title `ทองแท่ง 68,850 · ถือ`, then the move, the reason, and
-  `ผิดถ้า: ...`. This is the message she actually reads.
-- **Morning email** — the same call as a coloured block under the header, a few
-  sentences of context, the news behind it. No price table.
+  `ผิดถ้า: ...`.
 - **Alert push** (from the scan, no model) — the move, plus the morning call quoted from
-  `call_reason` in the track record, dated if it is not today's.
-- **Alert email** — whether the move changed the morning call, and why it moved.
+  `call_reason` in the track record, dated if it is not today's. Moves of 250–299 THB ring
+  at normal priority; ≥ 300 THB, Spot ≥ 1.5%, news and target hits ring at high priority.
 
 The dashboard keeps its charts and tables for anyone who wants the detail.
 
@@ -173,7 +172,7 @@ The dashboard keeps its charts and tables for anyone who wants the detail.
 
 Claude's own push tool only reaches a phone when Remote Control is attached, and a
 scheduled headless run never has that — so from the move until 21 Sep 2026 every push
-quietly failed while the emails kept arriving. Pushes now go through
+quietly failed. Pushes now go through
 [ntfy](https://ntfy.sh): a plain HTTP POST, no account, no model.
 
 - `node gw.mjs push-setup` creates a private topic and prints how to subscribe to it
@@ -181,13 +180,10 @@ quietly failed while the emails kept arriving. Pushes now go through
   watchdog alarm and `--dry` prints instead of sending. **Never type Thai into a `.cmd`
   file** — cmd.exe reads it as code page 874 and the phone receives mojibake. Put the text
   in a preset in `gw.mjs` and call it by name.
-- `scan` sends the push itself, straight from code, the moment a push-level threshold
-  trips — minutes before the model has finished writing the email
-- a delivered push advances the reference price immediately, in code. Waiting for the
-  email to advance it meant that while the send path was broken the same move was
-  re-pushed on every scan: about 27 near-identical pushes a day for days at a time,
-  then total silence whenever the price drifted back. A push is the alert, so it owns
-  the reference.
+- `scan` sends the push itself, straight from code, the moment a threshold trips
+- a delivered push advances the reference price; a failed one does not, so the next scan
+  tries the same move again. (When the reference used to wait for the email, a broken
+  send path re-pushed the same move about 27 times a day.)
 
 The topic lives in `local/ntfy-topic.txt`, which is gitignored. **This repo is public, and
 anyone who has the topic can read every push sent to it** — it must never be committed.
@@ -199,18 +195,18 @@ Two separate things have to be working, and they fail in different ways:
 - **The price feed** — pure code, almost never breaks. Stale after 24h without a
   successful scan. A gap here usually means the machine was off or asleep, not that
   anything is wrong with the system.
-- **Delivery** — needs the model, and that is what actually breaks. The Claude CLI login
-  expired on 29 Sep 2026 and every morning brief and alert failed for 20 days while the
-  feed kept reporting "OK", so the watchdog said everything was fine and nothing reached
-  Ploy. Each run now records whether its send succeeded; three failures in a row raises
-  the alarm.
+- **Delivery** — the alert pushes and the morning brief. The Claude CLI login expired on
+  29 Sep 2026 and every morning brief failed for 20 days while the feed kept reporting
+  "OK", so the watchdog said everything was fine and nothing reached Ploy. Every alert
+  push and every morning run now records whether it got through; three failures in a row
+  raises the alarm.
 
 `gw.mjs health` exits 11 if either is broken. `tasks/health.cmd` (12:07 daily) warns, and
 `--record-send` raises it the moment delivery breaks rather than waiting for the next day.
 
-**The alarm goes out as an ntfy push first, before the email.** A warning that needs the
-model to announce that the model is broken never arrives — that is the whole reason the
-three-week outage went unnoticed. The push is plain code and does not care.
+**The alarm is a plain-code ntfy push.** A warning that needs the model to announce that
+the model is broken never arrives — that is the whole reason the three-week outage went
+unnoticed.
 
 ### Self-repair — what fixes itself, and what tells you
 
@@ -220,7 +216,7 @@ Every way this has broken so far, and what happens now:
 |---|---|
 | Thai price source down (10 Nov 2026) | Falls back to the mirror. Each source gets 3 tries |
 | Spot or USD/THB source down | Uses the Spot and baht rate the association priced against |
-| Claude login expired / CLI missing | The scan, heartbeat and push still run; a code-only push replaces the email or morning brief |
+| Claude login expired / CLI missing | Scans and alerts never needed it; a code-only push replaces the morning brief |
 | PC off, asleep, or offline | **GitHub Actions watchdog** pushes within ~2h |
 
 The last row is the one nothing on the PC can report, because it is off too. Every
@@ -229,11 +225,12 @@ good scan leaves a silent heartbeat on `<topic>-hb` (nobody subscribes to it), a
 over 2h pushes once per outage (repeated at most every 6h), and a "back to normal" push
 follows when the heartbeat returns, so a quiet watchdog means "still fine".
 
-It needs one repository secret, `NTFY_TOPIC`. Set it from the file, without the value
-ever passing through a terminal or chat:
+It needs one repository secret, `NTFY_TOPIC` (set on 12 Nov 2026). To set it again from
+the file, without the value passing through a terminal or chat — in PowerShell, which has
+no `<` redirection:
 
-```bash
-gh secret set NTFY_TOPIC --repo ploy230539/gold-watch < local/ntfy-topic.txt
+```powershell
+Get-Content D:\Claude_AI\Ploy\Gold\local\ntfy-topic.txt -Raw | gh secret set NTFY_TOPIC --repo ploy230539/gold-watch
 ```
 
 The repo and its Actions logs are public: the topic only ever comes from the secret,
@@ -249,21 +246,17 @@ and `gw.mjs watchdog` never prints it. Run it by hand from the Actions tab
 | `ALERT_THB = 250` | Thai gold moved ≥ 250 THB from the last alerted price (cumulative) → alert |
 | `ALERT_XAU_PCT = 1.5` | Spot moved ≥ 1.5% → alert |
 | `--news` | Market-moving news → alert (a human decides this, not the script) |
-| `PUSH_THB = 300` | Thai gold ≥ 300 THB **since the last push** → also send a phone push |
-| `PUSH_XAU_PCT = 1.5` | Spot ≥ 1.5% → also send a phone push |
+| `PUSH_THB = 300` | Thai gold ≥ 300 THB → the push rings at high priority |
+| `PUSH_XAU_PCT = 1.5` | Spot ≥ 1.5% → high priority |
 | `MIN_ROWS_FOR_STATS = 30` | Below this, never quote an accuracy percentage |
 
-Below threshold means total silence — nothing is sent at all.
+Below threshold means total silence — nothing is sent at all. Every alert is a push, and
+all of them are measured from `last_alert`.
 
-The two thresholds measure from **different baselines**, which matters: `last_alert` resets
-on every email, `last_push` only when the phone actually buzzed. Sharing one baseline made
-the push threshold unreachable during a steady slide — each email reset the reference
-before the gap could ever reach 300. On 30 Oct gold fell 1,100 THB across four alerts and
-the phone buzzed once.
-
-`ALERT_THB` was 150 until 1 Nov 2026. That same 1,100 THB day sent four emails in six
-hours, which reads as noise; at 250 it would have sent two. The push threshold is
-unchanged — pushes are the urgent channel and now measure from their own baseline.
+`ALERT_THB` was 150 until 1 Nov 2026. A 1,100 THB slide on 30 Oct sent four emails in six
+hours, which reads as noise; at 250 it would have sent two. While email was on, pushes
+had their own 300 THB threshold and their own baseline (`last_push`), because sharing the
+email's baseline made a steady slide never reach 300.
 
 The fair Thai gold price lives in `fairThb()` and in the calculator on the page:
 
@@ -275,16 +268,12 @@ The fair Thai gold price lives in `fairThb()` and in the calculator on the page:
 
 ## Language
 
-Tooling, code, and docs are in English. The **dashboard page and the emails stay in Thai**,
+Tooling, code, and docs are in English. The **dashboard page and the pushes are in Thai**,
 because that is what their readers read.
 
-- **Email / dashboard** — polite, neutral Thai, the voice of a friendly analyst. Other
-  people read these, so never use มึง/กู.
+- **Dashboard** — polite, neutral Thai, the voice of a friendly analyst. It is public and
+  other people read it, so never use มึง/กู.
 - **Chat / push** — casual Thai, มึง/กู is fine.
-
-Recipients live in `data/recipients.txt`, one address per line. Edit that file to add or
-remove someone — the next scheduled run picks it up, nothing to restart. It is the only
-place addresses are written down.
 
 ---
 

@@ -2,6 +2,10 @@ Produce Ploy's morning gold brief, following the gold-watch skill.
 
 Working folder: D:\Claude_AI\Ploy\Gold
 
+**Do not send any email.** Email was switched off on 17 Nov 2026 at Ploy's request; the
+phone push in step 5 is the only message that goes out. This overrides anything the
+gold-watch skill says about emailing the brief.
+
 **1. Get the prices** — run this first; it pulls live figures from free APIs with no
 model usage at all:
 
@@ -43,7 +47,7 @@ and fix the payload — never skip the validation step.
 
 **4. Track record** — no need to look up historical prices to fill in past outcomes.
 `morning` does it automatically from this run's prices (close-to-close; a move under
-±0.5% counts as a draw). To cite past results in chat or email, read `data/log.json`.
+±0.5% counts as a draw). To cite past results in chat, read `data/log.json`.
 **Below 30 rows with an actual result, never quote an accuracy percentage**, and write up
 the misses as prominently as the hits.
 
@@ -65,8 +69,8 @@ No price tables, no charts, no ladders in anything sent to her. Numbers go in se
 ("ทองแท่งลง 300 บาทมาที่ 68,850"), not rows. The dashboard link stays for anyone who wants
 the detail — do not reproduce it.
 
-This is a market view, not personal financial advice — keep the one-line disclaimer the
-email template adds, and do not claim certainty you do not have.
+This is a market view, not personal financial advice — do not claim certainty you do
+not have.
 
 **5. Push the morning summary to her phone** — this is the message she actually reads.
 
@@ -80,36 +84,3 @@ email template adds, and do not claim certainty you do not have.
 
 Casual Thai is fine in a push. Never use the PushNotification tool — it cannot reach the
 phone from a scheduled run.
-
-**6. Send the morning email** to every address in `data/recipients.txt`
-(one per line; ignore blank lines and lines starting with `#`). Read it at send time.
-
-Write the content to `logs/email-content.json`, then run
-`node gw.mjs email --in logs/email-content.json`. Fields:
-
-- `eyebrow`   `สรุปทองเช้า · <date>`
-- `headline`  one sentence: what gold did and what it means
-- `verdict`   `{"call": "buy|hold|sell|wait", "reason": "...", "wrong_if": "..."}`
-              — this renders as the big coloured block straight under the header.
-              It is the point of the email.
-- `lead`      optional: two or three sentences of context, numbers written in the prose
-- `sections`  at most one, headed **ทำไม**, with 2–3 bullets of real news
-              (`{"sign": "plus|minus|flat", "text": "..."}`)
-- `dashboard_url` `https://ploy230539.github.io/gold-watch/`
-
-**Leave `rows` out entirely** — no price table. Polite, neutral Thai (other people read
-this email): **never มึง/กู**. Mention the dashboard link opens without logging in.
-
-### Sending — get this exactly right
-
-The command writes two files, each named after the Gmail parameter it belongs in:
-
-| File | Goes in |
-|---|---|
-| `logs/email.htmlBody.html` | `htmlBody` |
-| `logs/email.body.txt` | `body` |
-
-Read both files and pass their full contents to the Gmail send tool in those two
-parameters. **Never put the HTML into `body`** — the recipients would see raw markup.
-Check yourself before sending: the value going into `body` must start with plain Thai
-text, never with `<!doctype html>`.

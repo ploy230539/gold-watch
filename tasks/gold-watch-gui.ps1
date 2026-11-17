@@ -131,7 +131,7 @@ function RunNeedsClaude([string]$title, [string]$command) {
       "Claude Code CLI is not installed, so this job cannot run.`n`n" +
       "Press '1. Install Claude CLI' in the setup group below,`n" +
       "then '2. Sign in',`n" +
-      "then '3. Send test email' to confirm it actually works.",
+      "then '3. Test Claude' to confirm it actually works.",
       "Setup incomplete", "OK", "Warning") | Out-Null
     return
   }
@@ -215,11 +215,7 @@ $chkNews.Text = "Big news"; $chkNews.Font = $FontUI
 $chkNews.Location = New-Object System.Drawing.Point(356, 76); $chkNews.Size = New-Object System.Drawing.Size(84, 24)
 $g1.Controls.Add($chkNews)
 
-AddButton $g1 "Edit email recipients" 16 116 168 {
-  Start-Process notepad.exe -ArgumentList (Join-Path $Root "data/recipients.txt")
-} | Out-Null
-
-AddButton $g1 "Set price targets" 192 116 168 {
+AddButton $g1 "Set price targets" 16 116 168 {
   Start-Process notepad.exe -ArgumentList (Join-Path $Root "data/targets.txt")
 } | Out-Null
 
@@ -300,10 +296,11 @@ AddButton $g3 "2. Sign in" 184 28 160 {
   Start-Process "cmd.exe" -ArgumentList "/k", "cd /d `"$Root`" && claude auth login && echo. && echo Signed in. Close this window and press button 3. && claude auth status"
 } | Out-Null
 
-AddButton $g3 "3. Send test email" 352 28 160 {
-  # Same flags the real jobs use (see tasks/run.cmd), otherwise the test hits a
-  # permission prompt nobody is there to approve and silently does nothing.
-  RunNeedsClaude "Send test email" "claude -p --dangerously-skip-permissions `"Send a test email with subject 'Gold Watch system test' to iminiwindy@gmail.com and pongkasame.oil@gmail.com. Body: one short line confirming the Gold Watch automation can send mail from this machine.`""
+AddButton $g3 "3. Test Claude" 352 28 160 {
+  # Email is off (17 Nov 2026), so Claude is only needed for the morning brief.
+  # This checks it is installed, signed in and answering - with the same flags the
+  # real job uses, or the test hits a permission prompt nobody is there to approve.
+  RunNeedsClaude "Test Claude" "claude -p --dangerously-skip-permissions `"Reply with exactly: Gold Watch can reach Claude.`""
 } | Out-Null
 
 AddButton $g3 "4. Phone push" 520 28 173 {

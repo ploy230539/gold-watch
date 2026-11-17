@@ -15,7 +15,7 @@
 //   node gw.mjs health [--pretty]                  is the watcher actually still watching?
 //   node gw.mjs health --record-send ok|fail      record whether a send actually worked
 //   node gw.mjs targets                            list the price targets being watched
-//   node gw.mjs email --in content.json            render an email from the fixed template
+//   node gw.mjs email --in content.json            render an email (unused: email is off since 17 Nov 2026)
 //   node gw.mjs push-setup                         create / show the private ntfy topic
 //   node gw.mjs notify --title T --message M       send a phone push (no model)
 
@@ -53,10 +53,13 @@ export function fairThb(spot, usdthb) {
 // Price-watch alert thresholds
 // 150 was too sensitive in practice: on 30 Oct gold slid 1,100 THB and sent four
 // emails in six hours, which read as noise rather than news. 250 keeps the same
-// rule but only for moves worth opening an inbox for.
+// rule but only for moves worth hearing about.
+// Email was switched off on 17 Nov 2026 - ntfy is the only channel - so every alert
+// is a push. The PUSH_ pair no longer gates anything; it only makes the big moves
+// ring louder (ntfy priority 4) than the 250-299 ones (priority 3).
 const ALERT_THB = 250;   // Thai gold moved >= 250 THB from the last alerted price (cumulative)
 const ALERT_XAU_PCT = 1.5;
-const PUSH_THB = 300;    // below this, email only - no phone push
+const PUSH_THB = 300;    // at or above this, the push rings at high priority
 const PUSH_XAU_PCT = 1.5;
 const MIN_ROWS_FOR_STATS = 30; // below this, never quote an accuracy percentage
 
@@ -664,13 +667,14 @@ const subjectCode = (thb, xau) => `[TH ${Math.round(thb)} | XAU ${Math.round(xau
 
 function decide(thb, xau, news) {
   const st = loadState();
+  // One channel, one baseline. The separate last_push baseline existed so a slow
+  // slide of email-only alerts would still buzz the phone; with every alert now a
+  // push, the two always match.
   const ref = st.last_alert;
-  // Before this existed, fall back to the alert baseline so nothing breaks.
-  const refPush = st.last_push || st.last_alert;
 
   if (!ref) {
     return {
-      alert: true, push: news, channels: ["email", "chat"],
+      alert: true, push: true, loud: !!news, channels: ["push"],
       reason: "No alert sent yet - establishing the first reference point",
       ref: null, now: { thb_sell: thb, xau },
       thb_move: null, xau_pct: null,
@@ -683,13 +687,11 @@ function decide(thb, xau, news) {
   const hitThb = Math.abs(thbMove) >= ALERT_THB;
   const hitXau = Math.abs(xauPct) >= ALERT_XAU_PCT;
 
-  const pushThbMove = thb - refPush.thb_sell;
-  const pushXauPct = ((xau - refPush.xau) / refPush.xau) * 100;
   const tg = checkTargets(thb, xau);
   const alert = hitThb || hitXau || news || tg.hit.length > 0;
-  // Measured from the last push, not the last email, so a run of small moves
-  // still buzzes the phone once it adds up to a real one.
-  const push = Math.abs(pushThbMove) >= PUSH_THB || Math.abs(pushXauPct) >= PUSH_XAU_PCT ||
+  const push = alert;
+  // A level you asked to be told about, or a big move, is worth a louder ring.
+  const loud = Math.abs(thbMove) >= PUSH_THB || Math.abs(xauPct) >= PUSH_XAU_PCT ||
     news || tg.hit.length > 0;
 
   const reasons = [];
@@ -698,22 +700,16 @@ function decide(thb, xau, news) {
   if (news) reasons.push("Market-moving news flagged by the operator");
   for (const h of tg.hit) reasons.push("Target hit: " + h.text);
   for (const b of tg.bad) reasons.push(`targets.txt line ${b.line} unreadable: "${b.raw}"`);
-  if (push && !(Math.abs(thbMove) >= PUSH_THB)) {
-    reasons.push(`Cumulative ${signed(pushThbMove)} THB since the last push (threshold ${PUSH_THB})`);
-  }
   if (!alert) reasons.push(`Below threshold - Thai gold ${signed(thbMove)} THB / Spot ${pct(xauPct)} -> stay silent, send nothing`);
 
   return {
-    alert, push,
-    channels: alert ? (push ? ["email", "push", "chat"] : ["email", "chat"]) : [],
+    alert, push, loud,
+    channels: alert ? ["push"] : [],
     reason: reasons.join(" · "),
     ref: { thb_sell: ref.thb_sell, xau: ref.xau, ts_iso: ref.ts_iso },
     now: { thb_sell: thb, xau },
     thb_move: Math.round(thbMove),
     xau_pct: Number(xauPct.toFixed(3)),
-    push_ref: { thb_sell: refPush.thb_sell, xau: refPush.xau, ts_iso: refPush.ts_iso },
-    push_thb_move: Math.round(pushThbMove),
-    push_xau_pct: Number(pushXauPct.toFixed(3)),
     targets_hit: tg.hit,
     targets_unreadable: tg.bad,
     subject_code: subjectCode(thb, xau),
@@ -735,24 +731,16 @@ function prettyDecision(d, title) {
   } else {
     L.push("  " + pad("Last alerted at") + "    (never - first reference point)");
   }
-  if (d.push_ref && d.push_ref.thb_sell !== (d.ref && d.ref.thb_sell)) {
-    L.push("  " + pad("Last pushed at") + "THB " + money(d.push_ref.thb_sell) +
-           "     XAU " + num(d.push_ref.xau, 2));
-  }
   L.push("  " + pad("Now") + "THB " + money(d.now.thb_sell) + "     XAU " + num(d.now.xau, 2));
   L.push("");
   if (d.thb_move !== null && d.thb_move !== undefined) {
-    L.push("  " + pad("Moved since last email") + "THB " + signed(d.thb_move).padStart(10, " ") +
+    L.push("  " + pad("Moved since last alert") + "THB " + signed(d.thb_move).padStart(10, " ") +
            "     Spot " + pct(d.xau_pct));
-    if (d.push_thb_move !== undefined && d.push_thb_move !== d.thb_move) {
-      L.push("  " + pad("Moved since last push") + "THB " + signed(d.push_thb_move).padStart(10, " ") +
-             "     Spot " + pct(d.push_xau_pct));
-    }
   }
   L.push("");
   const verdict = !d.alert ? "SILENT - nothing sent, no model used"
-    : d.push ? "ALERT - email + phone push + chat"
-    : "ALERT - email + chat (no phone push)";
+    : d.loud ? "ALERT - phone push, high priority"
+    : "ALERT - phone push";
   L.push("  " + pad("Decision") + "    " + verdict);
   L.push("  " + " ".repeat(20) + "    " + d.reason);
   L.push("");
@@ -773,12 +761,10 @@ function cmdCheck(a) {
   console.log(a.pretty ? prettyDecision(d, "ALERT CHECK") : JSON.stringify(d, null, 2));
 }
 
-// Two baselines, because they answer different questions.
-//   last_alert - reset by every email, drives the 250 THB email threshold
-//   last_push  - reset only by a push, drives the 300 THB push threshold
-// With one shared baseline a slow grind never pushes: each email resets
-// the reference, so the gap can never reach 300. On 30 Oct gold fell 1,100 THB
-// across four alerts and the phone buzzed once.
+// last_alert is the baseline every alert is measured from. last_push is still
+// written so the history shows which alerts reached the phone; it only drove its
+// own threshold while email was on (until 17 Nov 2026), when a slide of small
+// email-only alerts needed a separate baseline to ever buzz the phone.
 function setState(thb, xau, note, { pushed = false } = {}) {
   const st = loadState();
   const entry = {
@@ -998,21 +984,23 @@ async function cmdScan(a) {
   if (!a.dry) await sendHeartbeat(p).catch((e) => console.error("gw: " + e.message));
   const d = decide(p.thai.bar_sell, p.spot.value, !!a.news);
 
-  // Push straight from code, before any model starts. A failed push must never
-  // block the email path, so it is recorded rather than thrown.
+  // The push is the whole alert now - no model, no email. It is sent straight from
+  // code, and its outcome is what the health check counts as a delivery.
   if (a.dry) {
     // show what would be pushed without sending it
     d.push_preview = pushFromDecision(d, p);
   } else if (d.push && !a.nopush) {
     try {
       d.push_sent = await sendPush(pushFromDecision(d, p));
-      // A delivered push IS the alert. Advancing the reference here, rather than
-      // waiting for the email, is what stops the same move being re-pushed every
-      // 30 minutes: the next push now needs a genuinely new move. When the email
-      // path was broken this fired ~27 near-identical pushes a day for days on end.
+      // A delivered push IS the alert, so it advances the reference. A failed one
+      // leaves it alone, and the next scan tries the same move again.
       d.state_advanced = setState(p.thai.bar_sell, p.spot.value,
         `push sent: ${d.reason}`.slice(0, 200), { pushed: true });
-    } catch (e) { d.push_sent = false; d.push_error = e.message; }
+      recordSend(true);
+    } catch (e) {
+      d.push_sent = false; d.push_error = e.message;
+      recordSend(false, "alert push: " + e.message);
+    }
   }
 
   if (a.pretty) {
@@ -1270,15 +1258,6 @@ async function presetPush(name) {
     return { title, message: lines.join("\n"), priority: 4, tags: "warning" };
   }
 
-  // A threshold tripped but the model could not send the email. If the scan already
-  // pushed, she has the move; otherwise this push is the only thing that reaches her.
-  if (name === "alert-fallback") {
-    let d;
-    try { d = readJson(path.join(ROOT, "logs", "scan.json")); } catch { return null; }
-    if (!d || !d.alert || d.push_sent) return null;
-    const msg = pushFromDecision(d, d.prices);
-    return { ...msg, message: msg.message + "\n⚠️ อีเมลเตือนส่งไม่ได้ — Claude มีปัญหา", tags: "warning" };
-  }
   die(`unknown preset: ${name}`);
 }
 
@@ -1334,7 +1313,7 @@ function pushFromDecision(d, p) {
   return {
     title: `ทองแท่ง${move} → ${num(p.thai.bar_sell)}`,
     message: lines.join("\n"),
-    priority: (d.targets_hit || []).length ? 5 : 4,
+    priority: (d.targets_hit || []).length ? 5 : d.loud === false ? 3 : 4,
     tags: [down ? "chart_with_downwards_trend" : "chart_with_upwards_trend"],
     click: "https://ploy230539.github.io/gold-watch/",
   };
